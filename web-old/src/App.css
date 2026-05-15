@@ -1,0 +1,15 @@
+/* App-specific styles */
+
+.mobile-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none !important;
+  }
+  .mobile-toggle {
+    display: block;
+    cursor: pointer;
+  }
+}

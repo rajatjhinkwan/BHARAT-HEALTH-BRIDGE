@@ -1,0 +1,189 @@
+.emergency-boards-container {
+    padding: 2.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    background: var(--background);
+    min-height: 100vh;
+}
+
+.boards-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+}
+
+.header-title h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.active-board-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.boards-nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    background: var(--surface);
+    padding: 0.75rem;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+.board-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.board-tab.active {
+    background: var(--background);
+    color: var(--active-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.case-count {
+    background: var(--active-color);
+    color: white;
+    padding: 0.1rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+
+.boards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.patient-board-card {
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.patient-board-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.p-info h3 { font-size: 1.3rem; margin: 0.2rem 0; }
+.p-sub { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+
+.priority-indicator {
+    padding: 0.3rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.priority-indicator.critical { background: #fee2e2; color: #ef4444; }
+.priority-indicator.serious { background: #fef3c7; color: #f59e0b; }
+.priority-indicator.stable { background: #dcfce7; color: #10b981; }
+
+.vitals-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem;
+    background: var(--background);
+    border-radius: 12px;
+}
+
+.vital-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.assigned-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.assigned-info .label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
+.assigned-info .value { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+
+.board-open-emr {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.board-open-emr:hover {
+    filter: brightness(1.1);
+}
+
+.empty-board {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 5rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border-radius: 30px;
+    border: 2px dashed var(--border);
+}
+
+.empty-board h2 { margin-top: 1.5rem; color: var(--text-main); }

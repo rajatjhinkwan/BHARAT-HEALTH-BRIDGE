@@ -1,0 +1,249 @@
+/* PharmacyDashboard.css */
+.pharmacy-dashboard {
+  display: grid;
+  grid-template-columns: 320px 1fr 380px;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #F8FAFC; /* Light gray background from image */
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Column Styles */
+.pharmacy-left-col, .pharmacy-center-col, .pharmacy-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Card Overrides to match reference image */
+.pharmacy-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.pharmacy-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pharmacy-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1E293B;
+  margin: 0;
+}
+
+/* Left Column: Inventory Snapshot */
+.inventory-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.inventory-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: #F1F5F9;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.inventory-item:hover {
+  background: #FFFFFF;
+  border-color: #3B82F6;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+}
+
+/* Center Column: Rx Queue */
+.rx-queue-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.rx-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rx-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
+}
+
+.rx-tab.active {
+  background: #3B82F6; /* Primary Blue from image */
+  color: #FFFFFF;
+  border-color: #3B82F6;
+}
+
+.rx-item-card {
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  background: #FFFFFF;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.rx-item-card:hover {
+  border-color: #3B82F6;
+}
+
+.rx-item-card.warning {
+  border-left: 4px solid #EF4444;
+}
+
+.rx-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.patient-info h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1E293B;
+}
+
+.patient-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748B;
+}
+
+/* Right Column: Action Pad */
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  background: #FFFFFF;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.action-item:hover {
+  background: #EFF6FF;
+  border-color: #3B82F6;
+}
+
+.action-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EFF6FF;
+  color: #3B82F6;
+  border-radius: 8px;
+}
+
+.action-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1E293B;
+}
+
+.action-sub {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+/* Finalize Button */
+.finalize-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #3B82F6; /* Primary Blue from image */
+  color: #FFFFFF;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.finalize-btn:hover {
+  background: #2563EB;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 10px -1px rgba(59, 130, 246, 0.4);
+}
+
+.finalize-btn:disabled {
+  background: #94A3B8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Vitals-style mini cards for inventory */
+.inventory-vitals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.vital-box {
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+}
+
+.vital-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #64748B;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.vital-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide {
+  animation: slideIn 0.4s ease-out forwards;
+}

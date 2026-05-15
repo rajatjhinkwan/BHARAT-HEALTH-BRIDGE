@@ -1,0 +1,369 @@
+/* UHGS Command Center Styles */
+.uhgs-container {
+    min-height: calc(100vh - 64px);
+    background: radial-gradient(circle at top right, #0f172a, #020617);
+    color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.uhgs-container.fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    height: 100vh;
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, #080d1a, #01030a);
+}
+
+.uhgs-header {
+    padding: 1.5rem 2rem;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 20;
+}
+
+.uhgs-viewport {
+    width: 100%;
+    height: calc(100vh - 160px);
+    position: relative;
+    cursor: grab;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.uhgs-container.fullscreen .uhgs-viewport {
+    height: 100vh;
+}
+
+.uhgs-viewport:active {
+    cursor: grabbing;
+}
+
+/* Graph Elements - Card Style */
+.node-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 20px;
+    padding: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 260px;
+    height: 140px;
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
+    position: relative;
+    color: #1e293b;
+    pointer-events: auto;
+}
+
+.node-card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    border-color: #2563eb;
+}
+
+.node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.node-header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}
+
+.delete-node-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.delete-node-btn:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+.node-avatar-container {
+    padding: 2px;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    position: relative;
+}
+
+.node-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.status-indicator-mini {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-online { background-color: #ecfdf5; color: #10b981; }
+.badge-offline { background-color: #f1f5f9; color: #94a3b8; }
+.badge-escalated { background-color: #fffbeb; color: #f59e0b; }
+
+.node-card-info {
+    flex: 1;
+}
+
+.node-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.node-role {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.node-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 10px;
+    margin-top: auto;
+}
+
+.status-dot-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot-online { background-color: #10b981; }
+.dot-offline { background-color: #94a3b8; }
+.dot-escalated { background-color: #f59e0b; }
+
+.action-btn-mini {
+    background: #2563eb;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
+}
+
+.graph-link {
+    stroke: rgba(148, 163, 184, 0.3);
+    fill: none;
+    transition: all 0.3s ease;
+}
+
+.graph-link.active {
+    stroke: #2563eb;
+    filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.4));
+}
+
+/* Glass Panels */
+.uhgs-glass-panel {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.uhgs-top-toolbar {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    gap: 12px;
+    z-index: 40;
+}
+
+.history-controls {
+    display: flex;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.control-btn-mini {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.control-btn-mini:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.control-btn-mini.active {
+    background: #2563eb;
+    color: white;
+}
+
+.control-btn-mini:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.uhgs-settings-panel {
+    position: absolute;
+    top: 80px;
+    left: 24px;
+    width: 280px;
+    z-index: 40;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+}
+
+.close-settings {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.settings-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.setting-item label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.setting-item input[type="range"] {
+    width: 100%;
+    accent-color: #2563eb;
+    cursor: pointer;
+}
+
+.uhgs-controls {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    gap: 12px;
+    z-index: 30;
+}
+
+.control-btn {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.control-btn:hover {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.control-btn.active {
+    background: #2563eb;
+    color: white;
+}
+
+/* Detail Elements */
+.uhgs-sidebar {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    width: 320px;
+    padding: 1.5rem;
+    z-index: 30;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}

@@ -1,0 +1,51 @@
+﻿env: load .env
+env: export EXPO_PUBLIC_API_URL
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\app\(tabs)\emergency.jsx
+  9:1  warning  Import in body of module; reorder to top  import/first
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\app\(tabs)\history.jsx
+  8:1  warning  Import in body of module; reorder to top  import/first
+  9:1  warning  Import in body of module; reorder to top  import/first
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\app\(tabs)\index.jsx
+  75:6  warning  React Hook useEffect has missing dependencies: 'avatars', 'bgOpacity', 'emergencyOpacity', 'emergencyScale', 'greetOpacity', 'greetX', 'gridAnims', 'headerOpacity', 'headerY', 'liveX', 'namasteLetters', and 'progress'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\app\bill.jsx
+  24:6   warning  React Hook useEffect has missing dependencies: 'progressAnim' and 'scoreAnim'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  26:81  warning  React Hook useMemo has an unnecessary dependency: 'result'. Either exclude it or remove the dependency array                       react-hooks/exhaustive-deps
+  39:14  warning  'e' is defined but never used. Allowed unused caught errors must match /^_/u                                                       no-unused-vars
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\ActionGrid.jsx
+  6:18  warning  'Shadow' is defined but never used  no-unused-vars
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\ActiveVisitCard.jsx
+   4:10  warning  'Radius' is defined but never used                                                                          no-unused-vars
+   4:18  warning  'Shadow' is defined but never used                                                                          no-unused-vars
+  60:8   warning  React Hook useEffect has a missing dependency: 'opacity'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\EmergencyBanner.jsx
+   6:10  warning  'Spacing' is defined but never used                                                                       no-unused-vars
+   6:19  warning  'Radius' is defined but never used                                                                        no-unused-vars
+  19:8   warning  React Hook useEffect has a missing dependency: 'pulse'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\FamilySection.jsx
+  4:10  warning  'Radius' is defined but never used  no-unused-vars
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\GreetingSection.jsx
+   1:36  warning  'useMemo' is defined but never used                                                                           no-unused-vars
+   5:10  warning  'Spacing' is defined but never used                                                                           no-unused-vars
+  19:8   warning  React Hook useEffect has a missing dependency: 'floatingY'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\home\QuickActions.jsx
+  5:18  warning  'Shadow' is defined but never used  no-unused-vars
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\ui\app-header.jsx
+  17:6  warning  React Hook useEffect has a missing dependency: 'slide'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\rajat\Desktop\MAJOR PROJECT\mobile\components\ui\collapsible.tsx
+  7:24  error  Parse errors in imported module '@/constants/theme': Invalid character. (84:10)  import/namespace
+
+Γ£û 21 problems (1 error, 20 warnings)
+  0 errors and 3 warnings potentially fixable with the `--fix` option.
+

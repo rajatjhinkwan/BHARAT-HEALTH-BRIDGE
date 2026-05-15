@@ -1,0 +1,31 @@
+﻿node.exe : Invalid 
+option '--clear-cache' 
+- perhaps you meant 
+'--cache'?
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Users\rajat\AppData
+\Roaming\ ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : 
+NotSpecified: (Inv    
+alid option ...eant '- 
+   -cache'?:String) 
+[], R    emoteException
+    + 
+FullyQualifiedErrorI   
+ d : NativeCommandError
+ 
+You're using 
+eslint.config.js, some 
+command line flags are 
+no longer available. 
+Please see https://esli
+nt.org/docs/latest/use/
+command-line-interface 
+for details.
