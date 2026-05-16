@@ -1,0 +1,231 @@
+.visual-ward-map-container {
+    padding: 1.5rem;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+}
+
+.ward-map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.header-text h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+}
+
+.header-text p {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.ward-legend {
+    display: flex;
+    gap: 1.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 900;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.available { background-color: #10b981; }
+.dot.occupied { background-color: #3b82f6; }
+.dot.critical { background-color: #ef4444; }
+.dot.cleaning { background-color: #64748b; }
+
+.ward-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.bed-card {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    min-height: 160px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.bed-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-light);
+}
+
+.bed-card.available {
+    background: #f0fdf4;
+    border-color: #10b981;
+}
+
+.bed-card.occupied {
+    background: #eff6ff;
+    border-color: #3b82f6;
+}
+
+.bed-card.critical {
+    background: #fff1f2;
+    border-color: #ef4444;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+.bed-card.under_maintenance {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    opacity: 0.8;
+}
+
+.bed-icon-wrapper {
+    color: #64748b;
+}
+
+.bed-card.available .bed-icon-wrapper { color: #10b981; }
+.bed-card.occupied .bed-icon-wrapper { color: #3b82f6; }
+.bed-card.critical .bed-icon-wrapper { color: #ef4444; }
+
+.bed-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.bed-id {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.bed-status-text {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.bed-details {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.patient-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+.patient-sub-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.patient-uhid {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.bed-vitals-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.bed-vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    background: rgba(0,0,0,0.02);
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.mini-vital {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #475569;
+}
+
+.btn-update-vitals {
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.4rem;
+    border: none;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+}
+
+.btn-update-vitals:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.critical-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #ef4444;
+    color: white;
+    font-size: 0.5rem;
+    font-weight: 900;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}

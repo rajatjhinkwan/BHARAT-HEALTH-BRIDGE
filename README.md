@@ -4,10 +4,10 @@ A comprehensive hospital management and clinical workspace platform.
 
 ## Project Structure
 
-- `web-old/`: The frontend React application (Vite-based).
-- `backend-old/`: The Node.js/Express backend API.
-- `mobile/`: The React Native / Expo mobile application.
-- `ocr-model-engine/`: Python-based OCR engine for clinical document processing.
+- `front-end/`: The frontend React application (Vite-based).
+- `back-end/`: The Node.js/Express backend API.
+- `mobile-app/`: The React Native / Expo mobile application.
+- `machine-learning-model/`: Python-based OCR engine for clinical document processing.
 - `uploads/`: Directory for clinical media and document storage.
 
 ## Features
