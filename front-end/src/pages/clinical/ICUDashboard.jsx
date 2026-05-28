@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Thermometer, Droplets, Heart, User, Clock, AlertCircle, ChevronRight, Plus, FileText, Bell } from 'lucide-react';
+import {
+  Activity, Thermometer, Droplets, Heart, User, ChevronRight, FileText, Bell,
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import VitalsModal from '../../components/clinical/VitalsModal';
 import NurseNoteModal from '../../components/clinical/NurseNoteModal';
-
+import PatientDetailOverlay from '../../components/clinical/PatientDetailOverlay';
+import { usePatientDetailOverlay } from '../../hooks/usePatientDetailOverlay';
+import { useNotification } from '../../context/NotificationContext';
+import { Shimmer } from '../../components/SkeletonLoader';
 import { API_BASE_URL } from '../../config';
 
 export default function ICUDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
+  const {
+    selectedPatient,
+    isFullscreen,
+    isPatientDetailOpen,
+    openPatientDetail,
+    closePatientDetail,
+    togglePatientDetailFullscreen,
+  } = usePatientDetailOverlay();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeVitalsPatient, setActiveVitalsPatient] = useState(null);
@@ -38,191 +52,230 @@ export default function ICUDashboard() {
   }, []);
 
   const getCriticality = (p) => {
-    const spo2 = parseInt(p.vitals?.[p.vitals.length - 1]?.spo2 || '100');
+    const latest = (p.vitals && p.vitals.length) ? p.vitals[p.vitals.length - 1] : null;
+    const spo2 = parseInt(latest?.spo2 || '100', 10);
     if (spo2 < 90) return 'CRITICAL';
-    if (spo2 < 95) return 'STABLE';
     return 'STABLE';
   };
 
-  const styles = {
-    container: { padding: '2rem', maxWidth: '1600px', margin: '0 auto' },
-    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' },
-    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))', gap: '2rem' },
-    card: (criticality) => ({
-      background: 'var(--surface)',
-      border: `1px solid ${criticality === 'CRITICAL' ? 'var(--danger)' : 'var(--border)'}`,
-      borderRadius: '28px',
-      padding: '1.75rem',
-      position: 'relative',
-      boxShadow: 'var(--shadow-xl)',
-      transition: 'transform 0.3s ease'
-    }),
-    badge: (criticality) => ({
-      position: 'absolute',
-      top: '1.25rem',
-      right: '1.25rem',
-      padding: '0.5rem 1rem',
-      borderRadius: '12px',
-      fontSize: '0.75rem',
-      fontWeight: 900,
-      background: criticality === 'CRITICAL' ? 'var(--danger)' : 'var(--success)',
-      color: 'white',
-      letterSpacing: '0.05em'
-    }),
-    vitalBox: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '1rem',
-      marginTop: '1.5rem',
-      background: 'var(--background)',
-      padding: '1.25rem',
-      borderRadius: '20px',
-      border: '1px solid var(--border)'
-    },
-    vitalItem: { display: 'flex', alignItems: 'center', gap: '0.85rem' },
-    vitalValue: (color) => ({ fontSize: '1.25rem', fontWeight: 800, color: color }),
-    noteSection: {
-        marginTop: '1.5rem',
-        padding: '1rem',
-        background: 'rgba(59, 130, 246, 0.05)',
-        borderRadius: '16px',
-        border: '1px dashed var(--primary-light)'
-    },
-    btnGroup: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '1.5rem' },
-    btn: { padding: '0.85rem', borderRadius: '14px', fontWeight: 800, cursor: 'pointer', border: '1px solid var(--border)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: 'all 0.2s' }
-  };
-
-  const isDoctor = user?.role?.toUpperCase() === 'DOCTOR' || user?.role?.toUpperCase() === 'ADMIN';
+  const isDoctor = ['DOCTOR', 'ADMIN', 'HOSPITAL_ADMIN', 'SUPER_ADMIN', 'MEDICAL_DIRECTOR'].includes(
+    user?.role?.toUpperCase()
+  );
 
   return (
-    <div style={styles.container} className="animate-fade-in-up">
-      <div style={styles.header}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 900 }}>ICU Monitoring Center</h1>
-          <p style={{ color: 'var(--text-muted)', margin: '0.5rem 0' }}>Real-time critical care tracking for Intensive Care Unit</p>
-        </div>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-            <div style={{ padding: '1rem 2.5rem', background: 'var(--surface)', borderRadius: '20px', border: '1px solid var(--border)', textAlign: 'right' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Active ICU Patients</span>
-                <div style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--primary)' }}>{patients.length}</div>
+    <div className="hb-page hb-critical-page">
+      <div className="hb-page-inner">
+        <header className="hb-page-header">
+          <div className="hb-page-header-row">
+            <div className="hb-page-header-icon icu">
+              <Activity size={28} />
             </div>
-        </div>
-      </div>
+            <div className="hb-page-header-text">
+              <p className="hb-eyebrow">Critical care</p>
+              <h1>ICU monitoring center</h1>
+              <p>Real-time critical care tracking for the intensive care unit</p>
+            </div>
+          </div>
+          <div className="hb-metric-card hb-metric-inline">
+            <p className="hb-metric-label">Active ICU patients</p>
+            <p className="hb-metric-value">{patients.length}</p>
+          </div>
+        </header>
 
-      <div style={styles.grid}>
-        {patients.map(p => {
-          const crit = getCriticality(p);
-          const latestVitals = p.vitals?.[p.vitals.length - 1] || {};
-          const latestNote = p.nurseNotes?.[p.nurseNotes.length - 1];
-          
-          return (
-            <div key={p._id} style={styles.card(crit)} className="hover-card-effect">
-              <div style={styles.badge(crit)}>{crit}</div>
-              
-              <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
-                <div style={{ width: 64, height: 64, background: 'var(--surface-hover)', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)' }}>
-                  <User size={32} color="var(--primary)" />
+        <div className="hb-critical-grid">
+          {loading && patients.length === 0 ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <article key={i} className="hb-critical-card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'center' }}>
+                  <Shimmer style={{ width: '80px', height: '22px', borderRadius: '12px' }} />
                 </div>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 900 }}>{p.patientName}</h3>
-                  <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>{p.mrn} • {p.age}y • {p.gender}</p>
-                </div>
-              </div>
-
-              <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem' }}>
-                <span style={{ background: 'var(--primary-light)', color: 'var(--primary)', padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 900 }}>BED: {p.icuBedNumber || 'N/A'}</span>
-                <span style={{ background: 'var(--surface-hover)', color: 'var(--text-muted)', padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 800 }}>{p.currentStatus}</span>
-              </div>
-
-              <div style={styles.vitalBox}>
-                <div style={styles.vitalItem}>
-                  <Heart size={20} color="var(--danger)" />
-                  <div>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 800 }}>Pulse Rate</div>
-                    <div style={styles.vitalValue('var(--danger)')}>{latestVitals.heartRate || '--'} <span style={{fontSize: '0.75rem'}}>BPM</span></div>
-                  </div>
-                </div>
-                <div style={styles.vitalItem}>
-                  <Droplets size={20} color="var(--primary)" />
-                  <div>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 800 }}>Oxygen SpO2</div>
-                    <div style={styles.vitalValue('var(--primary)')}>{latestVitals.spo2 || '--'}%</div>
-                  </div>
-                </div>
-                <div style={styles.vitalItem}>
-                  <Activity size={20} color="#8b5cf6" />
-                  <div>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 800 }}>BP (mmHg)</div>
-                    <div style={styles.vitalValue('#8b5cf6')}>{latestVitals.bp || '--'}</div>
-                  </div>
-                </div>
-                <div style={styles.vitalItem}>
-                  <Thermometer size={20} color="var(--warning)" />
-                  <div>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 800 }}>Temperature</div>
-                    <div style={styles.vitalValue('var(--warning)')}>{latestVitals.temp || '--'}°F</div>
-                  </div>
-                </div>
-              </div>
-
-              {latestNote && (
-                  <div style={styles.noteSection}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                          <FileText size={14} color="var(--primary)" />
-                          <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--primary)', textTransform: 'uppercase' }}>Latest Nurse Note</span>
+                
+                <div className="hb-critical-card-body">
+                  <div className="hb-critical-card-left">
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+                      <Shimmer style={{ width: '56px', height: '56px', borderRadius: '16px', flexShrink: 0 }} />
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        <Shimmer style={{ width: '80%', height: '16px', borderRadius: '6px' }} />
+                        <Shimmer style={{ width: '50%', height: '11px', borderRadius: '4px' }} />
                       </div>
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-main)', fontStyle: 'italic' }}>"{latestNote.note}"</p>
-                      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.4rem', fontWeight: 700 }}>— {latestNote.nurseName} • {new Date(latestNote.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <Shimmer style={{ width: '60px', height: '22px', borderRadius: '8px' }} />
+                      <Shimmer style={{ width: '80px', height: '22px', borderRadius: '8px' }} />
+                    </div>
                   </div>
-              )}
 
-              <div style={styles.btnGroup}>
-                {isDoctor ? (
-                    <button onClick={() => navigate('/emr', { state: { selectedPatient: { ...p, patientId: p._id } } })} style={{ ...styles.btn, background: 'var(--primary)', color: 'white', border: 'none' }}>
-                        <ChevronRight size={18} /> Open EMR
+                  <div className="hb-critical-card-right">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', padding: '0.75rem', background: 'var(--background)', borderRadius: '12px' }}>
+                      {Array.from({ length: 4 }).map((_, c) => (
+                        <div key={c} style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                          <Shimmer style={{ width: '50%', height: '8px', borderRadius: '2px' }} />
+                          <Shimmer style={{ width: '70%', height: '12px', borderRadius: '3px' }} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hb-hero-actions hb-critical-card-actions" style={{ display: 'flex', gap: '0.75rem', marginTop: 'auto' }}>
+                  <Shimmer style={{ height: '38px', borderRadius: '10px', flex: 1 }} />
+                  <Shimmer style={{ height: '38px', borderRadius: '10px', flex: 1 }} />
+                </div>
+              </article>
+            ))
+          ) : (
+            patients.map((p) => {
+              const crit = getCriticality(p);
+              const latestVitals = (p.vitals && p.vitals.length) ? p.vitals[p.vitals.length - 1] : {};
+              const latestNote = p.nurseNotes && p.nurseNotes.length ? p.nurseNotes[p.nurseNotes.length - 1] : null;
+
+              return (
+                <article
+                  key={p._id}
+                  className={`hb-critical-card hb-critical-card--clickable${crit === 'CRITICAL' ? ' critical' : ''}`}
+                  onClick={() => openPatientDetail(p)}
+                >
+                  <span className={`hb-critical-badge ${crit === 'CRITICAL' ? 'critical' : 'stable'}`}>
+                    {crit}
+                  </span>
+
+                  <div className="hb-critical-card-body">
+                    <div className="hb-critical-card-left">
+                      <div className="hb-critical-patient-row">
+                        <div className="hb-critical-avatar">
+                          <User size={26} />
+                        </div>
+                        <div>
+                          <h3>{p.patientName}</h3>
+                          <p>{p.mrn} · {p.age}y · {p.gender}</p>
+                        </div>
+                      </div>
+
+                      <div className="hb-critical-tags">
+                        <span className="hb-priority-pill normal">Bed {p.icuBedNumber || 'N/A'}</span>
+                        <span className="hb-badge-count">{p.currentStatus}</span>
+                      </div>
+                    </div>
+
+                    <div className="hb-critical-card-right">
+                      <div className="hb-vitals-grid" style={{ marginTop: 0 }}>
+                        <div className="hb-vital-item">
+                          <label>Pulse</label>
+                          <span className="vital-danger">{latestVitals.heartRate || '--'} BPM</span>
+                        </div>
+                        <div className="hb-vital-item">
+                          <label>SpO2</label>
+                          <span className="vital-primary">{latestVitals.spo2 || '--'}%</span>
+                        </div>
+                        <div className="hb-vital-item">
+                          <label>BP</label>
+                          <span>{latestVitals.bp || '--'}</span>
+                        </div>
+                        <div className="hb-vital-item">
+                          <label>Temp</label>
+                          <span className="vital-warn">{latestVitals.temp || '--'}°F</span>
+                        </div>
+                      </div>
+
+                      {latestNote && (
+                        <div className="hb-nurse-note-box" style={{ marginTop: 0, padding: '0.65rem 0.85rem' }}>
+                          <div className="hb-note-label" style={{ marginBottom: '0.2rem' }}>
+                            <FileText size={12} />
+                            Note
+                          </div>
+                          <p style={{ fontSize: '0.8rem', lineHeight: '1.25' }}>&ldquo;{latestNote.note}&rdquo;</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="hb-hero-actions hb-critical-card-actions" style={{ marginTop: '1.25rem' }} onClick={(e) => e.stopPropagation()}>
+                    {isDoctor ? (
+                      <button
+                        type="button"
+                        className="hb-btn-primary"
+                        onClick={() => navigate('/emr', { state: { selectedPatient: { ...p, patientId: p._id } } })}
+                      >
+                        <ChevronRight size={18} />
+                        Open EMR
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="hb-btn-secondary"
+                        onClick={() => { setActiveNotePatient(p); setShowNoteModal(true); }}
+                      >
+                        <FileText size={18} />
+                        Add note
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="hb-btn-secondary"
+                      onClick={() => { setActiveVitalsPatient(p); setShowVitalsModal(true); }}
+                    >
+                      <Activity size={18} />
+                      Update vitals
                     </button>
-                ) : (
-                    <button onClick={() => { setActiveNotePatient(p); setShowNoteModal(true); }} style={{ ...styles.btn, background: 'var(--surface)', color: 'var(--text-main)' }}>
-                        <FileText size={18} /> Add Note
-                    </button>
-                )}
-                <button onClick={() => { setActiveVitalsPatient(p); setShowVitalsModal(true); }} style={{ ...styles.btn, background: 'white', color: 'var(--text-main)' }}>
-                   <Activity size={18} /> Update Vitals
-                </button>
-                {!isDoctor && (
-                    <button style={{ ...styles.btn, gridColumn: 'span 2', background: 'var(--danger-light)', color: 'var(--danger)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                        <Bell size={18} /> Notify Doctor
-                    </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
+                    {!isDoctor && (
+                      <button type="button" className="hb-btn-danger-outline">
+                        <Bell size={18} />
+                        Notify doctor
+                      </button>
+                    )}
+                  </div>
+                </article>
+              );
+            })
+          )}
+        </div>
+
+        {patients.length === 0 && !loading && (
+          <div className="hb-hero-idle">
+            <Activity size={48} />
+            <h4>No patients in ICU</h4>
+            <p>The unit is currently available for admissions.</p>
+          </div>
+        )}
       </div>
 
       {showVitalsModal && activeVitalsPatient && (
-          <VitalsModal 
-            patient={activeVitalsPatient} 
-            onClose={() => setShowVitalsModal(false)} 
-            onUpdate={fetchPatients} 
-          />
+        <VitalsModal
+          patient={activeVitalsPatient}
+          onClose={() => setShowVitalsModal(false)}
+          onUpdate={fetchPatients}
+        />
       )}
 
       {showNoteModal && activeNotePatient && (
-          <NurseNoteModal 
-            patient={activeNotePatient} 
-            onClose={() => setShowNoteModal(false)} 
-            onUpdate={fetchPatients} 
-          />
+        <NurseNoteModal
+          patient={activeNotePatient}
+          onClose={() => setShowNoteModal(false)}
+          onUpdate={fetchPatients}
+        />
       )}
 
-      {patients.length === 0 && !loading && (
-          <div style={{ textAlign: 'center', padding: '5rem', background: 'var(--surface)', borderRadius: '32px', border: '1px dashed var(--border)', marginTop: '2rem' }}>
-              <Activity size={64} color="var(--border)" style={{ marginBottom: '1.5rem' }} />
-              <h2 style={{ color: 'var(--text-muted)' }}>No Patients in ICU</h2>
-              <p style={{ color: 'var(--text-muted)' }}>The unit is currently available for admissions.</p>
-          </div>
-      )}
+      <PatientDetailOverlay
+        open={isPatientDetailOpen}
+        patient={selectedPatient}
+        onClose={closePatientDetail}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={togglePatientDetailFullscreen}
+        title="ICU patient"
+        showEmr={isDoctor}
+        onOpenEmr={(pt) => navigate('/emr', { state: { selectedPatient: { ...pt, patientId: pt._id } } })}
+        onUpdateVitals={(pt) => {
+          closePatientDetail();
+          setActiveVitalsPatient(pt);
+          setShowVitalsModal(true);
+        }}
+        onAddNote={(pt) => {
+          closePatientDetail();
+          setActiveNotePatient(pt);
+          setShowNoteModal(true);
+        }}
+        onNotifyDoctor={() => showNotification('Attending physician notified', 'success')}
+      />
     </div>
   );
 }

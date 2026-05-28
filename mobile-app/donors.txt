@@ -1,0 +1,363 @@
+1.		Kartikay Rana	9872448447	Chamoli	Badrinath	B+
+2.		Ajay Rawat	9837773381	Chamoli	Badrinath	B+
+3.		Anoop Singh Rawat	9897868387	Chamoli	Badrinath	B+
+4.		Saurabh Singh Negi	9764838688	Chamoli	Badrinath	B+
+5.		Anoop Chauhan	9639552836	Chamoli	Karanprayag	B+
+6.		Vijay Negi	9997486026	Chamoli	Karanprayag	B+
+7.		Deepak Bisht	9557624375	Chamoli	Karanprayag	B+
+8.		Pankaj Sati	9756132876	Chamoli	Karanprayag	A+
+9.		Shashank Rana	9557450816	Chamoli	Badrinath	B-
+10.		Prateek	7830038347	Chamoli	Karanprayag	B-
+11.		Prakash Nikhil	7060469181	Chamoli	Pindar	AB+
+12.		Raghuveer Singh	9557303704	Chamoli	Badrinath	O+
+13.		Vinod Mishra	9867227762	Chamoli	Karanprayag	O+
+14.		Vinod Joshi	9627128777	Almora	Almora	A+
+15.		Vipul Karki	7579101329	Almora	Almora	A+
+16.		Deepak Singh Karki	9810169192	Almora	Almora	A+
+17.		Yamit Punetha	8439410440	Almora	Almora	A+
+18.		Surendra Singh Rawat	9410917333	Almora 	Almora	A+
+19.		Dr. Ganesh Singh Parihar	9410518456	Almora	Almora	A+
+20.		Digar Singh Latwal	9015472402	Almora	Almora	A+
+21.		Ravindra Kumar Pandey	7253084438	Almora	Almora	A+
+22.		Deepak Singh Karki	9810169192	Almora	Almora	A+
+23.		Ajay Methta	9557782656	Almora	Almora	A+
+24.		Umesh Bachketi	9917063111	Almora	Almora	A+,B+
+25.		Basant Nahata	9861010506	Almora	Almora	A+
+26.		Arun Kumar Verma	9756834282	Almora	Almora	A-
+27.		Akhlak Ahmed	9837033681	Almora	Almora	B+
+28.		Yogesh Joshi	9410184222	Almora	Almora	B+
+29.		Rafeek Sikka	8766087205	Almora	Almora	B+
+30.		Sudhakar Boskar	7901158125	Almora	Almora	B+
+31.		Deepak Singh Nagarkoti	9411794614	Almora	Almora	B+
+32.		Geeta Sethi	9760171313	Almora	Almora	B+
+33.		Dr.Komal Bisht	9720083431	Almora	Almora	B+
+34.		Parvez Malik	9917533143	Almora	Almora	B+
+35.		C.Shivashanker	9100265165	Almora	Almora	B+
+36.		Yushuf	7200056333	Almora	Almora	B+
+37.		Dr. V. Gunaseelan 	9080304711	Almora	Almora	B+
+38.		Abhishek Gururani	9410191016	Almora	Almora	B+
+39.		Ramesh	9003944588	Almora	Almora	B+
+40.		R. Kishor	9384344125	Almora	Almora	B+
+41.		Hemant 	9675652044	Almora	Almora	B+
+42.		Vivek Agarwal	8477020990	Almora	Almora	B+
+43.		Sandeep Gururani	9899407404	Almora	Almora	AB+
+44.		Naveen Kumar	8760928882	Almora	Almora	AB+
+45.		Satish Mishra	9916060543	Almora	Almora	AB+
+46.		Pukhraj Advocate	9414244796	Almora	Almora	AB+
+47.		Dheeraj Sah	8859388889	Almora	Almora	AB+
+48.		Shajahan N. M	9840201274	Almora	Almora	AB+
+49.		Mahesh Devri	8766241535	Almora	Almora	AB+
+50.		Subhash	8958910146	Almora	Almora	AB- 
+51.		Lakshman lal Suthar	8696647363	Almora	Almora	O+
+52.		Jogasingh	9837885132	Almora	Almora	O+
+53.		Deepak S	9163404555	Almora	Almora	O+
+54.		Jeevan Kaira	9336839566	Almora	Almora	O+
+55.		Nitin Nath Goswami	9193909919 	Almora	Almora	O+
+56.		Rajkannan	8754851115	Almora	Almora	O+
+57.		Nagoor meeran	7338898567	Almora	Almora	O+
+58.		Pramod Chandra Joshi	9412913427	Almora	Almora	O+
+59.		Muniyan	9942573406	Almora	Almora	O+
+60.		Suri moger	9742096041	Almora	Almora	O-
+61.		Ravindra Singh Bora	7290863730	Almora	Almora	O-
+62.		Ramniwas	9456594675	Almora	Almora	O-
+63.		Priyanka Joshi	9758062402	Almora	Almora	O-
+64.		Dhruv Bisht	9045010252	Almora	Bhikiasain	A+
+65.		DR. GANESH SINGH PARIHAR	9410518456	Almora	Bhikiasain	A+
+66.		Ravindra Kumar pandey	7253084438	Almora	Dwarahat	A+
+67.		MITHLESH KUMAR PANT	9027764233	Almora	Jageshwar	A+
+68.		Sreeraj A	8943289049	Almora	Jageshwar	O+
+69.		Manisha Kharayat	7895552077	Almora	Ranjkhet	A+
+70.		Deepak Singh Karki	9810169192	Almora	Ranjkhet	A+
+71.		Vivek Agarwal	8477020990	Almora	Ranjkhet	B+
+72.		Ramesh	9003944588	Almora	Ranjkhet	B+
+73.		Shajahan N.M	9840201274	Almora	Ranjkhet	AB+
+74.		manmohan singh adhikari	7500220388	Almora	Ranjkhet	AB-
+75.		Mahadevan	8489639269	Almora	Ranjkhet	O+
+76.		P.NixonSindurajan	9840631820	Almora	Ranjkhet	O+
+77.		PRAKASH CHANDRA	8394077775	Almora	Salt	O+
+78.		VARUN RAWAT	7060886127	Almora	Salt	O+
+79.		Shankar Singh Mehra	9654712942	Almora	Someshwar	A+
+80.		Dheeraj oli	8477832706	Bageshwar	Bageshwar	A+
+81.		Mohan Ram Chandola	8349724850	Bageshwar	Bageshwar	A-
+82.		Yogesh	8958827187	Bageshwar	Bageshwar	A-
+83.		Lalit bora	9411119467	Bageshwar	Bageshwar	AB+
+84.		Bablu Kumar	9410309304	Bageshwar	Bageshwar	AB+ 
+85.		Harish Chandra Singh	7500772280	Bageshwar	Bageshwar	B+
+86.		Davesh joshi	8881919104	Bageshwar	Bageshwar	B-
+87.		Hem Chandra Bahuguna	9871075919	Bageshwar	Bageshwar	O+
+88.		Kamlesh Joshi	7906880810	Bageshwar	Bageshwar	O+
+89.		DILIP CHAND RAJAN	8936914021	Champawat	Champawat	A+
+90.		neeraj joshi	7500840187	Champawat	Champawat	A+
+91.		Shubham Yadav	9548212462	Champawat	Champawat	A+
+92.		Mo sharif	7454953513	Champawat	Champawat	A+
+93.		Uttkarsh katiyar	9690504549	Champawat	Champawat	AB+
+94.		Kamlapati Pandey	8006718858	Champawat	Champawat	B+
+95.		Vijayent Kohli	9897615117	Champawat	Champawat	B+
+96.		Amit taragi	7827275545	Champawat	Champawat	B+
+97.		Naveen Bhatt	8474986689	Champawat	Champawat	B+
+98.		Rajendra Singh Bohra	9897962495	Champawat	Champawat	O+
+99.		Dr. Renu Pant	9412969963	Champawat	Champawat	O+
+100.		Pankaj	9758585757	Champawat	Champawat	O+
+101.		Rishabh Kumar	9012027587	Champawat	Champawat	O+
+102.		Rohitash sharma	7579442898	Champawat	Lohaghat	A+
+103.		Ram Singh Samant	8449420793	Dehradun 	Dehradun 	B+
+104.		ABHINAV GUPTA	8755754680	Dehradun 	Dehradun 	A+
+105.		Rakesh Mehra	7893926161	Dehradun 	Dehradun 	A+
+106.		Pawan Kuniyal	9699025775	Dehradun 	Dehradun 	A+
+107.		arjun singh	9916023608	Dehradun 	Dehradun 	A+
+108.		Mohit Ahuja	9997807279	Dehradun 	Dehradun 	A+
+109.		VIPENDRA SINGH NEGI	7500964485	Dehradun 	Dehradun 	A+
+110.		Saurabh Chhabra	9837704884	Dehradun 	Dehradun 	A+
+111.		Deepak Maindoli	9997208602	Dehradun 	Dehradun 	A+
+112.		atul gairola	8979712183	Dehradun 	Dehradun 	A+
+113.		Nitika Bist	9837426511	Dehradun 	Dehradun 	A+
+114.		Ishan Mittal	9897385113	Dehradun 	Dehradun 	A+
+115.		Jatinder Meet	9412053051	Dehradun 	Dehradun 	A+
+116.		Rajat Uniyal	8267921871	Dehradun 	Dehradun 	A+
+117.		Akhilesh	9690190770	Dehradun 	Dehradun 	A+
+118.		sudhir mendiratta	9358363388	Dehradun 	Dehradun 	A+
+119.		ROHIT CHAUDHARY	8126644410	Dehradun 	Dehradun 	A+
+120.		Shivang Maikhuri	9911402053	Dehradun 	Dehradun 	A+
+121.		Vikrant Kumar	9897344386	Dehradun 	Dehradun 	A+
+122.		Shivam	9682781478	Dehradun 	Dehradun 	A+
+123.		SHADAB MALIK	9058801224	Dehradun 	Dehradun 	A+
+124.		Mohd Abdullah	8273672752	Dehradun 	Dehradun 	A+
+125.		Mohammad Zubair Choudhary	7409494199	Dehradun 	Dehradun 	A+
+126.		RAJNI GOSWAMI	8126319990	Dehradun 	Dehradun 	A+
+127.		GURPREET	9997519768	Dehradun 	Dehradun 	A+
+128.		Aman	7078065650	Dehradun 	Dehradun 	A+
+129.		vijay gupta	8077698712	Dehradun 	Dehradun 	A+
+130.		Yogender Singh Chahar	7078220250	Dehradun 	Dehradun 	A+
+131.		Himanshu Bharti Sharma	8091206191	Dehradun 	Dehradun 	A+
+132.		Singham sir	8010191919	Dehradun 	Dehradun 	A+
+133.		GURPREET SINGH RAYAT	9997519768	Dehradun 	Dehradun 	A+
+134.		Abhishek Bisht	9675334195	Dehradun 	Dehradun 	A-
+135.		Romesh Kumar Kaul	9819448941	Dehradun 	Dehradun 	A-
+136.		Saba Hussain	9396613252	Dehradun 	Dehradun 	A-
+137.		prashant negi	9927001724	Dehradun 	Dehradun 	A-
+138.		Abadur rahman	7017206775	Dehradun 	Dehradun 	A-
+139.		PARVESH SAINI	8909921921	Dehradun 	Dehradun 	A-
+140.		Dr.DHRUV KUMAR	7082436598	Dehradun 	Dehradun 	A-
+141.		farid ahmad	9410322280	Dehradun 	Dehradun 	A-
+142.		Md Shah Alam	7452989801	Dehradun 	Dehradun 	A-
+143.		Jagrit virmani	9837092715	Dehradun 	Dehradun 	A-
+144.		Pratham tyagi	9649361264	Dehradun 	Dehradun 	A-
+145.		Robin Rawat	7088082246	Dehradun 	Dehradun 	A-
+146.		dinesh kumar sharma	9763072963	Dehradun 	Dehradun 	A-
+147.		Hari krishnan p	9419237370	Dehradun 	Dehradun 	A-
+148.		Shubham Kumar	9759599991	Dehradun 	Dehradun 	A-
+149.		Ujjaval Joshi	8006192159	Dehradun 	Dehradun 	A-
+150.		Vimal Kant Dhyani	8218824896	Dehradun 	Dehradun 	A-
+151.		Sanjeev Kumar Sachdeva	9410101639	Dehradun 	Dehradun 	AB+
+152.		Ashish sharma	6395007404	Dehradun 	Dehradun 	AB+
+153.		Rahul Kumar Arya	9258022677	Dehradun 	Dehradun 	AB+
+154.		Vivan upadhyay	6395944553	Dehradun 	Dehradun 	AB+
+155.		Akhilesh Uniyal	7409186189	Dehradun 	Dehradun 	AB+
+156.		Ponnam Srinath	9410397975	Dehradun 	Dehradun 	AB+
+157.		Ankit Kumar	9794909267	Dehradun 	Dehradun 	AB+
+158.		alirao	8126401985	Dehradun 	Dehradun 	AB+
+159.		tarun	9897979309	Dehradun 	Dehradun 	AB+
+160.		Priti Sharma	9958329079	Dehradun 	Dehradun 	AB+
+161.		Swaran Singh Bawa	9004660348	Dehradun 	Dehradun 	AB+
+162.		Mohammad Areeb	9997704723	Dehradun 	Dehradun 	AB+
+163.		Mukesh Saklani	9502672035	Dehradun 	Dehradun 	AB+
+164.		Shalini Mendiratta	9837786843	Dehradun 	Dehradun 	AB+
+165.		Abhijeet Singh	8077672929	Dehradun 	Dehradun 	AB+
+166.		Ashutosh kohli	7248726351	Dehradun 	Dehradun 	AB+
+167.		Himanshi Rana	8171014757	Dehradun 	Dehradun 	AB+
+168.		Naresh Singh	7017738460	Dehradun 	Dehradun 	AB+
+169.		DR ASHISH KUMAR SAHU	8683034125	Dehradun 	Dehradun 	AB+
+170.		ISHRAT HABIB KHAN	9410391962	Dehradun 	Dehradun 	AB+
+171.		amit shah	9634790013	Dehradun 	Dehradun 	AB+
+172.		Ashish Surya	8954926412	Dehradun 	Dehradun 	AB+
+173.		Ramesh kumar	9808643854	Dehradun 	Dehradun 	AB+
+174.		chandan Singh	9808994810	Dehradun 	Dehradun 	AB+
+175.		rakesh Singh kaintura	7351273715	Dehradun 	Dehradun 	AB+
+176.		Madhu	9557384304	Dehradun 	Dehradun 	AB+
+177.		Surya Prakash Dhyani	7830146361	Dehradun 	Dehradun 	AB+
+178.		SHIKHA PALIWAL	9411740208	Dehradun 	Dehradun 	AB+
+179.		Deepesh Kumar Goyal	9759003723	Dehradun 	Dehradun 	AB+
+180.		Javed khan	9639422667	Dehradun 	Dehradun 	AB-
+181.		Manmohan Negi	7599380700	Dehradun 	Dehradun 	AB-
+182.		Akhilesh Bhatt	8532033158	Dehradun 	Dehradun 	AB-
+183.		Abhishek joshi	9389364132	Dehradun 	Dehradun 	AB-
+184.		Anil Goswami	8126319990	Dehradun 	Dehradun 	AB-
+185.		Mukesh Saklani	9502672035	Dehradun 	Dehradun 	AB+
+186.		manoj gulati	9152719495	Dehradun 	Dehradun 	AB+
+187.		Deepesh Kumar Goyal	9759003723	Dehradun 	Dehradun 	AB+
+188.		Mohammad Areeb	9997704723	Dehradun 	Dehradun 	AB+
+189.		chandan Singh	9808994810	Dehradun 	Dehradun 	AB+
+190.		Surya Prakash Dhyani	7830146361	Dehradun 	Dehradun 	AB+
+191.		Abhishek Singh Jangwan	8130920825	Dehradun 	Dehradun 	AB+
+192.		shivam sajwan	7017151226	Dehradun 	Dehradun 	AB+
+193.		Deepak rawat	7037045339	Dehradun 	Dehradun 	AB+
+194.		amit shah	9634790013	Dehradun 	Dehradun 	AB+
+195.		MOHIT SETHI	9837077977	Dehradun 	Dehradun 	AB+
+196.		yasin khan	7002931384	Dehradun 	Dehradun 	AB+
+197.		SHIKHA PALIWAL	9411740208	Dehradun 	Dehradun 	AB+
+198.		tarun	9897979309	Dehradun 	Dehradun 	AB+
+199.		Abhijeet Singh	8077672929	Dehradun 	Dehradun 	AB+
+200.		Vivan upadhyay	6395944553	Dehradun 	Dehradun 	AB+
+201.		Ponnam Srinath	9410397975	Dehradun 	Dehradun 	AB+
+202.		Madhu	9557384304	Dehradun 	Dehradun 	AB+
+203.		Arjun thaps	7500049008	Dehradun 	Dehradun 	AB+
+204.		Vinit kumar	9430946228	Dehradun 	Dehradun 	AB+
+205.		Dharm singh rawat	9411598572	Dehradun 	Dehradun 	AB+
+206.		Vimal Kant Dhyani	8218824896	Dehradun 	Dehradun 	AB+
+207.		Deepak yadav	8192805609	Dehradun 	Dehradun 	AB+
+208.		ISHRAT HABIB KHAN	9410391962	Dehradun 	Dehradun 	AB+
+209.		Shashi Raj	8307620486	Dehradun	Dehradun	B+
+210.		Sandeep Singh Panchpal	8755577711	Dehradun	Dehradun	B+
+211.		Ayush barthwal	7983492648	Dehradun	Dehradun	B+
+212.		HIMANSHU KUMAR	9410244301	Dehradun	Dehradun	B+
+213.		Himanshu Agarwal	9897300467	Dehradun	Dehradun	B+
+214.		dushyant singh	9997615999	Dehradun	Dehradun	B+
+215.		Vinod dutt	8082622590	Dehradun	Dehradun	B+
+216.		karun kumar	7409661404	Dehradun	Dehradun	B+
+217.		Shubham Singh	7409115914	Dehradun	Dehradun	B+
+218.		Krishan Kamal	9458167939	Dehradun	Dehradun	B+
+219.		Gurpreet singh sachdeva	9897446090	Dehradun	Dehradun	B+
+220.		Sandeep pokhriyal	9897482300	Dehradun	Dehradun	B+
+221.		anil prasad khali	9910628059	Dehradun	Dehradun	B+
+222.		mahendra singh negi	9675181224	Dehradun	Dehradun	B+
+223.		Rohit sharma	9627781763	Dehradun	Dehradun	B+
+224.		Sanjay Garg	9808267574	Dehradun	Dehradun	B+
+225.		Sumit Grover	9412325305	Dehradun	Dehradun	B+
+226.		Nikhil Tanwar	9690229900	Dehradun	Dehradun	B+
+227.		vivek SHRIVASTAVA	7827827106	Dehradun	Dehradun	B+
+228.		Amit Bala	8532807287	Dehradun	Dehradun	B+
+229.		Dinesh Nayak	8954789324	Dehradun	Dehradun	B+
+230.		SANDEEP MAHER	9897882558	Dehradun	Dehradun	B+
+231.		B. M. Sharon	9045040713	Dehradun	Dehradun	B+
+232.		Raajessh Sharma	9927203050	Dehradun	Dehradun	B+
+233.		Kshitiz Bhardwaj	9027380960	Dehradun	Dehradun	B+
+234.		Varun Bhandari	8650496813	Dehradun	Dehradun	B+
+235.		Sourav Singh	8265818523	Dehradun	Dehradun	B+
+236.		Shiva Negi	8279544387	Dehradun	Dehradun	B+
+237.		Bhavani Sankar	9666399969	Dehradun	Dehradun	B+
+238.		Vikramjeet Singh Bindra	8954854854	Dehradun	Dehradun	B+
+239.		Chandrashekhar	7466903141	Dehradun	Dehradun	B+
+240.		Sudeep	9015152400	Dehradun	Dehradun	B+
+241.		Aayush Jaiswal	8873133845	Dehradun	Dehradun	B+
+242.		KUNAL GUPTA	9084747205	Dehradun	Dehradun	B+
+243.		Suresh Manda	9968947251	Dehradun	Dehradun	B+
+244.		Saurabh Khatri	9897330636	Dehradun	Dehradun	B+
+245.		Sunny Shrivastava	7895818918	Dehradun	Dehradun	B+
+246.		Nitin Singh	9997005896	Dehradun	Dehradun	B+
+247.		Shaambhavi Pathak	7376211228	Dehradun	Dehradun	B+
+248.		Pritpal Singh Anand	9760006069	Dehradun	Dehradun	B+
+249.		viprendra Kumar Saxena	7579005400	Dehradun	Dehradun	B+
+250.		ankit	7088670401	Dehradun	Dehradun	B+
+251.		Gagan	9557245597	Dehradun	Dehradun	B+
+252.		Ashish Rohila	9045300468	Dehradun	Dehradun	B+
+253.		GSS CHAITANYA	9634930006	Dehradun	Dehradun	B+
+254.		Mriga Maithel	9557738085	Dehradun	Dehradun	B+
+255.		HARSH KUMAR KATIYAR	9456176830	Dehradun	Dehradun	B+
+256.		Anmol Gupta	7417808779	Dehradun	Dehradun	B+
+257.		virendra kumar	9412368812	Dehradun	Dehradun	B+
+258.		Amit	9997528352	Dehradun	Dehradun	B+
+259.		Rajesh Kumar Gupta	8941931929	Dehradun	Dehradun	B+
+260.		Yashveer Singh	7579154611	Dehradun	Dehradun	B+
+261.		Irfan malik	7017972276	Dehradun	Dehradun	B+
+262.		nitin chauhan	9652188541	Dehradun	Dehradun	B+
+263.		Prince Raj	8102417982	Dehradun	Dehradun	B+
+264.		Manoj kumar Gupta	9411339551	Dehradun	Dehradun	B+
+265.		Diwakar Bisht	6396269189	Dehradun	Dehradun	B+
+266.		vivek ahuja	9639834444	Dehradun	Dehradun	B+
+267.		Udaya Prakash	9911880198	Dehradun	Dehradun	B+
+268.		Rajeev Thapa	8791451099	Dehradun	Dehradun	B+
+269.		Simer Chadha	7895897270	Dehradun	Dehradun	B+
+270.		Falguni Behera	9410507732	Dehradun	Dehradun	B+
+271.		Gaurav pal	8077219471	Dehradun	Dehradun	B+
+272.		shruti Mahindru Gaur	8588977248	Dehradun	Dehradun	B+
+273.		Sunil Sharma	7060310080	Dehradun	Dehradun	B+
+274.		kamlesh semwal	9808533211	Dehradun	Dehradun	B+
+275.		Ashish Rastogi	9411311110	Dehradun	Dehradun	B+
+276.		NIKHIL TANDON	7500558855	Dehradun	Dehradun	B+
+277.		Sandeep Tomar	7416651576	Dehradun	Dehradun	B+
+278.		Sumit	8505908105	Dehradun	Dehradun	B+
+279.		Birendra Sighn Rawat	6398982373	Dehradun	Dehradun	B+
+280.		Ankit Gupta	9634997977	Dehradun	Dehradun	B+
+281.		Ambar aggarwal	7500888821	Dehradun	Dehradun	B+
+282.		Shaleen Chandra	8791617422	Dehradun	Dehradun	B+
+283.		Parmod Bisht	7506151255	Dehradun	Dehradun	B+
+284.		Rahul Kumar	9760044221	Dehradun	Dehradun	B+
+285.		Ashwani Pahwa	8272044486	Dehradun	Dehradun	B+
+286.		peeyush joshi	9456712647	Dehradun	Dehradun	B+
+287.		MANISH SHAH	9412409283	Dehradun	Dehradun	B+
+288.		Tanu Mittal	9837547028	Dehradun	Dehradun	B+
+289.		Aman Shara	7017459746	Dehradun	Dehradun	B+
+290.		MANISH AGARWAL	8650040007	Dehradun	Dehradun	B+
+291.		Raju Pushola	8938000038	Dehradun	Dehradun	B+
+292.		Manish Negi	6397348492	Dehradun	Dehradun	B+
+293.		Jagdish bhatt	7906761948	Dehradun	Dehradun	B+
+294.		Aman Sabharwal	0885955000	Dehradun	Dehradun	B+
+295.		Sudhanshu Gairola	8650216167	Dehradun	Dehradun	B+
+296.		Yogesh Johari	9837178178	Dehradun	Dehradun	B+
+297.		Manmohan	9888824695	Dehradun	Dehradun	B+
+298.		Dr. Kumar Sachin	9045114175	Dehradun	Dehradun	B+
+299.		Prateek	8445815308	Dehradun	Dehradun	B+
+300.		Washal Ahamad	8960831495	Dehradun	Dehradun	B+
+301.		Dr.shailendra kaushik	7500133866	Dehradun	Dehradun	B+
+302.		NAVEEN MITTAL	9837232876	Dehradun	Dehradun	B+
+303.		Lalit Kumar	8938802100	Dehradun	Dehradun	B+
+304.		shushil sati	9720720101	Dehradun	Dehradun	B+
+305.		Manan Bhatia	8859011177	Dehradun	Dehradun	B+
+306.		Akhil Girdhar	8979910840	Dehradun	Dehradun	B+
+307.		Deepak jethi	7500112415	Dehradun	Dehradun	B+
+308.		RISHIDEV ARYA	8954821124	Dehradun	Dehradun	B+
+309.		Shrey Goel	9675236607	Dehradun	Dehradun	B+
+310.		Divyanshu kapoor	7454846622	Dehradun	Dehradun	B+
+311.		Jitender Singh Chauhan	9779766740	Dehradun	Dehradun	B+
+312.		Nitin sharma	7017817495	Dehradun	Dehradun	B+
+313.		Prateek patel	8445815308	Dehradun	Dehradun	B+
+314.		Nitin singh negi	9536549690	Dehradun	Dehradun	B+
+315.		Dr. Mohit Gupta	9358211655	Dehradun	Dehradun	B+
+316.		Sunidhi Bijalwan	6397096226	Dehradun	Dehradun	B+
+317.		Siddharth Dhamija	9690330595	Dehradun	Dehradun	B+
+318.		Mohit Bajaj	9917740395	Dehradun	Dehradun	B+
+319.		Mridul Kumar	9557807575	Dehradun	Dehradun	B+
+320.		Rohan Kothari	7088796425	Dehradun	Dehradun	B+
+321.		akhil	9729472989	Dehradun	Dehradun	B+
+322.		GAURAV SAXENA	9839941747	Dehradun	Dehradun	B+
+323.		MONIL TAK	9760439820	Dehradun	Dehradun	B+
+324.		Mukul	8218810205	Dehradun	Dehradun	B+
+325.		Geetanshu Yadav	8755194061	Dehradun	Dehradun	B+
+326.		Priyank Pathak	9870220808	Dehradun	Dehradun	B+
+327.		Sandeep Sikaria	9917121112	Dehradun	Dehradun	B+
+328.		Sahaj khanna	8909931023	Dehradun	Dehradun	B+
+329.		Nyima tsering	7259666104	Dehradun	Dehradun	B+
+330.		Manish Arora	9219881975	Dehradun	Dehradun	B+
+331.		Balram Bhadu	9837028017	Dehradun	Dehradun	B+
+332.		Anant Mulchandani	8887141729	Dehradun	Dehradun	B+
+333.		sandeep singh bisht	8006553180	Dehradun	Dehradun	B+
+334.		SANJAY	9412940312	Dehradun	Dehradun	B+
+335.		MANOJ KUMAR GUPTA	9720172109	Dehradun	Dehradun	B+
+336.		Manpreet Singh	9625131313	Dehradun	Dehradun	B+
+337.		javed ali	7017827610	Dehradun	Dehradun	B+
+338.		DAKSH	9149019626	Dehradun	Dehradun	B+
+339.		Navneeth Kumar Korlepara	7409218903	Dehradun	Dehradun	B+
+340.		sandeep	9458165232	Dehradun	Dehradun	B+
+341.		Sanjay Panwar	9897544038	Dehradun	Dehradun	B+
+342.		sanka rama venkata siva prasanna	8395012317	Dehradun	Dehradun	B+
+343.		Prashant Kumar	8755441186	Dehradun	Dehradun	B+
+344.		Himank Arora	9557663556	Dehradun	Dehradun	B+
+345.		Aditya Bhatkoti	9557015665	Dehradun	Dehradun	B+
+346.		Rishabhh sharmaa	9811401525	Dehradun	Dehradun	B+
+347.		Rajat Khatri	9997170745	Dehradun	Dehradun	B+
+348.		Ayushee minocha	9004187370	Dehradun	Dehradun	B+
+349.		Pranav Gupta	9897794107	Dehradun	Dehradun	B+
+350.		Naval Pant	8057204862	Dehradun	Dehradun	B+
+351.		Mohit Chawla	8938801014	Dehradun	Dehradun	B+
+352.		Pravesh rawat	9634041853	Dehradun	Dehradun	B+
+353.		Amarjot Singh kohli	9897098999	Dehradun	Dehradun	B+
+354.		Rajat Srivastava	9675379326	Dehradun	Dehradun	B+
+355.		Raja verma	9412348033	Dehradun	Dehradun	B+
+356.		RAJKUMAR	9654767581	Dehradun	Dehradun	B+
+357.		sanjay kumar	9557321412	Dehradun	Dehradun	B+
+358.		Sachin Panwar	9719943535	Dehradun	Dehradun	B+
+359.		Hariom	9634763221	Dehradun	Dehradun	B+
+360.		NAR BAHADUR THAPA	9359459168	Dehradun	Dehradun	B+
+361.		Shubham Arora	7417826111	Dehradun	Dehradun	B+
+362.		Jagdish bhalla	9675613076	Dehradun	Dehradun	B+
+363.		Ankit Kumar	6205774712	Dehradun	Dehradun	B+

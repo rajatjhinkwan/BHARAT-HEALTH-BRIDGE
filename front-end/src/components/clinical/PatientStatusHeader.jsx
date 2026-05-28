@@ -1,76 +1,83 @@
 import React from 'react';
-import { User, MapPin, Activity, Clock, ShieldCheck } from 'lucide-react';
+import { User, MapPin, ShieldCheck, Activity, Clock } from 'lucide-react';
 
 export default function PatientStatusHeader({ patient }) {
-  if (!patient) return null;
+  if (!patient?.name && !patient?.patientName) return null;
 
-  const getStatusColor = (status) => {
+  const displayName = patient.patientName || patient.name;
+  const statusColor = (status) => {
     switch (status) {
-      case 'CRITICAL': return 'var(--danger)';
-      case 'IN ICU': return 'var(--danger)';
-      case 'ON VENTILATOR': return '#991b1b';
-      case 'WAITING': return 'var(--warning)';
-      case 'STABLE': return 'var(--success)';
-      default: return 'var(--primary)';
+      case 'CRITICAL':
+      case 'IN ICU':
+        return 'var(--danger)';
+      case 'ON VENTILATOR':
+        return '#991b1b';
+      case 'WAITING':
+      case 'LAB PENDING':
+        return 'var(--warning)';
+      case 'DISCHARGED':
+        return 'var(--text-muted)';
+      default:
+        return 'var(--primary)';
     }
   };
 
   return (
     <div className="status-header no-print">
-      <div className="flex items-center gap-4">
-        <div style={{ width: 48, height: 48, background: 'var(--primary-light)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <User size={24} color="var(--primary)" />
+      <div className="status-header-patient">
+        <div className="status-header-avatar">
+          <User size={24} />
         </div>
         <div>
-          <h2 style={{ fontSize: '1.25rem', margin: 0 }}>{patient.patientName || patient.name}</h2>
-          <div className="flex items-center gap-2 text-[10px] font-black tracking-widest text-slate-400 uppercase">
-            <span>{patient.mrn}</span>
-            <span>•</span>
-            <span>{patient.gender} · {patient.age}y</span>
-          </div>
+          <h2 className="status-header-name">{displayName}</h2>
+          <p className="status-header-meta">
+            {patient.mrn}
+            {' · '}
+            {patient.gender}
+            {patient.age != null ? ` · ${patient.age}y` : ''}
+            {patient.tokenNumber ? ` · Token ${patient.tokenNumber}` : ''}
+          </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-8">
-        <div className="flex flex-col items-center">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status</span>
-          <div className="badge" style={{ background: getStatusColor(patient.currentStatus), color: 'white', border: 'none' }}>
-            {patient.currentStatus}
-          </div>
+      <div className="status-header-stats">
+        <div className="status-stat">
+          <span className="status-stat-label">Status</span>
+          <span
+            className="status-stat-badge"
+            style={{ background: statusColor(patient.currentStatus) }}
+          >
+            {patient.currentStatus || 'In consultation'}
+          </span>
         </div>
-
-        <div className="flex flex-col items-center">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Department</span>
-          <div className="flex items-center gap-1 font-bold text-sm">
-            <MapPin size={14} className="text-primary" />
+        <div className="status-stat">
+          <span className="status-stat-label">Department</span>
+          <span className="status-stat-value">
+            <MapPin size={14} />
             {patient.currentDepartment || patient.dept || 'OPD'}
-          </div>
+          </span>
         </div>
-
-        <div className="flex flex-col items-center">
-          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Assigned Doctor</span>
-          <div className="flex items-center gap-1 font-bold text-sm">
-            <ShieldCheck size={14} className="text-success" />
-            {patient.assignedDoctor || 'Dr. Aryan'}
-          </div>
+        <div className="status-stat">
+          <span className="status-stat-label">Doctor</span>
+          <span className="status-stat-value">
+            <ShieldCheck size={14} />
+            {patient.assignedDoctor || '—'}
+          </span>
         </div>
-
         {patient.currentBed && (
-          <div className="flex flex-col items-center">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Bed Number</span>
-            <div className="flex items-center gap-1 font-black text-sm text-danger">
+          <div className="status-stat">
+            <span className="status-stat-label">Bed</span>
+            <span className="status-stat-value status-stat-bed">
               <Activity size={14} />
               {patient.currentBed}
-            </div>
+            </span>
           </div>
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="workflow-step active">
-            <Clock size={14} />
-            ADMISSION TRACKED
-        </div>
+      <div className="status-header-track">
+        <Clock size={14} />
+        Live EMR session
       </div>
     </div>
   );

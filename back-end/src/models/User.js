@@ -14,11 +14,17 @@ const userSchema = new mongoose.Schema(
     gender: { type: String },
     specialization: { type: String },
     assignedWard: { type: String },
+    patientProfileId: { type: mongoose.Schema.Types.ObjectId, ref: 'Patient' },
     availabilityStatus: { 
       type: String, 
       enum: ['AVAILABLE', 'IN CONSULTATION', 'OFFLINE'],
       default: 'OFFLINE'
     },
+    healthCardImage: { type: String },
+    healthCardType: { type: String },
+    aadharCardId: { type: String },
+    aadharCardImage: { type: String },
+    organDonor: { type: Boolean, default: false },
   },
   { timestamps: true }
 )

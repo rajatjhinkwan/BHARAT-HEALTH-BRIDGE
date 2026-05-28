@@ -9,17 +9,31 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Colors } from '@/constants/theme';
 import { router } from 'expo-router';
 import PressableScale from '@/components/ui/PressableScale';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NotificationsScreen() {
     const scheme = useColorScheme() ?? 'light';
     const C = Colors[scheme];
+    const { user } = useAuth();
+
+    const notifications = user 
+        ? [
+            {
+                id: 'welcome',
+                title: 'Welcome to the Bharat Health Bridge app! Your digital health passport is active and secure.',
+                time: 'Just now',
+                unread: true,
+                type: 'info'
+            }
+          ]
+        : HOME_MOCK_DATA.notifications;
 
     return (
         <ScreenWrapper>
             <AppHeader title="Notifications" showBack={true} />
 
             <View style={styles.list}>
-                {HOME_MOCK_DATA.notifications.map((n, idx) => (
+                {notifications.map((n, idx) => (
                     <NotificationCard key={n.id} n={n} C={C} />
                 ))}
             </View>

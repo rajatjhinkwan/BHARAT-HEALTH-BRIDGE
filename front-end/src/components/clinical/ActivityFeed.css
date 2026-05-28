@@ -1,0 +1,110 @@
+.activity-feed-panel {
+  height: 100%;
+  min-height: 420px;
+}
+
+.activity-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: min(72vh, 720px);
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.activity-feed-item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--divider);
+  background: var(--surface-hover);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.activity-feed-item:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-feed-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 0.35rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.activity-feed-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.activity-feed-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.activity-feed-row strong {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.activity-feed-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.activity-feed-action {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.25rem;
+}
+
+.activity-feed-content p {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.activity-feed-by {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.activity-feed-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  background: var(--background);
+}
+
+.activity-feed-empty p {
+  margin: 0;
+  max-width: 320px;
+  font-size: 0.9rem;
+}

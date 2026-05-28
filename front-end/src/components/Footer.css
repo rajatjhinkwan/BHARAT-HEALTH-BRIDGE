@@ -1,0 +1,40 @@
+.site-footer {
+  background: var(--surface);
+  color: var(--text-muted);
+  padding: clamp(1.5rem, 4vw, 2rem);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.site-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 2rem;
+}
+
+.site-footer-copy {
+  margin-top: 0.5rem;
+  opacity: 0.75;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .site-footer-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

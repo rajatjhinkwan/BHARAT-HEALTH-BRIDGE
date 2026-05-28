@@ -16,7 +16,7 @@ const UnifiedDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen] = useState(true);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -62,6 +62,64 @@ const UnifiedDashboard = () => {
     return <span className={`badge ${roleData.color}`}>{roleData.label}</span>;
   };
 
+  const getSidebarItems = () => {
+    const items = [];
+    const role = (user.role || '').toLowerCase();
+    
+    items.push({
+      label: 'Dashboard',
+      icon: <LayoutDashboard size={20} />,
+      path: user.dashboard || '/doctor',
+      allowed: true
+    });
+
+    items.push({
+      label: 'Emergency',
+      icon: <Activity size={20} />,
+      path: '/emergency',
+      allowed: ['doctor', 'nurse', 'receptionist', 'admin', 'hospital_admin', 'super_admin'].includes(role)
+    });
+
+    items.push({
+      label: 'Clinical EMR',
+      icon: <Stethoscope size={20} />,
+      path: '/emr',
+      allowed: !!user.permissions?.canViewEMR
+    });
+
+    items.push({
+      label: 'Patient Queue',
+      icon: <ClipboardList size={20} />,
+      path: '/queue',
+      allowed: ['doctor', 'nurse', 'receptionist', 'admin', 'hospital_admin', 'super_admin'].includes(role)
+    });
+
+    items.push({
+      label: 'Lab Workspace',
+      icon: <Database size={20} />,
+      path: '/lab',
+      allowed: !!user.permissions?.canUploadLabReports
+    });
+
+    items.push({
+      label: 'Pharmacy Console',
+      icon: <Settings size={20} />,
+      path: '/pharmacy',
+      allowed: !!user.permissions?.canDispenseMeds
+    });
+
+    items.push({
+      label: 'Governance',
+      icon: <Database size={20} />,
+      path: '/governance',
+      allowed: !!user.permissions?.canViewAuditLogs
+    });
+
+    return items.filter(item => item.allowed);
+  };
+
+  const activePath = window.location.pathname;
+
   return (
     <div className="dashboard-shell">
       {/* Sidebar */}
@@ -73,36 +131,20 @@ const UnifiedDashboard = () => {
 
         <nav style={{ marginTop: '2.5rem' }}>
           <div className="nav-group">
-            <p className="nav-group-label">Command Center</p>
+            <p className="nav-group-label">Hospital Terminal</p>
             <ul className="sidebar-nav-list">
-              <li className="nav-item active">
-                <LayoutDashboard size={20} /> Dashboard
-              </li>
-              <li className="nav-item" onClick={() => navigate('/emergency')}>
-                <Activity size={20} /> Emergency
-              </li>
-              {user.role === 'doctor' && (
-                <li className="nav-item" onClick={() => navigate('/emr')}>
-                  <Stethoscope size={20} /> Clinical EMR
-                </li>
-              )}
-              {user.role === 'hospital_admin' && (
-                <li className="nav-item" onClick={() => navigate('/governance')}>
-                  <Database size={20} /> Governance
-                </li>
-              )}
-            </ul>
-          </div>
-
-          <div className="nav-group" style={{ marginTop: '2rem' }}>
-            <p className="nav-group-label">Operations</p>
-            <ul className="sidebar-nav-list">
-              <li className="nav-item" onClick={() => navigate('/queue')}>
-                <ClipboardList size={20} /> Patient Queue
-              </li>
-              <li className="nav-item">
-                <Users size={20} /> Staff Roster
-              </li>
+              {getSidebarItems().map((item, idx) => {
+                const isActive = activePath.startsWith(item.path);
+                return (
+                  <li 
+                    key={idx} 
+                    className={`nav-item ${isActive ? 'active' : ''}`} 
+                    onClick={() => navigate(item.path)}
+                  >
+                    {item.icon} {item.label}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </nav>

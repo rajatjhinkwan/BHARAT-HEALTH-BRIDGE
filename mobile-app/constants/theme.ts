@@ -20,7 +20,7 @@ export const Colors = {
     tabIconSelected: '#1E3A8A',
   },
   dark: {
-    primaryBlue: '#1E3A8A',
+    primaryBlue: '#3B82F6',
     secondarySaffron: '#FF9933',
     accentGreen: '#138808',
     emergencyRed: '#DC2626',

@@ -47,7 +47,7 @@ const seedBeds = async () => {
         await Bed.findOneAndUpdate(
             { id: b.id },
             { ...b },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         console.log(`Seeded bed: ${b.id}`);
     }

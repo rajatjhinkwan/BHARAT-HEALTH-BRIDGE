@@ -1,0 +1,263 @@
+/**
+ * EMR-only palette — neutral clinical (no purple/lavender fills)
+ */
+.emr-container {
+  --emr-slate-50: #f8fafc;
+  --emr-slate-100: #f1f5f9;
+  --emr-slate-200: #e2e8f0;
+  --emr-slate-300: #cbd5e1;
+  --emr-slate-600: #475569;
+  --emr-slate-800: #1e293b;
+  --emr-blue-600: #0ea5e9;
+  --emr-blue-50: rgba(14, 165, 233, 0.08);
+  --emr-green-600: #059669;
+  --emr-green-50: #ecfdf5;
+  --emr-red-600: #dc2626;
+  --emr-red-50: #fef2f2;
+  --emr-amber-600: #d97706;
+  --emr-amber-50: #fffbeb;
+}
+
+/* Cards — white / light gray only */
+.emr-container .patient-profile-card,
+.emr-container .critical-alerts-card,
+.emr-container .vitals-card,
+.emr-container .emr-middle-col,
+.emr-container .action-pad-card,
+.emr-container .medicine-writer-card,
+.emr-container .emr-service-orders-card {
+  background: #ffffff !important;
+  border: 1px solid var(--emr-slate-200) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-theme='dark'] .emr-container .patient-profile-card,
+[data-theme='dark'] .emr-container .critical-alerts-card,
+[data-theme='dark'] .emr-container .vitals-card,
+[data-theme='dark'] .emr-container .emr-middle-col,
+[data-theme='dark'] .emr-container .action-pad-card,
+[data-theme='dark'] .emr-container .medicine-writer-card,
+[data-theme='dark'] .emr-container .emr-service-orders-card {
+  background: var(--surface) !important;
+  border-color: var(--border-strong) !important;
+}
+
+/* Patient tags — neutral chips */
+.emr-container .patient-tag {
+  background: var(--emr-slate-100) !important;
+  color: var(--emr-slate-800) !important;
+  border: 1px solid var(--emr-slate-200);
+}
+
+[data-theme='dark'] .emr-container .patient-tag {
+  background: var(--surface-hover) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-strong);
+}
+
+/* Vitals — white tiles, no purple hover */
+.emr-container .vital-box {
+  background: var(--emr-slate-50) !important;
+  border: 1px solid var(--emr-slate-200) !important;
+}
+
+.emr-container .vital-box:hover {
+  background: #ffffff !important;
+  border-color: var(--emr-blue-600) !important;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+[data-theme='dark'] .emr-container .vital-box {
+  background: var(--input-bg) !important;
+}
+
+[data-theme='dark'] .emr-container .vital-box:hover {
+  background: var(--surface-hover) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Clinical movement — clean white card */
+.emr-container .critical-movement-card {
+  background: #ffffff !important;
+  border: 1px solid var(--emr-slate-200) !important;
+}
+
+.emr-container .patient-status-chip {
+  background: var(--emr-blue-50) !important;
+  color: var(--emr-blue-600) !important;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.emr-container .emergency-protocol-card {
+  background: var(--emr-red-50) !important;
+  border: 1px solid rgba(220, 38, 38, 0.25) !important;
+}
+
+/* Action buttons */
+.emr-container .er-action-btn {
+  background: #ffffff;
+  border: 1px solid var(--emr-slate-200);
+  color: var(--emr-slate-800);
+}
+
+.emr-container .er-action-btn:hover {
+  background: var(--emr-slate-50);
+  border-color: var(--emr-slate-300);
+  color: var(--emr-slate-800);
+}
+
+.emr-container .er-action-btn.primary-action {
+  background: var(--emr-blue-600);
+  border-color: var(--emr-blue-600);
+  color: #ffffff;
+}
+
+.emr-container .er-action-btn.primary-action:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff;
+}
+
+.emr-container .er-action-btn.followup-action {
+  background: var(--emr-green-50);
+  border-color: rgba(5, 150, 105, 0.35);
+  color: var(--emr-green-600);
+}
+
+.emr-container .er-action-btn.discharge {
+  background: var(--emr-red-50);
+  border-color: rgba(220, 38, 38, 0.35);
+  color: var(--emr-red-600);
+}
+
+/* Doctor action pad buttons */
+.emr-container .pad-btn {
+  background: #ffffff !important;
+  border: 1px solid var(--emr-slate-200) !important;
+}
+
+.emr-container .pad-btn:hover {
+  background: var(--emr-slate-50) !important;
+  border-color: var(--emr-blue-600) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.emr-container .pad-btn-icon {
+  background: var(--emr-slate-100) !important;
+  color: var(--emr-blue-600) !important;
+  border: 1px solid var(--emr-slate-200);
+}
+
+.emr-container .pad-btn:hover .pad-btn-icon {
+  background: var(--emr-blue-50) !important;
+  color: var(--emr-blue-600) !important;
+  transform: none;
+}
+
+.emr-container .pad-btn-icon.lab { background: #fdf2f8 !important; color: #db2777 !important; border-color: #fbcfe8; }
+.emr-container .pad-btn-icon.rad { background: var(--emr-blue-50) !important; color: var(--emr-blue-600) !important; }
+.emr-container .pad-btn-icon.surg { background: var(--emr-red-50) !important; color: var(--emr-red-600) !important; }
+.emr-container .pad-btn-icon.dial { background: #f0f9ff !important; color: #0284c7 !important; border-color: #bae6fd; }
+
+.emr-container .pad-btn-referral .pad-btn-icon {
+  background: var(--emr-amber-50) !important;
+  color: var(--emr-amber-600) !important;
+  border-color: #fde68a;
+}
+
+.emr-container .emr-see-next-inline {
+  background: var(--emr-blue-50) !important;
+  border: 1px dashed rgba(37, 99, 235, 0.35) !important;
+  color: var(--emr-blue-600) !important;
+}
+
+.emr-container .finalize-btn {
+  background: var(--emr-blue-600) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+}
+
+/* Fullscreen workspace */
+.action-pad-modal .workspace-immersive-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--emr-slate-200);
+}
+
+[data-theme='dark'] .action-pad-modal .workspace-immersive-header {
+  background: var(--surface-elevated);
+  border-color: var(--border-strong);
+}
+
+.action-pad-modal .workspace-nav-row {
+  background: var(--emr-slate-50);
+  border: 1px solid var(--emr-slate-200);
+}
+
+.action-pad-modal .workspace-tab-btn.active {
+  background: #ffffff;
+  color: var(--emr-blue-600);
+  border: 1px solid var(--emr-slate-200);
+}
+
+.action-pad-modal .workspace-main {
+  background: var(--emr-slate-100);
+}
+
+[data-theme='dark'] .action-pad-modal .workspace-main {
+  background: var(--background);
+}
+
+.action-pad-modal .input-panel,
+.action-pad-modal .canvas-header-tools {
+  background: #ffffff;
+  border-color: var(--emr-slate-200);
+}
+
+.action-pad-modal .finalize-session-btn {
+  background: var(--emr-blue-600);
+  color: #fff;
+  border: none;
+}
+
+.emr-ws-textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+}
+
+.emr-movement-hint {
+  font-size: 0.72rem;
+  color: var(--emr-slate-600);
+  line-height: 1.45;
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  background: var(--emr-slate-50);
+  border-radius: 8px;
+  border: 1px dashed var(--emr-slate-200);
+  text-align: center;
+}
+
+.emr-btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.emr-vitals-form-grid .span-2,
+.emr-followup-modal .span-2 {
+  grid-column: span 2;
+}
+
+.emr-form-hint {
+  font-size: 0.75rem;
+  color: var(--emr-slate-600);
+  margin: 0;
+}
+
+[data-theme='dark'] .emr-movement-hint {
+  background: var(--input-bg);
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}

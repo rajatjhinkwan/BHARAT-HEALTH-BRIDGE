@@ -1,17 +1,26 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { hasAnyRole, isOversightRole } from '../utils/roles';
 
-export default function ProtectedRoute({ allowedRoles }) {
-    const { user } = useAuth();
+export default function ProtectedRoute({ allowedRoles, requiredPermission }) {
+  const { user } = useAuth();
 
-    if (!user) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if (allowedRoles && !allowedRoles.map(r => r.toUpperCase()).includes(user.role.toUpperCase())) {
-        return <Navigate to="/unauthorized" replace />;
-    }
+  if (allowedRoles && !hasAnyRole(user.role, allowedRoles)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
 
-    return <Outlet />;
+  if (
+    requiredPermission &&
+    !isOversightRole(user.role) &&
+    !user.permissions?.[requiredPermission]
+  ) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return <Outlet />;
 }

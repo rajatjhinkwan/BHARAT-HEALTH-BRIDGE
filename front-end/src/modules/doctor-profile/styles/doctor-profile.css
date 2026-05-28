@@ -1,0 +1,746 @@
+/* Bharat Health Bridge — Doctor Profile Management System */
+
+.dhp-root {
+  --dhp-primary: #0ea5e9;
+  --dhp-primary-dark: #0284c7;
+  --dhp-cyan: #22d3ee;
+  --dhp-bg: #f0f9ff;
+  --dhp-surface: rgba(255, 255, 255, 0.85);
+  --dhp-glass: rgba(255, 255, 255, 0.65);
+  --dhp-border: rgba(14, 165, 233, 0.15);
+  --dhp-text: #0f172a;
+  --dhp-muted: #64748b;
+  --dhp-success: #10b981;
+  --dhp-warning: #f59e0b;
+  --dhp-danger: #ef4444;
+  --dhp-shadow: 0 8px 32px rgba(14, 165, 233, 0.12);
+  --dhp-radius: 20px;
+  --dhp-radius-sm: 12px;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--dhp-text);
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 40%, #f8fafc 100%);
+  padding: 1.5rem;
+}
+
+.dhp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dhp-header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--dhp-primary-dark), var(--dhp-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.dhp-header p {
+  color: var(--dhp-muted);
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.dhp-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--dhp-glass);
+  border: 1px solid var(--dhp-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+}
+
+.dhp-badge-live .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dhp-success);
+  animation: dhp-pulse 2s infinite;
+}
+
+@keyframes dhp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.dhp-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Profile Card Sidebar */
+.dhp-profile-card {
+  background: var(--dhp-surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--dhp-shadow);
+  text-align: center;
+  position: sticky;
+  top: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dhp-profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(14, 165, 233, 0.18);
+}
+
+.dhp-avatar-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 1.25rem;
+}
+
+.dhp-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25);
+}
+
+.dhp-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #bae6fd, #7dd3fc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: white;
+  border: 4px solid white;
+}
+
+.dhp-avatar-upload-btn {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--dhp-primary);
+  color: white;
+  border: 3px solid white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+}
+
+.dhp-avatar-upload-btn:hover {
+  transform: scale(1.1);
+  background: var(--dhp-primary-dark);
+}
+
+.dhp-upload-progress {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dhp-upload-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--dhp-primary), var(--dhp-cyan));
+  transition: width 0.2s;
+}
+
+.dhp-doctor-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+
+.dhp-specialization {
+  color: var(--dhp-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.dhp-hospital {
+  color: var(--dhp-muted);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.dhp-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.dhp-status-pill {
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dhp-status-pill.online { background: #d1fae5; color: #047857; }
+.dhp-status-pill.offline { background: #f1f5f9; color: #64748b; }
+.dhp-status-pill.busy { background: #fef3c7; color: #b45309; }
+.dhp-status-pill.emergency { background: #fee2e2; color: #b91c1c; }
+
+.dhp-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(135deg, #0ea5e9, #22d3ee);
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.dhp-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  text-align: left;
+}
+
+.dhp-meta-item {
+  background: rgba(14, 165, 233, 0.06);
+  border-radius: var(--dhp-radius-sm);
+  padding: 0.65rem 0.75rem;
+}
+
+.dhp-meta-item label {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--dhp-muted);
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.dhp-meta-item span {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Main content */
+.dhp-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dhp-nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--dhp-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius);
+}
+
+.dhp-nav-tab {
+  padding: 0.55rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: var(--dhp-radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dhp-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dhp-nav-tab:hover {
+  background: rgba(14, 165, 233, 0.08);
+  color: var(--dhp-primary);
+}
+
+.dhp-nav-tab.active {
+  background: linear-gradient(135deg, var(--dhp-primary), var(--dhp-cyan));
+  color: white;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+}
+
+.dhp-section-card {
+  background: var(--dhp-surface);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius);
+  padding: 1.75rem;
+  box-shadow: var(--dhp-shadow);
+}
+
+.dhp-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.dhp-section-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dhp-section-header h2 svg {
+  color: var(--dhp-primary);
+}
+
+.dhp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.dhp-form-grid.full {
+  grid-template-columns: 1fr;
+}
+
+.dhp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dhp-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.dhp-field label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dhp-muted);
+}
+
+.dhp-field input,
+.dhp-field select,
+.dhp-field textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius-sm);
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.dhp-field input:focus,
+.dhp-field select:focus,
+.dhp-field textarea:focus {
+  outline: none;
+  border-color: var(--dhp-primary);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.dhp-field input.error,
+.dhp-field textarea.error {
+  border-color: var(--dhp-danger);
+}
+
+.dhp-field-error {
+  font-size: 0.75rem;
+  color: var(--dhp-danger);
+}
+
+.dhp-char-count {
+  font-size: 0.7rem;
+  color: var(--dhp-muted);
+  text-align: right;
+}
+
+.dhp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  border: none;
+  border-radius: var(--dhp-radius-sm);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.dhp-btn-primary {
+  background: linear-gradient(135deg, var(--dhp-primary), var(--dhp-cyan));
+  color: white;
+  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+}
+
+.dhp-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
+}
+
+.dhp-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dhp-btn-ghost {
+  background: transparent;
+  color: var(--dhp-primary);
+  border: 1px solid var(--dhp-border);
+}
+
+.dhp-btn-ghost:hover {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+/* Toggle */
+.dhp-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--dhp-border);
+}
+
+.dhp-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.dhp-toggle-info h4 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+}
+
+.dhp-toggle-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--dhp-muted);
+}
+
+.dhp-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.dhp-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.dhp-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dhp-toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dhp-toggle input:checked + .dhp-toggle-slider {
+  background: linear-gradient(135deg, var(--dhp-primary), var(--dhp-cyan));
+}
+
+.dhp-toggle input:checked + .dhp-toggle-slider::before {
+  transform: translateX(24px);
+}
+
+/* Tags */
+.dhp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dhp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--dhp-primary-dark);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.dhp-tag button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--dhp-muted);
+  padding: 0;
+  line-height: 1;
+}
+
+/* Schedule */
+.dhp-schedule-day {
+  background: rgba(14, 165, 233, 0.04);
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius-sm);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.dhp-schedule-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.dhp-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.dhp-slot-row input[type="time"] {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--dhp-border);
+  border-radius: 8px;
+}
+
+/* Analytics */
+.dhp-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.dhp-analytics-card {
+  background: var(--dhp-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--dhp-border);
+  border-radius: var(--dhp-radius-sm);
+  padding: 1.25rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.dhp-analytics-card:hover {
+  transform: translateY(-3px);
+}
+
+.dhp-analytics-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--dhp-primary), var(--dhp-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dhp-analytics-label {
+  font-size: 0.75rem;
+  color: var(--dhp-muted);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* Documents */
+.dhp-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.dhp-doc-card {
+  border: 2px dashed var(--dhp-border);
+  border-radius: var(--dhp-radius-sm);
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: rgba(255,255,255,0.5);
+}
+
+.dhp-doc-card:hover {
+  border-color: var(--dhp-primary);
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.dhp-doc-card.uploaded {
+  border-style: solid;
+  border-color: var(--dhp-success);
+}
+
+.dhp-doc-preview {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* Skeleton */
+.dhp-skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: dhp-shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes dhp-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.dhp-skeleton-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+}
+
+/* Unsaved banner */
+.dhp-unsaved-banner {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+/* Activity timeline */
+.dhp-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dhp-timeline li {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--dhp-border);
+  font-size: 0.85rem;
+}
+
+.dhp-timeline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dhp-primary);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+/* Password strength */
+.dhp-password-strength {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.dhp-password-strength-fill {
+  height: 100%;
+  transition: width 0.3s, background 0.3s;
+}
+
+/* Drop zone */
+.dhp-dropzone {
+  border: 2px dashed var(--dhp-border);
+  border-radius: var(--dhp-radius-sm);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.dhp-dropzone.active {
+  border-color: var(--dhp-primary);
+  background: rgba(14, 165, 233, 0.08);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dhp-layout {
+    grid-template-columns: 1fr;
+  }
+  .dhp-profile-card {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .dhp-root {
+    padding: 1rem;
+  }
+  .dhp-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .dhp-nav-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dhp-nav-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}

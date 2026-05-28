@@ -1,7 +1,6 @@
 import React from 'react';
 import AppointmentList from '../../components/AppointmentList';
-import BillingTable from '../../components/BillingTable';
-import { User, Activity, FileText, Bell } from 'lucide-react';
+import { User, Activity, Bell } from 'lucide-react';
 
 export default function PatientDashboard() {
   const styles = {
@@ -95,11 +94,6 @@ export default function PatientDashboard() {
     { doctorName: 'Gupta', department: 'General', date: '2026-05-02', time: '14:30 PM', status: 'Pending' }
   ];
 
-  const myBills = [
-    { id: 'INV-2024-001', service: 'Cardiology Consultation', date: '2026-03-15', amount: '1200', status: 'Paid' },
-    { id: 'INV-2024-002', service: 'Blood Tests', date: '2026-03-18', amount: '450', status: 'Pending' }
-  ];
-
   return (
     <div style={styles.container} className="animate-fade-in-up">
       <div style={styles.header}>
@@ -142,12 +136,6 @@ export default function PatientDashboard() {
             </div>
           </div>
 
-          <div style={{ marginTop: '1rem' }}>
-            <h3 style={styles.sectionTitle}><FileText size={20} /> My Billing</h3>
-            <div style={{ marginTop: '1rem' }}>
-              <BillingTable bills={myBills} />
-            </div>
-          </div>
         </div>
 
         {/* Sidebar Area */}

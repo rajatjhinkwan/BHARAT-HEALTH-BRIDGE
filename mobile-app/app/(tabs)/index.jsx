@@ -1,26 +1,66 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { View, Animated, Easing, StyleSheet } from 'react-native';
+import { View, Animated, Easing, StyleSheet, Alert } from 'react-native';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import AppHeader from '@/components/ui/app-header';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';
 import { HOME_MOCK_DATA } from '@/constants/mockData';
 
-// Modular Components
 import GreetingSection from '@/components/home/GreetingSection';
 import EmergencyBanner from '@/components/home/EmergencyBanner';
 import QuickActions from '@/components/home/QuickActions';
 import ActionGrid from '@/components/home/ActionGrid';
-import ActiveVisitCard from '@/components/home/ActiveVisitCard';
 import { useAuth } from '@/context/AuthContext';
+import { usePatientRealtime } from '@/hooks/usePatientRealtime';
 
 export default function HomeScreen() {
   const scheme = useColorScheme() ?? 'light';
   const C = Colors[scheme];
-  const { user: authUser } = useAuth();
-  const displayUser = authUser || HOME_MOCK_DATA.user;
+  const { user: authUser, dashboard, patientProfileId, refreshDashboard } = useAuth();
+  const pId = patientProfileId || authUser?.patientProfileId;
 
-  // Entrance Animations State
+  const displayUser = useMemo(() => {
+    if (dashboard?.patient) {
+      return {
+        name: dashboard.patient.patientName || authUser?.name,
+        bloodGroup: dashboard.patient.bloodGroup || '—',
+        healthScore: 85,
+        location: 'Uttarakhand',
+        nextCheckup: dashboard.upcomingAppointments?.[0]
+          ? `${dashboard.upcomingAppointments[0].appointmentDate} ${dashboard.upcomingAppointments[0].appointmentTime}`
+          : 'No upcoming visit',
+      };
+    }
+    return authUser || HOME_MOCK_DATA.user;
+  }, [dashboard, authUser]);
+
+  const activeVisit = useMemo(() => {
+    const next = dashboard?.upcomingAppointments?.[0];
+    if (!next) return HOME_MOCK_DATA.activeVisit;
+    return {
+      hospital: next.doctorName ? `Appointment with ${next.doctorName}` : 'Upcoming OPD',
+      day: next.department || 'OPD',
+      bill: next.status || 'BOOKED',
+      progress: 0.2,
+      admissionDate: next.appointmentDate,
+      room: next.appointmentTime,
+      timeline: [
+        { time: next.appointmentTime, event: next.reason || 'Consultation', status: 'pending' },
+      ],
+    };
+  }, [dashboard]);
+
+  usePatientRealtime(pId, {
+    onPrescription: () => {
+      refreshDashboard();
+      Alert.alert('Prescription Ready', 'A new prescription from your doctor is available in History.');
+    },
+    onAppointment: () => {
+      refreshDashboard();
+      Alert.alert('Appointment Update', 'Your appointment status was updated.');
+    },
+  });
+
   const headerY = useRef(new Animated.Value(-50)).current;
   const headerOpacity = useRef(new Animated.Value(0)).current;
   const greetX = useRef(new Animated.Value(-30)).current;
@@ -33,7 +73,6 @@ export default function HomeScreen() {
   const progress = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Orchestrated Staggered Entrance
     Animated.sequence([
       Animated.delay(50),
       Animated.parallel([
@@ -57,7 +96,7 @@ export default function HomeScreen() {
           Animated.timing(a.o, { toValue: 1, duration: 300, useNativeDriver: true }),
         ])
       )),
-        Animated.spring(liveX, { toValue: 0, friction: 7, useNativeDriver: true }),
+      Animated.spring(liveX, { toValue: 0, friction: 7, useNativeDriver: true }),
     ]).start();
   }, []);
 
@@ -70,14 +109,13 @@ export default function HomeScreen() {
   return (
     <ScreenWrapper>
       <Animated.View style={{ transform: [{ translateY: headerY }], opacity: headerOpacity }}>
-        <AppHeader showBell bellBadge={3} />
+        <AppHeader showBell bellBadge={dashboard?.recentPrescriptions?.length || 0} />
       </Animated.View>
 
       <GreetingSection C={C} user={displayUser} entranceAnims={entranceAnims} />
       <EmergencyBanner C={C} entranceAnims={entranceAnims} />
       <QuickActions C={C} actions={HOME_MOCK_DATA.quickActions} />
       <ActionGrid C={C} gridAnims={gridAnims} />
-      <ActiveVisitCard C={C} visit={HOME_MOCK_DATA.activeVisit} entranceAnims={entranceAnims} />
     </ScreenWrapper>
   );
 }

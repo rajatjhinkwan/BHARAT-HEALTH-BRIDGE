@@ -25,7 +25,7 @@ export const NotificationProvider = ({ children }) => {
       {children}
       <div className="notification-container">
         {notifications.map(n => (
-          <div key={n.id} className="notification-toast no-print" style={{ 
+          <div key={n.id} className={`notification-toast no-print notification-toast--${n.type}`} style={{ 
             borderLeftColor: n.type === 'error' ? 'var(--danger)' : n.type === 'warning' ? 'var(--warning)' : n.type === 'success' ? 'var(--success)' : 'var(--primary)'
           }}>
             {n.type === 'success' && <CheckCircle className="text-success" size={20} />}
@@ -34,10 +34,10 @@ export const NotificationProvider = ({ children }) => {
             {n.type === 'info' && <Info className="text-primary" size={20} />}
             
             <div className="flex-1">
-              <p className="m-0 text-sm font-bold text-slate-700">{n.message}</p>
+              <p className="m-0 text-sm font-semibold notification-toast__message">{n.message}</p>
             </div>
             
-            <button onClick={() => removeNotification(n.id)} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-muted)', cursor: 'pointer' }}>
+            <button onClick={() => removeNotification(n.id)} className="notification-toast__close-btn" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
               <X size={16} />
             </button>
           </div>

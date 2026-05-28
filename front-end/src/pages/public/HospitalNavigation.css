@@ -1,0 +1,473 @@
+/* ==========================================================================
+   HOSPITAL WAYFINDER - GLASSMORPHIC INDOOR NAVIGATION STYLES
+   ========================================================================== */
+
+.nav-panel-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+@media (max-width: 1024px) {
+  .nav-panel-container {
+    grid-template-columns: 1fr;
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+}
+
+/* Glassmorphic Cards */
+.nav-glass-card {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme='dark'] .nav-glass-card {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+/* Floor Map Layout Area */
+.map-viewport-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+  background: var(--surface-hover);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  overflow: hidden;
+  padding: 1rem;
+}
+
+[data-theme='dark'] .map-viewport-wrapper {
+  background: #020617;
+  border-color: rgba(56, 189, 248, 0.15);
+}
+
+.map-svg-container {
+  width: 100%;
+  height: auto;
+  max-height: 580px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Interactive SVG Room Elements */
+.map-room-rect {
+  fill: var(--surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  transition: all 0.25s ease;
+}
+
+[data-theme='dark'] .map-room-rect {
+  fill: #0f172a;
+  stroke: #334155;
+}
+
+.map-room-rect:hover {
+  fill: var(--primary-light);
+  stroke: var(--primary);
+  filter: drop-shadow(0 0 8px rgba(14, 165, 233, 0.25));
+}
+
+.map-room-rect.is-start {
+  fill: rgba(16, 185, 129, 0.12);
+  stroke: var(--success);
+  stroke-width: 2.5;
+}
+
+.map-room-rect.is-destination {
+  fill: rgba(14, 165, 233, 0.15);
+  stroke: var(--primary);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.35));
+}
+
+/* Navigation route vector path line style (Glowing) */
+.glowing-route-line {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8 4;
+  animation: route-dash-flow 1.5s infinite linear, route-glow-pulse 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 6px var(--primary));
+}
+
+[data-theme='dark'] .glowing-route-line {
+  stroke: var(--secondary);
+  filter: drop-shadow(0 0 10px var(--secondary));
+}
+
+@keyframes route-dash-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@keyframes route-glow-pulse {
+  0%, 100% {
+    opacity: 0.9;
+    stroke-width: 4.5;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 6;
+  }
+}
+
+/* Doors in SVG floor plan */
+.door-line {
+  stroke: #f59e0b;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: all 0.2s ease;
+}
+
+.door-arc {
+  fill: none;
+  stroke: rgba(245, 158, 11, 0.4);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 2;
+}
+
+/* Exit Doors styling */
+.exit-door-node {
+  stroke: var(--danger);
+  stroke-width: 4;
+  animation: exit-pulse 1.6s infinite ease-in-out;
+}
+
+@keyframes exit-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    stroke-width: 4;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 6.5;
+    filter: drop-shadow(0 0 4px var(--danger));
+  }
+}
+
+/* User Simulated Position dot */
+.user-position-dot {
+  fill: var(--primary);
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 6px var(--primary));
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.user-pulse-ring {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+  animation: pulse-ring-expand 2s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pulse-ring-expand {
+  0% {
+    r: 6px;
+    opacity: 1;
+  }
+  100% {
+    r: 22px;
+    opacity: 0;
+  }
+}
+
+.user-direction-pointer {
+  fill: var(--primary);
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  transition: transform 0.25s ease;
+}
+
+/* Room name labels on map */
+.map-label {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  fill: var(--text-main);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.map-label-muted {
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  fill: var(--text-muted);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Direction Status Indicators (Right/Wrong) */
+.direction-indicator-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.direction-indicator-card.status-on-track {
+  background: var(--success-light);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: var(--success);
+  box-shadow: 0 4px 15px -4px rgba(16, 185, 129, 0.2);
+}
+
+.direction-indicator-card.status-wrong-way {
+  background: var(--danger-light);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+  animation: wrong-way-wobble 0.5s ease-in-out infinite alternate;
+  box-shadow: 0 4px 15px -4px rgba(239, 68, 68, 0.3);
+}
+
+.direction-indicator-card.status-drift {
+  background: var(--warning-light);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: var(--warning);
+  box-shadow: 0 4px 15px -4px rgba(245, 158, 11, 0.2);
+}
+
+@keyframes wrong-way-wobble {
+  0% { transform: translateX(-2px); }
+  100% { transform: translateX(2px); }
+}
+
+/* High Fidelity 3D Compass */
+.compass-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 0;
+  position: relative;
+}
+
+.guidance-compass {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  position: relative;
+  background: var(--surface-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme='dark'] .guidance-compass {
+  background: #020617;
+  border-color: #334155;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.compass-rose {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compass-card-label {
+  position: absolute;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.compass-label-n { top: 6px; left: 50%; transform: translateX(-50%); color: var(--danger); }
+.compass-label-s { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.compass-label-e { right: 8px; top: 50%; transform: translateY(-50%); }
+.compass-label-w { left: 8px; top: 50%; transform: translateY(-50%); }
+
+.guidance-needle {
+  width: 24px;
+  height: 90px;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guidance-needle-north {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 45px solid var(--danger);
+  position: absolute;
+  top: 0;
+}
+
+.guidance-needle-south {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 45px solid var(--text-muted);
+  position: absolute;
+  bottom: 0;
+}
+
+.compass-center-cap {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface-elevated);
+  border: 2px solid var(--border-strong);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+}
+
+/* Sidebar Layout Control Inputs */
+.search-controls-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-select-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Step list directions */
+.directions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.direction-step-card {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .direction-step-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.direction-step-card.step-active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.direction-step-card.step-completed {
+  opacity: 0.55;
+}
+
+/* Simulation Slider Dashboard Controls */
+.sim-controls-panel {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--divider);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sim-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sim-slider-input {
+  width: 100%;
+  height: 6px;
+  background: var(--divider);
+  border-radius: 4px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.sim-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  border: 2px solid #ffffff;
+  transition: background 0.15s;
+}
+
+.sim-slider-input::-webkit-slider-thumb:hover {
+  background: var(--primary-hover);
+}
+
+.sim-button-group {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.sim-btn {
+  flex: 1;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.navigation-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--divider);
+  width: 100%;
+}

@@ -23,7 +23,7 @@ const seed = async () => {
         await User.findOneAndUpdate(
             { employeeId: u.employeeId },
             { ...u, password: hashed },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         console.log(`Seeded user: ${u.employeeId}`);
     }

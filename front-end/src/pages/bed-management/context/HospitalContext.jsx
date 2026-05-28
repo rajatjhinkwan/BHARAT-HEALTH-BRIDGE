@@ -30,27 +30,79 @@ const initialBeds = [
 ];
 
 const initialPatients = [
-  { id: 'PT-001', name: 'John Doe', age: 45, gender: 'Male', diagnosis: 'Pneumonia', severity: 'Moderate', bedId: '101A', admissionDate: new Date(Date.now() - 86400000).toISOString() },
-  { id: 'PT-002', name: 'Jane Smith', age: 30, gender: 'Female', diagnosis: 'Post-op Recovery', severity: 'Critical', bedId: '201A', admissionDate: new Date(Date.now() - 172800000).toISOString() },
-  { id: 'PT-003', name: 'Emily Davis', age: 28, gender: 'Female', diagnosis: 'Labor', severity: 'Moderate', bedId: '301A', admissionDate: new Date().toISOString() },
-  { id: 'PT-004', name: 'Robert Fox', age: 52, gender: 'Male', diagnosis: 'Stroke', severity: 'Critical', bedId: '601A', admissionDate: new Date(Date.now() - 43200000).toISOString() },
-  { id: 'PT-005', name: 'Alice Wong', age: 60, gender: 'Female', diagnosis: 'Kidney Failure', severity: 'Moderate', bedId: '701A', admissionDate: new Date(Date.now() - 259200000).toISOString() },
-  { id: 'PT-006', name: 'David Lee', age: 35, gender: 'Male', diagnosis: 'Fracture', severity: 'Low', bedId: '801A', admissionDate: new Date(Date.now() - 86400000).toISOString() },
+  { id: 'PT-001', name: 'Arjun Mehta', age: 45, gender: 'Male', diagnosis: 'Pneumonia', severity: 'Moderate', bedId: '101A', admissionDate: new Date(Date.now() - 86400000).toISOString() },
+  { id: 'PT-002', name: 'Priya Iyer', age: 30, gender: 'Female', diagnosis: 'Post-op Recovery', severity: 'Critical', bedId: '201A', admissionDate: new Date(Date.now() - 172800000).toISOString() },
+  { id: 'PT-003', name: 'Kavita Devi', age: 28, gender: 'Female', diagnosis: 'Maternity', severity: 'Moderate', bedId: '301A', admissionDate: new Date().toISOString() },
+  { id: 'PT-004', name: 'Rohan Sharma', age: 52, gender: 'Male', diagnosis: 'Stroke', severity: 'Critical', bedId: '601A', admissionDate: new Date(Date.now() - 43200000).toISOString() },
+  { id: 'PT-005', name: 'Meera Reddy', age: 60, gender: 'Female', diagnosis: 'Kidney Failure', severity: 'Moderate', bedId: '701A', admissionDate: new Date(Date.now() - 259200000).toISOString() },
+  { id: 'PT-006', name: 'Vikram Singh', age: 35, gender: 'Male', diagnosis: 'Fracture', severity: 'Low', bedId: '801A', admissionDate: new Date(Date.now() - 86400000).toISOString() },
 ];
 
 const initialTransfers = [
-  { patientName: 'John Doe', fromBed: '401A', toBed: '101A', reason: 'Stabilized', date: new Date(Date.now() - 3600000).toISOString() },
-  { patientName: 'Jane Smith', fromBed: '102A', toBed: '201A', reason: 'Condition Worsened', date: new Date(Date.now() - 86400000).toISOString() },
-  { patientName: 'Robert Fox', fromBed: '402B', toBed: '601A', reason: 'Requires Neuro ICU', date: new Date(Date.now() - 2000000).toISOString() }
+  { patientName: 'Arjun Mehta', fromBed: '401A', toBed: '101A', reason: 'Stabilized', date: new Date(Date.now() - 3600000).toISOString() },
+  { patientName: 'Priya Iyer', fromBed: '102A', toBed: '201A', reason: 'Condition worsened', date: new Date(Date.now() - 86400000).toISOString() },
+  { patientName: 'Rohan Sharma', fromBed: '402B', toBed: '601A', reason: 'Neuro ICU required', date: new Date(Date.now() - 2000000).toISOString() }
 ];
+
+function mapApiBedToLocal(b) {
+  const statusMap = {
+    OCCUPIED: 'Occupied',
+    AVAILABLE: 'Available',
+    UNDER_MAINTENANCE: 'Maintenance',
+  };
+  return {
+    id: b.bedId,
+    ward: b.wardName,
+    type: /ICU/i.test(b.wardName) ? 'ICU' : 'General',
+    status: statusMap[b.status] || (b.occupied ? 'Occupied' : 'Available'),
+    floor: parseInt(b.roomNumber?.replace(/\D/g, '') || '1', 10) || 1,
+    equipment: [],
+    patientId: b.patientId?._id || b.patientId,
+    patientName: b.patientId?.patientName || null,
+  };
+}
 
 export const HospitalProvider = ({ children }) => {
   const [beds, setBeds] = useState(initialBeds);
   const [patients, setPatients] = useState(initialPatients);
   const [transfers, setTransfers] = useState(initialTransfers);
   const [alerts, setAlerts] = useState([]);
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
   const [activeWardView, setActiveWardView] = useState('All');
+
+  useEffect(() => {
+    const loadFromApi = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/beds`);
+        if (!res.ok) return;
+        const apiBeds = await res.json();
+        if (!apiBeds.length) return;
+
+        setBeds(apiBeds.map(mapApiBedToLocal));
+        const admitted = apiBeds
+          .filter((b) => b.occupied && b.patientId)
+          .map((b) => ({
+            id: b.patientId?._id?.toString() || b.patientId?.toString(),
+            name: b.patientId?.patientName || 'Patient',
+            age: 40,
+            gender: 'Unknown',
+            diagnosis: 'Admitted',
+            severity: 'Moderate',
+            bedId: b.bedId,
+            admissionDate: b.updatedAt || new Date().toISOString(),
+          }));
+        if (admitted.length) setPatients(admitted);
+        setIsConnected(true);
+        setAlerts((prev) => [
+          { id: Date.now(), message: 'Synced with hospital bed database', type: 'success', time: new Date().toISOString() },
+          ...prev,
+        ].slice(0, 6));
+      } catch {
+        setIsConnected(false);
+      }
+    };
+    loadFromApi();
+  }, []);
 
   // Compute visible subsets based on active role/ward
   const visibleBeds = activeWardView === 'All' ? beds : beds.filter(b => b.ward === activeWardView);

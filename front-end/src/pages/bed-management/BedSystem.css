@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
-:root {
+.bed-system {
   /* Premium Slate/Indigo Palette */
-  --primary:        #6366f1;
-  --primary-light:  #818cf8;
-  --primary-dark:   #4f46e5;
+  --primary:        #2563eb;
+  --primary-light:  #1d4ed8;
+  --primary-dark:   #1e3a8a;
   --success:        #10b981;
   --success-light:  #34d399;
   --warning:        #f59e0b;

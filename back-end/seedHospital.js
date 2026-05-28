@@ -7,47 +7,29 @@ import Bed from './src/models/Bed.js';
 import PatientQueue from './src/models/PatientQueue.js';
 import EmergencyCase from './src/models/EmergencyCase.js';
 import QueueNode from './src/models/QueueNode.js';
+import { STAFF_REGISTRY } from './src/lib/staffRegistry.js';
 
 dotenv.config();
 
 const wards = [
-  'GENERAL MEDICINE', 'CARDIOLOGY', 'NEUROLOGY', 'NEPHROLOGY', 'ORTHOPEDICS',
-  'ENT', 'DERMATOLOGY', 'PEDIATRICS', 'GYNECOLOGY', 'PSYCHIATRY',
-  'RADIOLOGY', 'ONCOLOGY', 'PULMONOLOGY', 'UROLOGY', 'GASTROENTEROLOGY',
-  'ENDOCRINOLOGY', 'OPHTHALMOLOGY', 'EMERGENCY', 'ICU', 'VENTILATOR WARD',
-  'TRAUMA WARD', 'SURGERY WARD', 'PATHOLOGY', 'LABORATORY', 'PHARMACY'
+  'General Medicine', 'Cardiology', 'Neurology', 'Nephrology', 'Orthopedics',
+  'ENT', 'Dermatology', 'Pediatrics', 'Gynecology', 'Psychiatry',
+  'Radiology', 'Oncology', 'Pulmonology', 'Urology', 'Gastroenterology',
+  'Endocrinology', 'Ophthalmology', 'Emergency', 'ICU', 'Ventilator Ward',
+  'Trauma Ward', 'Surgery Ward'
 ];
 
 const patientNames = [
   'Arjun Mehta', 'Priya Iyer', 'Rohan Sharma', 'Ananya Gupta', 'Vikram Singh',
   'Sanya Malhotra', 'Kabir Das', 'Isha Verma', 'Aditya Roy', 'Riya Sen',
-  'Siddharth Jain', 'Kavita Devi', 'Rahul Nair', 'Meera Reddy', 'Amitabh Bacchan',
-  'Deepika Padukone', 'Ranveer Singh', 'Alia Bhatt', 'Varun Dhawan', 'Shraddha Kapoor',
-  'Suresh Raina', 'Mahendra Singh', 'Virat Kohli', 'Rohit Sharma', 'Hardik Pandya',
-  'Sunil Chhetri', 'Mary Kom', 'P.V. Sindhu', 'Neeraj Chopra', 'Saina Nehwal',
-  'Rajesh Khanna', 'Hema Malini', 'Amit Trivedi', 'Arijit Singh', 'Shreya Ghoshal',
-  'Narendra Modi', 'Rahul Gandhi', 'Arvind Kejriwal', 'Mamata Banerjee', 'Yogi Adityanath',
-  'Elon Musk', 'Jeff Bezos', 'Bill Gates', 'Mark Zuckerberg', 'Steve Jobs',
-  'Ratan Tata', 'Mukesh Ambani', 'Anand Mahindra', 'Gautam Adani', 'Azim Premji',
-  'Nelson Mandela', 'Barack Obama', 'Angela Merkel', 'Justin Trudeau', 'Jacinda Ardern',
-  'Lionel Messi', 'Cristiano Ronaldo', 'Neymar Jr', 'Kylian Mbappe', 'Luka Modric',
-  'Roger Federer', 'Rafael Nadal', 'Novak Djokovic', 'Serena Williams', 'Maria Sharapova',
-  'Albert Einstein', 'Isaac Newton', 'Nikola Tesla', 'Marie Curie', 'Charles Darwin',
-  'William Shakespeare', 'Leonardo da Vinci', 'Pablo Picasso', 'Vincent van Gogh', 'Michelangelo',
-  'Sherlock Holmes', 'Harry Potter', 'Tony Stark', 'Bruce Wayne', 'Peter Parker',
-  'Clark Kent', 'Diana Prince', 'Wanda Maximoff', 'Natasha Romanoff', 'Steve Rogers',
-  'James Bond', 'Indiana Jones', 'Jack Sparrow', 'Ellen Ripley', 'Sarah Connor'
-];
-
-const doctorNames = [
-  'Dr. A.K. Bansal', 'Dr. S. Mukherjee', 'Dr. V. Kurien', 'Dr. N. Sethi', 'Dr. P. Hegde',
-  'Dr. R. Marwah', 'Dr. J. Dsouza', 'Dr. K. Mittal', 'Dr. S. Rao', 'Dr. L. Fernandez',
-  'Dr. M. Chawla', 'Dr. G. Reddy', 'Dr. T. Singh', 'Dr. B. Patel', 'Dr. D. Gupta'
-];
-
-const nurseNames = [
-  'Sister Mary', 'Nurse Kavita', 'Sister Lucy', 'Nurse Priya', 'Sister Reena',
-  'Nurse Sneha', 'Sister Ancy', 'Nurse Deepa', 'Sister Mini', 'Nurse Shiny'
+  'Siddharth Jain', 'Kavita Devi', 'Rahul Nair', 'Meera Reddy', 'Suresh Pillai',
+  'Deepa Menon', 'Rajesh Khurana', 'Alka Sharma', 'Varun Desai', 'Shraddha Joshi',
+  'Sunil Chhetri', 'P.V. Sindhu', 'Neeraj Chopra', 'Manish Gupta', 'Pooja Verma',
+  'Ratan Singh', 'Mukesh Yadav', 'Anand Rao', 'Gautam Patel', 'Azim Khan',
+  'Lakshmi Devi', 'Harish Nambiar', 'Geeta Reddy', 'Sanjay Malhotra', 'Nirmala Iyer',
+  'Amit Verma', 'Sunita Devi', 'Ramesh Chandra', 'Usha Pillai', 'Vijay Kumar',
+  'Preeti Singh', 'Mohit Sharma', 'Divya Nair', 'Kiran Patel', 'Ashok Mehta',
+  'Rekha Devi', 'Suresh Babu', 'Lata Menon', 'Gopal Iyer', 'Hari Prasad',
 ];
 
 const generateMRN = () => `MRN-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -69,19 +51,37 @@ const seed = async () => {
 
     const hashedPassword = await bcrypt.hash('password123', 10);
 
-    // Create Admin and Reception
+    // Create Admin, Reception, Lab and Pharmacy
     await User.create({
       name: 'Super Admin',
       email: 'admin@hospital.com',
+      employeeId: 'SAD-123',
       password: hashedPassword,
       role: 'ADMIN'
     });
 
     await User.create({
-      name: 'Main Reception',
+      name: 'Main Receptionist',
       email: 'reception@hospital.com',
+      employeeId: 'REC-123',
       password: hashedPassword,
       role: 'RECEPTIONIST'
+    });
+
+    await User.create({
+      name: 'Chief Lab Technician',
+      email: 'lab@hospital.com',
+      employeeId: 'LAB-123',
+      password: hashedPassword,
+      role: 'LAB_TECH'
+    });
+
+    await User.create({
+      name: 'Chief Pharmacist',
+      email: 'pharmacy@hospital.com',
+      employeeId: 'PHA-123',
+      password: hashedPassword,
+      role: 'PHARMACIST'
     });
 
     let patientIndex = 0;
@@ -91,23 +91,30 @@ const seed = async () => {
       const wardPrefix = ward.substring(0, 3).toUpperCase().replace(/\s/g, '');
       console.log(`Seeding Ward: ${ward}...`);
 
-      // 1. Create Ward Staff
-      const drName = doctorNames[i % doctorNames.length];
-      const nurseName = nurseNames[i % nurseNames.length];
+      // Look up doctor and nurse from STAFF_REGISTRY
+      const regDoc = STAFF_REGISTRY.find(s => s.role === 'doctor' && s.department === ward);
+      const regNurse = STAFF_REGISTRY.find(s => s.role === 'nurse' && s.department === ward);
 
+      if (!regDoc || !regNurse) {
+        throw new Error(`Doctor or nurse not found in staff registry for department: ${ward}`);
+      }
+
+      // 1. Create Ward Staff
       const doctor = await User.create({
-        name: drName,
+        name: regDoc.name,
         email: `${ward.toLowerCase().replace(/\s/g, '_')}_doctor@hospital.com`,
+        employeeId: regDoc.employeeId,
         password: hashedPassword,
         role: 'DOCTOR',
         department: ward,
-        specialization: `${ward} Specialist`,
+        specialization: regDoc.specialization || `${ward} Specialist`,
         availabilityStatus: 'AVAILABLE'
       });
 
       const nurse = await User.create({
-        name: nurseName,
+        name: regNurse.name,
         email: `${ward.toLowerCase().replace(/\s/g, '_')}_nurse@hospital.com`,
+        employeeId: regNurse.employeeId,
         password: hashedPassword,
         role: 'NURSE',
         department: ward,

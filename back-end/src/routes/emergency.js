@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { EmergencyCase } from '../models/index.js';
+import mongoose from 'mongoose';
+import { EmergencyCase, QueueNode } from '../models/index.js';
+import { normalizeDepartment } from '../lib/departments.js';
+import { emitQueueUpdated, todayDateString } from '../lib/queueHelpers.js';
+import { escapeRegExp } from '../lib/regexHelpers.js';
 
 const router = Router();
 
@@ -16,25 +20,84 @@ const doctorMapping = {
 // Create New Emergency Case
 router.post('/', async (req, res) => {
     try {
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                error: 'Database unavailable',
+                message: 'MongoDB is not connected',
+            });
+        }
+
+        const {
+            patientName,
+            age,
+            gender,
+            emergencyType,
+            condition,
+            priority,
+            phone,
+            relativeName,
+        } = req.body;
+
+        if (!patientName || age === '' || !gender || !emergencyType || !priority) {
+            return res.status(400).json({
+                error: 'patientName, age, gender, emergencyType, and priority are required',
+            });
+        }
+
+        const ageNum = Number(age);
+        if (Number.isNaN(ageNum)) {
+            return res.status(400).json({ error: 'Age must be a number' });
+        }
+
         const count = await EmergencyCase.countDocuments();
         const year = new Date().getFullYear();
         const caseId = `ER-${year}-${(count + 1).toString().padStart(4, '0')}`;
 
-        const { emergencyType } = req.body;
         const assignedDoctor = doctorMapping[emergencyType] || 'General Physician';
 
         const newCase = new EmergencyCase({
-            ...req.body,
+            patientName,
+            age: ageNum,
+            gender,
+            emergencyType,
+            condition: condition || '',
+            priority,
+            phone: phone || '',
+            relativeName: relativeName || '',
             caseId,
             assignedDoctor,
-            currentStatus: 'WAITING'
+            assignedDepartment: 'Emergency',
+            currentStatus: 'WAITING',
         });
 
         await newCase.save();
-        req.app.get('io').emit('emergencyUpdated');
-        res.status(201).json(newCase);
+
+        const today = todayDateString();
+        const erDept = normalizeDepartment('Emergency');
+        const erCount = await QueueNode.countDocuments({ department: erDept, date: today });
+        const erToken = `EMERG-${(erCount + 1).toString().padStart(3, '0')}`;
+
+        await QueueNode.create({
+            queueId: `Q-ER-${Date.now()}`,
+            tokenNumber: erToken,
+            patientName: newCase.patientName,
+            mrn: caseId,
+            patientId: newCase._id,
+            date: today,
+            time: new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
+            doctor: 'TBD',
+            department: erDept,
+            status: 'WAITING',
+            priorityLevel: priority === 'Critical' ? 'CRITICAL' : priority === 'Serious' ? 'HIGH' : 'MEDIUM',
+            symptoms: condition || emergencyType,
+        });
+
+        emitQueueUpdated(req, erDept);
+        req.app.get('io')?.emit('emergencyUpdated');
+        res.status(201).json({ ...newCase.toObject(), erToken });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        console.error('Emergency registration error:', err);
+        res.status(400).json({ error: err.message, message: 'Emergency registration failed' });
     }
 });
 
@@ -58,6 +121,8 @@ router.patch('/:id/status', async (req, res) => {
         erCase.currentStatus = status;
         await erCase.save();
 
+        let linkedPatientId = null;
+
         // If status is ADMITTED, IN ICU, or ON VENTILATOR, create a Patient record and assign a bed
         if (['ADMITTED', 'IN ICU', 'ON VENTILATOR'].includes(status)) {
             const { Patient } = await import('../models/index.js');
@@ -76,7 +141,7 @@ router.patch('/:id/status', async (req, res) => {
                     address: 'Emergency Admission',
                     aadharCardId: 'ER-' + Date.now(),
                     dob: 'Unknown',
-                    currentDepartment: 'EMERGENCY',
+                    currentDepartment: 'Emergency',
                     currentStatus: status,
                     assignedDoctor: erCase.assignedDoctor,
                     priority: erCase.priority === 'Critical' ? 'CRITICAL' : 'HIGH',
@@ -94,13 +159,14 @@ router.patch('/:id/status', async (req, res) => {
                         details: `Emergency case ${erCase.caseId} transitioned to admission.`
                     }]
                 });
+                await patient.save();
             }
 
             // Find a bed in the target ward
             const targetWard = status === 'IN ICU' ? 'ICU' : 
                                status === 'ON VENTILATOR' ? 'Ventilator Ward' : 'General Ward';
             
-            const bed = await Bed.findOne({ wardName: { $regex: new RegExp(`^${targetWard}$`, 'i') }, occupied: false });
+            const bed = await Bed.findOne({ wardName: { $regex: new RegExp(`^${escapeRegExp(targetWard)}$`, 'i') }, occupied: false });
             if (bed) {
                 bed.occupied = true;
                 bed.patientId = patient._id;
@@ -114,11 +180,12 @@ router.patch('/:id/status', async (req, res) => {
             }
 
             await patient.save();
+            linkedPatientId = patient._id;
         }
 
         req.app.get('io').emit('emergencyUpdated');
         req.app.get('io').emit('criticalUpdate', { type: 'emergency_admission' });
-        res.json(erCase);
+        res.json({ ...erCase.toObject(), linkedPatientId });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
@@ -130,7 +197,7 @@ router.patch('/:id/vitals', async (req, res) => {
         const updatedCase = await EmergencyCase.findByIdAndUpdate(
             req.params.id,
             { $set: { vitals: req.body } },
-            { new: true }
+            { returnDocument: 'after' }
         );
         res.json(updatedCase);
     } catch (err) {
@@ -178,7 +245,7 @@ router.get('/seed-emergency', async (req, res) => {
             await EmergencyCase.findOneAndUpdate(
                 { caseId: c.caseId },
                 c,
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
         res.json({ ok: true, message: 'Emergency cases seeded successfully' });

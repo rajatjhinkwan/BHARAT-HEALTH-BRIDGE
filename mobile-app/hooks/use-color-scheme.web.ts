@@ -1,3 +1,11 @@
+import { useTheme } from '@/context/ThemeContext';
+
 export function useColorScheme() {
-  return 'light';
+  try {
+    const { theme } = useTheme();
+    return theme;
+  } catch (e) {
+    return 'light';
+  }
 }
+

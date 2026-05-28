@@ -243,7 +243,7 @@ export default function TriageDashboard() {
                   type="text" 
                   style={styles.input} 
                   required
-                  placeholder="e.g. Unknown Male or John Doe"
+                  placeholder="e.g. Unknown Male or Rajesh Kumar"
                   value={newPatient.name}
                   onChange={(e) => setNewPatient({...newPatient, name: e.target.value})}
                 />

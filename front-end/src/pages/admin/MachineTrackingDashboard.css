@@ -1,0 +1,76 @@
+.mtd-page .mtd-card {
+  background: linear-gradient(165deg, var(--surface) 0%, var(--surface-hover) 100%);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mtd-page .mtd-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, var(--primary-light), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+
+.mtd-page .mtd-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.mtd-page .mtd-card:hover::after {
+  opacity: 1;
+}
+
+.mtd-page .mtd-stat-card {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.mtd-page .mtd-dept-tab {
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+}
+
+.mtd-page .mtd-status-badge {
+  font-size: 0.68rem !important;
+  letter-spacing: 0.04em;
+}
+
+.mtd-page .mtd-card-title {
+  font-size: 1.02rem !important;
+  line-height: 1.3;
+}
+
+.mtd-page .mtd-uptime-track {
+  height: 6px !important;
+  border-radius: 999px !important;
+  background: var(--divider) !important;
+}
+
+.mtd-page .mtd-uptime-bar {
+  border-radius: 999px !important;
+}
+
+.mtd-page .mtd-modal {
+  border-radius: 20px !important;
+}
+
+.mtd-page .mtd-grid {
+  gap: 1rem !important;
+}
+
+@media (max-width: 768px) {
+  .mtd-page .mtd-stats-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

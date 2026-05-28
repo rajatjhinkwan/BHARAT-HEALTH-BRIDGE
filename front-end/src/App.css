@@ -1,5 +1,9 @@
 /* App-specific styles */
 
+.app-main-content {
+  padding-inline: clamp(0.5rem, 3vw, 1.5rem);
+}
+
 .mobile-toggle {
   display: none;
 }

@@ -11,7 +11,6 @@ import DoctorDashboard from './pages/clinical/DoctorDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import LabDashboard from './pages/services/LabDashboard';
 import PharmacyDashboard from './pages/services/PharmacyDashboard';
-import InventoryManagement from './pages/services/InventoryManagement';
 import TriageDashboard from './pages/emergency/TriageDashboard';
 import QueueDashboard from './pages/reception/QueueDashboard';
 import ElectronicMedicalRecord from './pages/clinical/ElectronicMedicalRecord';
@@ -36,9 +35,18 @@ import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LiveHospitalFeed from './pages/clinical/LiveHospitalFeed';
 import Profile from './pages/clinical/Profile';
+import { DoctorProfilePage } from './modules/doctor-profile';
+import HospitalList from './pages/public/HospitalList';
+import HospitalNavigation from './pages/public/HospitalNavigation';
+import PatientPortal from './pages/patient/PatientPortal';
+import PatientLogin from './pages/patient/PatientLogin';
+import PatientSettings from './pages/patient/PatientSettings';
+import PatientHistory from './pages/patient/PatientHistory';
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalSearch from './components/clinical/GlobalSearch';
 import React, { useState } from 'react';
+import ErrorBoundary from './components/ErrorBoundary';
+import NotFound from './pages/public/NotFound';
 import './App.css';
 
 const Unauthorized = () => (
@@ -77,60 +85,77 @@ function App() {
 
   return (
     <ThemeProvider>
-      <NotificationProvider>
+      <Router>
         <AuthProvider>
-          <Router>
-            {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
-            <div style={styles.appContainer}>
-              <NavbarWrapper onSearch={() => setShowSearch(true)} />
-             <div style={styles.mainContent}>
-               <Routes>
+          <NotificationProvider>
+            <ErrorBoundary>
+              {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
+              <div style={styles.appContainer}>
+                <NavbarWrapper onSearch={() => setShowSearch(true)} />
+                <div style={styles.mainContent} className="app-main-content">
+                  <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/hospitals" element={<HospitalList />} />
+              <Route path="/hospital-navigation" element={<HospitalNavigation />} />
+              <Route path="/patient-login" element={<PatientLogin />} />
+              <Route path="/patient" element={<PatientPortal />} />
+              <Route path="/patient-settings" element={<PatientSettings />} />
+              <Route path="/patient-history" element={<PatientHistory />} />
+              <Route path="/premium" element={<Navigate to="/doctor" replace />} />
+              <Route path="/billing" element={<Navigate to="/admin" replace />} />
 
               {/* Role-Based Protected Routes */}
-              <Route element={<ProtectedRoute allowedRoles={['doctor', 'medical_director', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'medical_director', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/doctor" element={<DoctorDashboard />} />
+                <Route path="/doctor/profile" element={<DoctorProfilePage />} />
                 <Route path="/triage" element={<TriageDashboard />} />
+              </Route>
+
+              <Route element={<ProtectedRoute requiredPermission="canViewEMR" />}>
                 <Route path="/emr" element={<ElectronicMedicalRecord />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['receptionist', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['receptionist', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/reception" element={<ReceptionDashboard />} />
                 <Route path="/register" element={<ReceptionDashboard />} />
                 <Route path="/register-patient" element={<OPDRegistration />} />
                 <Route path="/schedule" element={<BookAppointment />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['admin', 'hospital_admin', 'super_admin', 'receptionist', 'nurse', 'doctor']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['admin', 'ADMIN', 'hospital_admin', 'super_admin', 'receptionist', 'nurse', 'doctor']} />}>
                 <Route path="/queue" element={<QueueDashboard />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['lab_tech', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute requiredPermission="canUploadLabReports" />}>
                 <Route path="/lab" element={<LabDashboard />} />
                 <Route path="/bloodbank" element={<BloodBank />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['pharmacist', 'pharmacy_manager', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute requiredPermission="canUploadRadiologyReports" />}>
+                <Route path="/radiology" element={<RadiologyDashboard />} />
+              </Route>
+
+              <Route element={<ProtectedRoute requiredPermission="canDispenseMeds" />}>
                 <Route path="/pharmacy" element={<PharmacyDashboard />} />
-                <Route path="/inventory" element={<InventoryManagement />} />
+                <Route path="/inventory" element={<PharmacyDashboard />} />
               </Route>
 
 
-              <Route element={<ProtectedRoute allowedRoles={['nurse', 'NURSE', 'doctor', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['nurse', 'NURSE', 'doctor', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/nurse" element={<WardDashboard />} />
                 <Route path="/nurse-station" element={<NurseStation />} />
                 <Route path="/beds/*" element={<BedSystemLayout />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['hr', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['hr', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/hr" element={<HRDashboard />} />
                 <Route path="/shifts" element={<StaffShifts />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={['hospital_admin', 'super_admin', 'medical_director']} />}>
+              <Route element={<ProtectedRoute requiredPermission="canViewAuditLogs" />}>
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/governance" element={<UHGSContainer />} />
                 <Route path="/hierarchy" element={<EmployeeHierarchy />} />
@@ -138,37 +163,43 @@ function App() {
                 <Route path="/dept-queue" element={<DepartmentalQueue />} />
               </Route>
               
-              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'admin', 'hospital_admin', 'super_admin', 'lab_tech', 'pharmacist']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'admin', 'ADMIN', 'hospital_admin', 'super_admin', 'lab_tech', 'pharmacist']} />}>
                 <Route path="/profile" element={<Profile />} />
               </Route>
               
-              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/emergency" element={<EmergencyDashboard />} />
                 <Route path="/emergency/boards" element={<EmergencyBoards />} />
               </Route>
 
               {/* Critical Care Routes */}
-              <Route element={<ProtectedRoute allowedRoles={['ICU_STAFF', 'DOCTOR', 'ADMIN', 'HOSPITAL_ADMIN']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'hospital_admin', 'super_admin', 'medical_director', 'ICU_STAFF', 'DOCTOR', 'ADMIN', 'HOSPITAL_ADMIN']} />}>
                 <Route path="/icu" element={<ICUDashboard />} />
               </Route>
-              <Route element={<ProtectedRoute allowedRoles={['VENTILATOR_STAFF', 'DOCTOR', 'ADMIN', 'HOSPITAL_ADMIN']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'hospital_admin', 'super_admin', 'medical_director', 'VENTILATOR_STAFF', 'DOCTOR', 'ADMIN', 'HOSPITAL_ADMIN']} />}>
                 <Route path="/ventilator" element={<VentilatorDashboard />} />
               </Route>
 
               {/* Service Dashboards */}
-              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'hospital_admin', 'super_admin']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/live-feed" element={<LiveHospitalFeed />} />
-                <Route path="/radiology" element={<RadiologyDashboard />} />
+              </Route>
+
+              <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>
                 <Route path="/surgery" element={<SurgeryDashboard />} />
                 <Route path="/sessions" element={<SpecializedSessionDashboard />} />
               </Route>
+              
+              {/* Catch-all 404 Route */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
           <FooterWrapper />
         </div>
-          </Router>
+            </ErrorBoundary>
+          </NotificationProvider>
         </AuthProvider>
-      </NotificationProvider>
+      </Router>
     </ThemeProvider>
   );
 }

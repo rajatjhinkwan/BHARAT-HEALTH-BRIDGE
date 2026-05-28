@@ -12,28 +12,24 @@ const patientSchema = new mongoose.Schema(
     email: { type: String },
     address: { type: String, required: true },
     aadharCardId: { type: String, required: true },
+    uniqueToken: { type: String, unique: true, sparse: true },
     emergencyContactName: { type: String },
     emergencyContactPhone: { type: String },
     allergies: { type: String },
     chronicIllness: { type: String },
     profileImage: { type: String },
+    healthCardImage: { type: String },
+    healthCardType: { type: String },
+    aadharCardImage: { type: String },
     insuranceProvider: { type: String },
     policyNumber: { type: String },
     symptoms: { type: String },
+    organDonor: { type: Boolean, default: false },
     
     // Critical Care & Movement Logic
-    currentDepartment: { 
-      type: String, 
-      enum: [
-        'RECEPTION', 'OPD', 'GENERAL MEDICINE', 'CARDIOLOGY', 'NEUROLOGY', 
-        'NEPHROLOGY', 'ORTHOPEDICS', 'ENT', 'DERMATOLOGY', 'PEDIATRICS', 
-        'GYNECOLOGY', 'PSYCHIATRY', 'RADIOLOGY', 'ONCOLOGY', 'PULMONOLOGY', 
-        'UROLOGY', 'GASTROENTEROLOGY', 'ENDOCRINOLOGY', 'OPHTHALMOLOGY', 
-        'EMERGENCY', 'ICU', 'VENTILATOR WARD', 'TRAUMA CARE', 'SURGERY WARD', 
-        'PATHOLOGY', 'LABORATORY', 'PHARMACY', 'HDU', 'TRAUMA WARD', 'GENERAL WARD',
-        'DISCHARGED'
-      ],
-      default: 'OPD' 
+    currentDepartment: {
+      type: String,
+      default: 'OPD',
     },
     currentStatus: {
       type: String,
@@ -97,10 +93,35 @@ const patientSchema = new mongoose.Schema(
       {
         orderDate: { type: Date, default: Date.now },
         tests: [String],
-        status: { type: String, default: 'Pending' },
+        status: {
+          type: String,
+          enum: ['Pending', 'Accepted', 'Sample Collected', 'Processing', 'Completed', 'Verified', 'Critical', 'Rejected'],
+          default: 'Pending',
+        },
+        priority: { type: String, enum: ['Normal', 'Urgent', 'Emergency'], default: 'Normal' },
+        sampleType: String,
+        sampleId: String,
+        sampleStatus: { type: String, enum: ['Awaiting Collection', 'Collected', 'Sent To Lab', 'Rejected Sample'], default: 'Awaiting Collection' },
+        collectionStartedAt: Date,
+        collectionCompletedAt: Date,
+        processingStartedAt: Date,
+        completedAt: Date,
         results: String,
+        metrics: mongoose.Schema.Types.Mixed,
+        evaluatedResults: mongoose.Schema.Types.Mixed,
+        interpretation: [String],
+        criticalAlerts: [{ test: String, field: String, message: String }],
+        isCritical: { type: Boolean, default: false },
         orderedBy: String,
-        orderId: String
+        doctorName: String,
+        department: String,
+        orderId: String,
+        encounterId: String,
+        resultHash: String,
+        verifiedBy: String,
+        reportGeneratedAt: Date,
+        rejectedReason: String,
+        estimatedTurnaround: Number,
       }
     ],
     radiologyOrders: [
@@ -108,12 +129,46 @@ const patientSchema = new mongoose.Schema(
         orderDate: { type: Date, default: Date.now },
         type: { type: String, enum: ['X-RAY', 'MRI', 'CT', 'ULTRASOUND'] },
         bodyPart: String,
-        status: { type: String, default: 'Pending' },
+        clinicalQuestion: String,
+        status: {
+          type: String,
+          enum: [
+            'Pending',
+            'Accepted',
+            'Scheduled',
+            'In Progress',
+            'Awaiting Report',
+            'Completed',
+            'Verified',
+            'Critical',
+            'Rejected',
+          ],
+          default: 'Pending',
+        },
+        priority: { type: String, enum: ['Normal', 'Urgent', 'Emergency'], default: 'Normal' },
         results: String,
+        findings: mongoose.Schema.Types.Mixed,
         imageUrls: [String],
         orderedBy: String,
-        orderId: String
-      }
+        orderId: String,
+        queueId: String,
+        tokenNumber: String,
+        machineCode: String,
+        machineName: String,
+        contrast: { type: Boolean, default: false },
+        assignedTechnologist: String,
+        assignedRadiologist: String,
+        scanStartedAt: Date,
+        scanCompletedAt: Date,
+        reportGeneratedAt: Date,
+        verifiedBy: String,
+        isCritical: { type: Boolean, default: false },
+        criticalFinding: String,
+        rejectedReason: String,
+        estimatedTurnaround: Number,
+        accessionNumber: String,
+        referringDepartment: String,
+      },
     ],
     surgeryOrders: [
       {
@@ -163,5 +218,15 @@ const patientSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+patientSchema.pre('save', function () {
+  if (!this.uniqueToken) {
+    let token = '';
+    for (let i = 0; i < 16; i++) {
+      token += Math.floor(Math.random() * 10).toString();
+    }
+    this.uniqueToken = token;
+  }
+});
 
 export default mongoose.model('Patient', patientSchema)

@@ -45,8 +45,8 @@
 }
 
 .clinical-badge {
-    background: rgba(99, 102, 241, 0.2);
-    color: #818cf8;
+    background: rgba(37, 99, 235, 0.15);
+    color: #1e40af;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     font-size: 0.75rem;
@@ -56,7 +56,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
 .status-badge {
@@ -95,7 +95,7 @@
 }
 
 .welcome-title .highlight {
-    background: linear-gradient(to right, #818cf8, #c084fc);
+    background: linear-gradient(to right, #2563eb, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

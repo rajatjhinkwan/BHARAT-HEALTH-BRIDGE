@@ -37,13 +37,13 @@ export default function HospitalMetrics() {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
       {cards.map((card, i) => (
         <div key={i} className="card p-6 flex flex-col items-center text-center hover:translate-y-[-4px] transition-all">
           <div style={{ background: `${card.color}15`, color: card.color, padding: '0.75rem', borderRadius: '14px', marginBottom: '1rem' }}>
             {card.icon}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">{card.label}</span>
+          <span className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>{card.label}</span>
           <div className="text-2xl font-black">{card.value}</div>
         </div>
       ))}

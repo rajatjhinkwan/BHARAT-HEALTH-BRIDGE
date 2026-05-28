@@ -17,7 +17,7 @@ const AdminHome = () => {
   const activityFeed = [
     { type: 'checkin', text: 'New patient registered at OPD Counter 2', time: '2 mins ago', icon: <ArrowUpRight size={16}/>, color: 'var(--primary)' },
     { type: 'emergency', text: 'Critical Trauma incoming - Bay 4 prepped', time: '5 mins ago', icon: <AlertCircle size={16}/>, color: 'var(--danger)' },
-    { type: 'billing', text: 'Daily revenue target reached (105%)', time: '12 mins ago', icon: <TrendingUp size={16}/>, color: 'var(--success)' },
+    { type: 'inventory', text: 'Pharmacy low-stock alert: 3 medicines below minimum', time: '12 mins ago', icon: <TrendingUp size={16}/>, color: 'var(--warning)' },
     { type: 'system', text: 'Blockchain node sync completed successfully', time: '20 mins ago', icon: <Shield size={16}/>, color: 'var(--purple)' },
   ];
 

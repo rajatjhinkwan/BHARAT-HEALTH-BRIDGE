@@ -3,8 +3,7 @@ import { User, Mail, Phone, Calendar, Briefcase, MapPin, Camera, Save, ArrowLeft
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Profile.css';
-
-const API_BASE_URL = 'http://localhost:4000/api';
+import { API_BASE_URL } from '../../config';
 
 export default function Profile() {
     const { user, updateProfile } = useAuth();

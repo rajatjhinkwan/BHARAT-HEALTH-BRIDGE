@@ -27,7 +27,7 @@ export default function SpecializedSessionDashboard() {
            }
         });
         
-        setSessionQueue(queue.sort((a,b) => (a.status === 'Completed' ? 1 : -1)));
+        setSessionQueue(queue.sort((a) => (a.status === 'Completed' ? 1 : -1)));
       }
     } catch(err) {
       console.error(err);
@@ -35,7 +35,7 @@ export default function SpecializedSessionDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchSessions();
+    Promise.resolve().then(() => fetchSessions());
     const interval = setInterval(fetchSessions, 10000);
     return () => clearInterval(interval);
   }, [fetchSessions]);

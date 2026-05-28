@@ -24,14 +24,14 @@ const seedData = async () => {
 
     // 2. Create Dummy Patients
     const dummyPatients = [
-      { name: 'John Smith', age: 45, gender: 'Male', dept: 'Cardiology' },
-      { name: 'Sarah Miller', age: 32, gender: 'Female', dept: 'Neurology' },
-      { name: 'Robert Brown', age: 58, gender: 'Male', dept: 'Nephrology' },
-      { name: 'Emily Davis', age: 24, gender: 'Female', dept: 'General Medicine' },
-      { name: 'Michael Wilson', age: 67, gender: 'Male', dept: 'Cardiology' },
-      { name: 'Jessica Taylor', age: 41, gender: 'Female', dept: 'Neurology' },
-      { name: 'David Jones', age: 55, gender: 'Male', dept: 'Nephrology' },
-      { name: 'Linda White', age: 29, gender: 'Female', dept: 'Cardiology' }
+      { name: 'Arjun Mehta', age: 45, gender: 'Male', dept: 'Cardiology' },
+      { name: 'Priya Iyer', age: 32, gender: 'Female', dept: 'Neurology' },
+      { name: 'Rohan Sharma', age: 58, gender: 'Male', dept: 'Nephrology' },
+      { name: 'Kavita Devi', age: 24, gender: 'Female', dept: 'General Medicine' },
+      { name: 'Vikram Singh', age: 67, gender: 'Male', dept: 'Cardiology' },
+      { name: 'Ananya Gupta', age: 41, gender: 'Female', dept: 'Neurology' },
+      { name: 'Suresh Pillai', age: 55, gender: 'Male', dept: 'Nephrology' },
+      { name: 'Meera Reddy', age: 29, gender: 'Female', dept: 'Cardiology' },
     ];
 
     const savedPatients = [];

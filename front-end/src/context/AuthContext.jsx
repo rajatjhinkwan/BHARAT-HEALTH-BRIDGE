@@ -19,8 +19,9 @@ export const AuthProvider = ({ children }) => {
     });
 
     const login = (userData, token) => {
-        setUser(userData);
-        localStorage.setItem('hospflow_auth_user', JSON.stringify(userData));
+        const normalized = { ...userData, _id: userData._id || userData.id };
+        setUser(normalized);
+        localStorage.setItem('hospflow_auth_user', JSON.stringify(normalized));
         if (token) {
             localStorage.setItem('hospflow_auth_token', token);
         }

@@ -1,19 +1,86 @@
-import React, { useState, useMemo } from 'react';
-import { MACHINES, DEPARTMENTS, STATUS_MAP, getStatusCounts, getDeptCounts } from '../../data/hospitalMachines';
-import { Search, LayoutGrid, List, Monitor, AlertTriangle, CheckCircle, XCircle, Clock, Zap, ChevronDown, X, Wrench, Calendar, MapPin, Shield, Hash, Activity, Server } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { DEPARTMENTS, STATUS_MAP, MACHINES } from '../../data/hospitalMachines';
+import { fetchMachines, updateMachineStatus } from '../../services/machineApi';
+import { useAuth } from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext';
+import { API_BASE_URL } from '../../config';
+import { io } from 'socket.io-client';
+import { Search, LayoutGrid, List, Monitor, CheckCircle, XCircle, Clock, Zap, X, Wrench, Calendar, MapPin, Shield, Hash, Activity, Server } from 'lucide-react';
+import './MachineTrackingDashboard.css';
+
+const socket = io(API_BASE_URL.replace('/api', ''));
 
 export default function MachineTrackingDashboard() {
+  const { user } = useAuth();
+  const { showNotification } = useNotification();
+  const [machines, setMachines] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [deptFilter, setDeptFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
   const [selectedMachine, setSelectedMachine] = useState(null);
 
-  const counts = useMemo(() => getStatusCounts(), []);
-  const deptCounts = useMemo(() => getDeptCounts(), []);
+  const loadMachines = useCallback(async () => {
+    try {
+      const data = await fetchMachines();
+      if (data?.length) {
+        setMachines(data);
+      } else {
+        setMachines(MACHINES.map((m, i) => ({ ...m, id: m.id || `local-${i}` })));
+      }
+    } catch (err) {
+      console.error(err);
+      setMachines(MACHINES.map((m, i) => ({ ...m, id: m.id || `local-${i}` })));
+      showNotification('Showing local equipment catalog', 'warning');
+    } finally {
+      setLoading(false);
+    }
+  }, [showNotification]);
+
+  useEffect(() => {
+    loadMachines();
+    const onUpdate = () => loadMachines();
+    socket.on('machineUpdate', onUpdate);
+    return () => socket.off('machineUpdate', onUpdate);
+  }, [loadMachines]);
+
+  const handleStatusChange = async (machineId, statusKey) => {
+    try {
+      const updated = await updateMachineStatus(machineId, statusKey, {
+        changedBy: user?.name || 'Admin',
+      });
+      setMachines((prev) => prev.map((m) => (m.id === machineId ? updated : m)));
+      setSelectedMachine((prev) => (prev?.id === machineId ? updated : prev));
+      showNotification(`Equipment marked as ${STATUS_MAP[statusKey].label}`, 'success');
+    } catch (err) {
+      showNotification(err.message || 'Status update failed', 'error');
+    }
+  };
+
+  const counts = useMemo(() => {
+    const countsObj = { operational: 0, maintenance: 0, offline: 0, calibration: 0, standby: 0, total: machines.length };
+    machines.forEach(m => {
+      if (countsObj[m.status] !== undefined) {
+        countsObj[m.status]++;
+      }
+    });
+    countsObj.avgUptime = machines.length > 0
+      ? (machines.reduce((s, m) => s + m.uptime, 0) / machines.length).toFixed(1)
+      : '0.0';
+    return countsObj;
+  }, [machines]);
+
+  const deptCounts = useMemo(() => {
+    const countsObj = {};
+    machines.forEach(m => {
+      countsObj[m.department] = (countsObj[m.department] || 0) + 1;
+    });
+    return countsObj;
+  }, [machines]);
 
   const filtered = useMemo(() => {
-    return MACHINES.filter(m => {
+    return machines.filter(m => {
       if (deptFilter !== 'all' && m.department !== deptFilter) return false;
       if (statusFilter !== 'all' && m.status !== statusFilter) return false;
       if (search) {
@@ -22,7 +89,7 @@ export default function MachineTrackingDashboard() {
       }
       return true;
     });
-  }, [search, deptFilter, statusFilter]);
+  }, [machines, search, deptFilter, statusFilter]);
 
   const statusIcon = (status) => {
     switch (status) {
@@ -36,7 +103,7 @@ export default function MachineTrackingDashboard() {
   };
 
   return (
-    <div style={S.container} className="animate-fade-in-up">
+    <div style={S.container} className="animate-fade-in-up mtd-page">
       {/* Header */}
       <div style={S.header}>
         <div>
@@ -44,7 +111,7 @@ export default function MachineTrackingDashboard() {
           <p style={S.subtitle}>Biomedical Engineering — Real-time asset monitoring across all departments</p>
         </div>
         <div style={S.headerActions}>
-          <div style={S.lastSync}><Zap size={14} color="var(--success)" /> Live Sync: {new Date().toLocaleTimeString()}</div>
+          <div style={S.lastSync}><Zap size={14} color="var(--success)" /> Live Sync: {new Date().toLocaleTimeString('en-IN')}</div>
         </div>
       </div>
 
@@ -93,13 +160,21 @@ export default function MachineTrackingDashboard() {
       </div>
 
       {/* Results count */}
-      <p style={S.resultCount}>Showing <strong>{filtered.length}</strong> of {MACHINES.length} machines</p>
+      <p style={S.resultCount}>Showing <strong>{filtered.length}</strong> of {machines.length} machines</p>
+
+      {loading && (
+        <div style={S.grid}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="mtd-card-skeleton" style={{ ...S.card, minHeight: 220, opacity: 0.6 }} />
+          ))}
+        </div>
+      )}
 
       {/* Grid View */}
-      {viewMode === 'grid' ? (
+      {!loading && viewMode === 'grid' ? (
         <div style={S.grid}>
           {filtered.map(machine => (
-            <div key={machine.id} style={S.card} className="hover-card-effect" onClick={() => setSelectedMachine(machine)}>
+            <div key={machine.id} style={{ ...S.card, borderTop: `4px solid ${STATUS_MAP[machine.status]?.color || 'var(--border)'}` }} className="hover-card-effect mtd-card" onClick={() => setSelectedMachine(machine)}>
               <div style={S.cardTop}>
                 <div style={{ ...S.statusDot, background: STATUS_MAP[machine.status].color, boxShadow: `0 0 8px ${STATUS_MAP[machine.status].color}` }} />
                 <span style={{ ...S.statusBadge, background: STATUS_MAP[machine.status].bg, color: STATUS_MAP[machine.status].color }}>
@@ -130,7 +205,7 @@ export default function MachineTrackingDashboard() {
             </div>
           ))}
         </div>
-      ) : (
+      ) : !loading ? (
         /* Table View */
         <div style={S.tableWrap}>
           <table className="data-table" style={{ width: '100%' }}>
@@ -155,7 +230,7 @@ export default function MachineTrackingDashboard() {
             </tbody>
           </table>
         </div>
-      )}
+      ) : null}
 
       {/* Detail Modal */}
       {selectedMachine && (
@@ -181,6 +256,38 @@ export default function MachineTrackingDashboard() {
               <ModalField icon={<Calendar size={15}/>} label="Next Maintenance" value={new Date(selectedMachine.nextMaintenance).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} />
               <ModalField icon={<Calendar size={15}/>} label="Purchase Date" value={new Date(selectedMachine.purchaseDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} />
               <ModalField icon={<Shield size={15}/>} label="Warranty" value={selectedMachine.warrantyStatus} highlight={selectedMachine.warrantyStatus === 'Active' ? 'var(--success)' : 'var(--danger)'} />
+            </div>
+
+            <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border)' }}>
+              <h4 style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>
+                Transition Equipment State
+              </h4>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {Object.entries(STATUS_MAP).map(([statusKey, statusVal]) => (
+                  <button
+                    key={statusKey}
+                    type="button"
+                    onClick={() => handleStatusChange(selectedMachine.id, statusKey)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '8px 14px',
+                      borderRadius: 10,
+                      border: '1px solid var(--border)',
+                      cursor: 'pointer',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      background: selectedMachine.status === statusKey ? statusVal.color : 'var(--surface)',
+                      color: selectedMachine.status === statusKey ? '#fff' : 'var(--text-main)',
+                      borderColor: selectedMachine.status === statusKey ? statusVal.color : 'var(--border)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {statusIcon(statusKey)} {statusVal.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

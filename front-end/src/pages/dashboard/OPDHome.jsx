@@ -57,7 +57,7 @@ const OPDHome = () => {
           <form className="grid grid-cols-2 gap-4">
             <div className="form-group">
               <label>Full Name</label>
-              <input type="text" placeholder="John Doe" />
+              <input type="text" placeholder="e.g. Anil Kumar" />
             </div>
             <div className="form-group">
               <label>Mobile Number</label>

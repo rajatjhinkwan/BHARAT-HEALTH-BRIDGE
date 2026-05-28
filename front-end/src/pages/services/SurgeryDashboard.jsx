@@ -27,7 +27,7 @@ export default function SurgeryDashboard() {
            }
         });
         
-        setSurgeryQueue(queue.sort((a,b) => (a.status === 'Completed' ? 1 : -1)));
+        setSurgeryQueue(queue.sort((a) => (a.status === 'Completed' ? 1 : -1)));
       }
     } catch(err) {
       console.error(err);
@@ -35,7 +35,7 @@ export default function SurgeryDashboard() {
   }, []);
 
   useEffect(() => {
-    fetchSurgeries();
+    Promise.resolve().then(() => fetchSurgeries());
     const interval = setInterval(fetchSurgeries, 10000);
     return () => clearInterval(interval);
   }, [fetchSurgeries]);

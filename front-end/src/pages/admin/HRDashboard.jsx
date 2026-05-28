@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Users, Clock, Plane, Ban, CheckCircle, Search, Edit2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Users, Clock, Plane, Ban, CheckCircle, Search, Edit2, Calendar } from 'lucide-react';
 
 export default function HRDashboard() {
   const [personnel, setPersonnel] = useState([
-    { id: 'DOC-1025', name: 'Dr. R. Sharma', dept: 'Cardiology', role: 'Chief Resident', status: 'Present', shiftStart: '08:00 AM', timeIn: '07:45 AM', details: '', returnDate: '' },
-    { id: 'NUR-402', name: 'Sister A. Mehta', dept: 'ICU Ward 1', role: 'Head Nurse', status: 'Present', shiftStart: '06:00 AM', timeIn: '05:52 AM', details: '', returnDate: '' },
-    { id: 'LAB-99', name: 'Vikram Singh', dept: 'Pathology', role: 'Lab Tech', status: 'Present', shiftStart: '09:00 AM', timeIn: '08:50 AM', details: '', returnDate: '' },
-    { id: 'DOC-44', name: 'Dr. V. Gupta', dept: 'Orthopedics', role: 'Attending', status: 'Not Arrived', shiftStart: '10:00 AM', timeIn: '--', details: '', returnDate: '' },
-    { id: 'REC-12', name: 'Kavita Devi', dept: 'Front Desk', role: 'Receptionist', status: 'Not Arrived', shiftStart: '09:30 AM', timeIn: '--', details: '', returnDate: '' },
-    { id: 'NUR-811', name: 'Sister P. Verma', dept: 'General Ward', role: 'Staff Nurse', status: 'Leave', shiftStart: '--', timeIn: '--', details: 'Paid Time Off', returnDate: '15 Nov 2023' },
-    { id: 'PHA-04', name: 'Arun Yadav', dept: 'Pharmacy', role: 'Pharmacist', status: 'Leave', shiftStart: '--', timeIn: '--', details: 'Sick Leave', returnDate: '12 Nov 2023' },
+    { id: 'DOC-CARD-123', name: 'Dr. R. Sharma', dept: 'Cardiology', role: 'Chief Resident', status: 'Present', shiftStart: '08:00 AM', timeIn: '07:45 AM', details: '', returnDate: '' },
+    { id: 'NUR-ICU-123', name: 'Sister A. Mehta', dept: 'ICU Ward', role: 'Head Nurse', status: 'Present', shiftStart: '06:00 AM', timeIn: '05:52 AM', details: '', returnDate: '' },
+    { id: 'LAB-123', name: 'Vikram Singh', dept: 'Laboratory', role: 'Lab Tech', status: 'Present', shiftStart: '09:00 AM', timeIn: '08:50 AM', details: '', returnDate: '' },
+    { id: 'DOC-ORTH-123', name: 'Dr. V. Gupta', dept: 'Orthopedics', role: 'Attending', status: 'Not Arrived', shiftStart: '10:00 AM', timeIn: '--', details: '', returnDate: '' },
+    { id: 'REC-123', name: 'Kavita Devi', dept: 'Reception', role: 'Receptionist', status: 'Not Arrived', shiftStart: '09:30 AM', timeIn: '--', details: '', returnDate: '' },
+    { id: 'NUR-GEN-123', name: 'Sister P. Verma', dept: 'General Medicine', role: 'Staff Nurse', status: 'Leave', shiftStart: '--', timeIn: '--', details: 'Paid Time Off', returnDate: '15 Nov 2026' },
+    { id: 'PHA-123', name: 'Arun Yadav', dept: 'Pharmacy', role: 'Pharmacist', status: 'Leave', shiftStart: '--', timeIn: '--', details: 'Sick Leave', returnDate: '12 Nov 2026' },
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -66,14 +67,19 @@ export default function HRDashboard() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Users size={36} color="var(--primary)" />
           <div>
-            <h1 style={{ margin: 0 }}>HR Management Portal</h1>
+            <h1 style={{ margin: 0 }}>HR & Attendance</h1>
             <p style={{ margin: 0, color: 'var(--text-muted)' }}>Manage staff attendance, leaves, and records</p>
           </div>
         </div>
         
-        <div style={{ position: 'relative', width: '300px' }}>
-           <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', top: '10px', left: '12px' }}/>
-           <input type="text" placeholder="Search by ID or Name..." style={{ padding: '0.5rem 1rem 0.5rem 2.5rem', width: '100%', borderRadius: 'var(--radius-full)', border: '1px solid var(--border)', background: 'var(--surface)' }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <Link to="/shifts" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
+            <Calendar size={16} /> Shift roster
+          </Link>
+          <div style={{ position: 'relative', width: '260px' }}>
+            <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', top: '10px', left: '12px' }} />
+            <input type="text" placeholder="Search by ID or name…" style={{ padding: '0.5rem 1rem 0.5rem 2.5rem', width: '100%', borderRadius: 'var(--radius-full)', border: '1px solid var(--border)', background: 'var(--surface)' }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          </div>
         </div>
       </div>
 

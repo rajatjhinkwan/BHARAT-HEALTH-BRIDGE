@@ -63,7 +63,7 @@ export const HOME_MOCK_DATA = {
         ]
     },
     quickActions: [
-        { label: 'History', route: '/bill', icon: 'time-outline' },
+        { label: 'Navigate', route: '/navigation', icon: 'navigate-outline' },
         { label: 'Scan', route: '/scan', icon: 'scan-outline' },
         { label: 'Hospitals', route: '/hospitals', icon: 'business-outline' },
         { label: 'Book', route: '/booking', icon: 'calendar-outline' },
@@ -79,18 +79,19 @@ export const HOME_MOCK_DATA = {
             route: '/scan'
         },
         {
-            id: 'bill_history',
-            title: 'Billing History',
-            subtitle: 'Secure Health Records',
-            colors: ['#6366F1', '#4F46E5'],
-            icon: 'receipt',
-            route: '/bill'
+            id: 'hospital_nav',
+            title: 'Hospital Navigation',
+            subtitle: 'Indoor ward map',
+            badge: 'Interactive',
+            colors: ['#10B981', '#059669'],
+            icon: 'navigate',
+            route: '/navigation'
         },
         {
             id: 'hospitals',
             title: 'Find Hospital',
-            subtitle: 'Compare & Quality',
-            footer: 'Gurgaon, Haryana',
+            subtitle: 'Govt PHC · CHC · District',
+            footer: 'Uttarakhand',
             colors: ['#F59E0B', '#D97706'],
             icon: 'medkit',
             route: '/hospitals'

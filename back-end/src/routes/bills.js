@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { Bill } from '../models/index.js'
 
-import { protect } from '../middleware/auth.js'
+import { authenticate as protect } from '../middleware/auth.js'
 
 const router = Router()
 

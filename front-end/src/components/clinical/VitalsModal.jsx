@@ -3,11 +3,12 @@ import { X, Save, Activity } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
 
 export default function VitalsModal({ patient, onClose, onUpdate }) {
+  const latest = (patient.vitals && patient.vitals.length) ? patient.vitals[patient.vitals.length - 1] : {};
   const [formData, setFormData] = useState({
-    bp: patient.vitals?.[patient.vitals.length-1]?.bp || '',
-    heartRate: patient.vitals?.[patient.vitals.length-1]?.heartRate || '',
-    temp: patient.vitals?.[patient.vitals.length-1]?.temp || '',
-    spo2: patient.vitals?.[patient.vitals.length-1]?.spo2 || '',
+    bp: latest.bp || '',
+    heartRate: latest.heartRate || '',
+    temp: latest.temp || '',
+    spo2: latest.spo2 || '',
     respiratoryRate: '',
     notes: ''
   });

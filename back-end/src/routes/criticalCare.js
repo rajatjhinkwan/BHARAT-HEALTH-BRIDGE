@@ -1,8 +1,22 @@
 import { Router } from 'express';
-import { Patient, User } from '../models/index.js';
+import { Patient, User, MedicalHistory } from '../models/index.js';
 import Bed from '../models/Bed.js';
+import {
+  WARD_CATALOG,
+  CLINICAL_WARD_KEYS,
+  computeBedStats,
+  wardToOpdDepartment,
+} from '../lib/wards.js';
+import { escapeRegExp } from '../lib/regexHelpers.js';
 
 const router = Router();
+
+function emitBedEvents(req, wardName, bed = null) {
+  const io = req.app.get('io');
+  if (!io) return;
+  io.emit('criticalUpdate', { type: 'bed', ward: wardName });
+  if (bed) io.emit('bedUpdate', bed);
+}
 
 // ==========================================
 // 1. WARD APIs
@@ -29,10 +43,36 @@ router.get('/ventilator/patients', async (req, res) => {
 
 router.get('/wards', async (req, res) => {
     try {
-        const wards = ['ICU', 'Ventilator Ward', 'Neuro Ward', 'Nephro Ward', 'Cardiac Ward', 'Emergency Observation Ward', 'Trauma Ward', 'Surgical Ward', 'Pediatric Ward'];
-        res.json(wards);
+        const beds = await Bed.find({}, 'wardName roomNumber').lean();
+        const roomsByWard = {};
+        for (const b of beds) {
+            const w = b.wardName;
+            if (!w) continue;
+            if (!roomsByWard[w]) roomsByWard[w] = new Set();
+            if (b.roomNumber) roomsByWard[w].add(b.roomNumber);
+        }
+        const payload = WARD_CATALOG.map(({ key, label, opdDepartment }) => ({
+            key,
+            label,
+            opdDepartment,
+            rooms: [...(roomsByWard[key] || [])].sort(),
+        }));
+        res.json(payload);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch wards' });
+    }
+});
+
+router.get('/wards/summary', async (_req, res) => {
+    try {
+        const beds = await Bed.find().lean();
+        const summary = CLINICAL_WARD_KEYS.map((key) => {
+            const wardBeds = beds.filter((b) => b.wardName?.toLowerCase() === key.toLowerCase());
+            return { key, label: WARD_CATALOG.find((w) => w.key === key)?.label || key, ...computeBedStats(wardBeds) };
+        });
+        res.json(summary);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch ward summary' });
     }
 });
 
@@ -41,8 +81,8 @@ router.get('/wards/:wardName/patients', async (req, res) => {
         const { wardName } = req.params;
         const { room } = req.query;
         // Case-insensitive ward match
-        const query = { currentWard: { $regex: new RegExp(`^${wardName}$`, 'i') } };
-        if (room) query.currentRoom = room;
+        const query = { currentWard: { $regex: new RegExp(`^${escapeRegExp(wardName)}$`, 'i') } };
+        if (room && room !== '__ALL__') query.currentRoom = room;
         
         const patients = await Patient.find(query).sort({ updatedAt: -1 });
         res.json(patients);
@@ -60,7 +100,7 @@ router.get('/beds', async (req, res) => {
         const { ward } = req.query;
         let query = {};
         if (ward) {
-            query.wardName = { $regex: new RegExp(`^${ward}$`, 'i') };
+            query.wardName = { $regex: new RegExp(`^${escapeRegExp(ward)}$`, 'i') };
         }
         const beds = await Bed.find(query).populate('patientId', 'patientName mrn').sort({ wardName: 1, bedNumber: 1 });
         res.json(beds);
@@ -111,9 +151,9 @@ router.patch('/patients/admit/:patientId', async (req, res) => {
                     details: `Patient admitted to ${wardName}. Assigned bed: ${bed.bedNumber}`
                 }
             }
-        }, { new: true });
+        }, { returnDocument: 'after' });
 
-        req.app.get('io').emit('criticalUpdate', { type: 'admission', ward: wardName });
+        emitBedEvents(req, wardName, bed);
         res.json({ patient, bed });
     } catch (err) {
         res.status(500).json({ error: 'Admission failed' });
@@ -154,12 +194,41 @@ router.patch('/patients/shift-ward/:patientId', async (req, res) => {
                     details: `Shifted from previous ward to ${newWardName}. New bed: ${newBed.bedNumber}`
                 }
             }
-        }, { new: true });
+        }, { returnDocument: 'after' });
 
-        req.app.get('io').emit('criticalUpdate', { type: 'shift', ward: newWardName });
+        emitBedEvents(req, newWardName, newBed);
         res.json({ patient, bed: newBed });
     } catch (err) {
         res.status(500).json({ error: 'Shift failed' });
+    }
+});
+
+router.post('/patients/discharge/:patientId/summary', async (req, res) => {
+    try {
+        const { patientId } = req.params;
+        const { doctorName, diagnosis, medicines, followUp, notes, hospital } = req.body;
+
+        const patient = await Patient.findById(patientId);
+        if (!patient) return res.status(404).json({ error: 'Patient not found' });
+
+        const record = await MedicalHistory.create({
+            patientId,
+            type: 'discharge_summary',
+            title: `Discharge Summary — ${patient.patientName}`,
+            hospital: hospital || 'Bharat Health Bridge',
+            doctor: doctorName || 'Attending Physician',
+            prescriptionDetails: {
+                diagnosis: diagnosis || '',
+                notes: notes || '',
+                followUpDate: followUp ? new Date(followUp) : undefined,
+                medicines: Array.isArray(medicines) ? medicines : [],
+            },
+        });
+
+        res.status(201).json(record);
+    } catch (err) {
+        console.error('Discharge summary error:', err);
+        res.status(500).json({ error: 'Failed to save discharge summary' });
     }
 });
 
@@ -172,8 +241,9 @@ router.patch('/patients/discharge/:patientId', async (req, res) => {
         if (bed) {
             bed.occupied = false;
             bed.patientId = null;
-            bed.status = 'AVAILABLE';
+            bed.status = 'CLEANING';
             await bed.save();
+            emitBedEvents(req, bed.wardName, bed);
         }
 
         const patient = await Patient.findByIdAndUpdate(patientId, {
@@ -189,9 +259,9 @@ router.patch('/patients/discharge/:patientId', async (req, res) => {
                     details: 'Patient discharged from hospital care.'
                 }
             }
-        }, { new: true });
+        }, { returnDocument: 'after' });
 
-        req.app.get('io').emit('criticalUpdate', { type: 'discharge' });
+        emitBedEvents(req, 'General');
         res.json(patient);
     } catch (err) {
         res.status(500).json({ error: 'Discharge failed' });
@@ -231,10 +301,75 @@ router.patch('/nurse/update-vitals/:patientId', async (req, res) => {
         });
 
         await patient.save();
-        req.app.get('io').emit('criticalUpdate', { patientId, type: 'vitals' });
+        const io = req.app.get('io');
+        if (io) io.emit('criticalUpdate', { patientId, type: 'vitals' });
         res.json(patient);
     } catch (err) {
         res.status(500).json({ error: 'Vitals update failed' });
+    }
+});
+
+// Nurse assigns patient to a specific bed (Nurse Station)
+router.post('/admit', async (req, res) => {
+    try {
+        const { patientId, bedId, wardName, doctorName } = req.body;
+        if (!patientId || !bedId || !wardName) {
+            return res.status(400).json({ message: 'patientId, bedId, and wardName are required' });
+        }
+
+        const bed = await Bed.findOne({
+            bedId,
+            wardName: { $regex: new RegExp(`^${escapeRegExp(wardName)}$`, 'i') },
+        });
+        if (!bed) return res.status(404).json({ error: 'Bed not found' });
+        if (bed.occupied) return res.status(400).json({ error: 'Bed is already occupied' });
+
+        const oldBed = await Bed.findOne({ patientId });
+        if (oldBed && oldBed.bedId !== bedId) {
+            oldBed.occupied = false;
+            oldBed.patientId = null;
+            oldBed.status = 'AVAILABLE';
+            await oldBed.save();
+        }
+
+        bed.occupied = true;
+        bed.patientId = patientId;
+        bed.status = 'OCCUPIED';
+        await bed.save();
+
+        const wardUpper = wardName.toUpperCase();
+        let currentStatus = 'ADMITTED';
+        if (wardUpper.includes('ICU')) currentStatus = 'IN ICU';
+        else if (wardUpper.includes('VENTILATOR')) currentStatus = 'ON VENTILATOR';
+
+        const patient = await Patient.findByIdAndUpdate(
+            patientId,
+            {
+                currentWard: wardName,
+                currentRoom: bed.roomNumber,
+                currentBed: bed.bedId,
+                currentStatus,
+                assignedDoctor: doctorName || 'Assigned Physician',
+                admissionDate: new Date(),
+                $push: {
+                    timeline: {
+                        action: 'ADMITTED',
+                        department: wardName,
+                        performedBy: doctorName || 'Nurse',
+                        details: `Allocated to bed ${bed.bedNumber} in ${wardName}`,
+                    },
+                },
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!patient) return res.status(404).json({ error: 'Patient not found' });
+
+        emitBedEvents(req, wardName, bed);
+        res.json({ patient, bed });
+    } catch (err) {
+        console.error('Nurse admit error:', err);
+        res.status(500).json({ error: 'Admission failed', message: err.message });
     }
 });
 
@@ -260,7 +395,8 @@ router.post('/nurse/add-note/:patientId', async (req, res) => {
         });
 
         await patient.save();
-        req.app.get('io').emit('criticalUpdate', { patientId, type: 'note' });
+        const io = req.app.get('io');
+        if (io) io.emit('criticalUpdate', { patientId, type: 'note' });
         res.json(patient);
     } catch (err) {
         res.status(500).json({ error: 'Add note failed' });

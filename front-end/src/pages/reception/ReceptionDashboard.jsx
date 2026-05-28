@@ -48,7 +48,7 @@ const ReceptionDashboard = () => {
     container: { maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem' },
     header: { marginBottom: '4rem', textAlign: 'center' },
     grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' },
-    card: (color, bg) => ({
+    card: () => ({
       background: 'white',
       borderRadius: '32px',
       padding: '2.5rem',

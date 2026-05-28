@@ -8,6 +8,18 @@ import queue from './queueRoutes.js'
 import workflow from './workflow.js'
 import appointments from './appointments.js'
 import criticalCare from './criticalCare.js'
+import medicalHistory from './medicalHistory.js'
+import premium from './premium.js'
+import catalog from './catalog.js'
+import donors from './donors.js'
+import patientPortal from './patientPortal.js'
+import laboratory from './laboratory.js'
+import radiology from './radiology.js'
+import pharmacy from './pharmacy.js'
+import doctors from './doctors.js'
+import machines from './machines.js'
+import admin from './admin.js'
+import registrations from './registrations.js'
 import { Router } from 'express'
 
 const api = Router()
@@ -21,6 +33,18 @@ api.use('/queue', queue)
 api.use('/workflow', workflow)
 api.use('/appointments', appointments)
 api.use('/critical', criticalCare)
+api.use('/history', medicalHistory)
+api.use('/premium', premium)
+api.use('/donors', donors)
+api.use('/patient', patientPortal)
+api.use('/laboratory', laboratory)
+api.use('/radiology', radiology)
+api.use('/pharmacy', pharmacy)
+api.use('/doctors', doctors)
+api.use('/machines', machines)
+api.use('/admin', admin)
+api.use('/registrations', registrations)
+api.use('/', catalog)
 
 
 export default api

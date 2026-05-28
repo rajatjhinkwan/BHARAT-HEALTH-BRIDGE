@@ -1,10 +1,11 @@
 import express from 'express';
 import PatientQueue from '../models/PatientQueue.js';
+import { authenticate, validatePermission } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // Add patient to queue
-router.post('/', async (req, res) => {
+router.post('/', authenticate, validatePermission('canGenerateTokens'), async (req, res) => {
   try {
     const newQueueEntry = new PatientQueue(req.body);
     const savedEntry = await newQueueEntry.save();
@@ -15,7 +16,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get queue for a specific department
-router.get('/:department', async (req, res) => {
+router.get('/:department', authenticate, validatePermission('canViewEMR'), async (req, res) => {
   try {
     const queue = await PatientQueue.find({ 
       targetDepartment: req.params.department,
@@ -28,12 +29,12 @@ router.get('/:department', async (req, res) => {
 });
 
 // Update queue status
-router.patch('/:queueId', async (req, res) => {
+router.patch('/:queueId', authenticate, validatePermission('canGenerateTokens'), async (req, res) => {
   try {
     const updatedEntry = await PatientQueue.findOneAndUpdate(
       { queueId: req.params.queueId },
       { status: req.body.status },
-      { new: true }
+      { returnDocument: 'after' }
     );
     res.json(updatedEntry);
   } catch (err) {

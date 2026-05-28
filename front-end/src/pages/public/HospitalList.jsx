@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, Phone, CheckCircle, XCircle } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+import { API_BASE_URL } from '../../config';
 
 const MOCK_HOSPITALS = [
     { _id: '1', name: 'City Central Hospital', city: 'Delhi', address: 'Connaught Place', phone: '+91 98765 43210', type: 'Multispecialty', bedsAvail: 45 },
@@ -16,18 +16,17 @@ export default function HospitalList() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetch(`${API_BASE}/hospitals`)
+        fetch(`${API_BASE_URL}/hospitals?state=Uttarakhand&limit=200`)
             .then(r => {
                 if (!r.ok) throw new Error('API failed');
                 return r.json();
             })
             .then(data => {
-                setHospitals(data);
+                setHospitals(Array.isArray(data) ? data : []);
                 setLoading(false);
             })
             .catch(err => {
-                console.warn('Backend unavailable, using mock data for UI design', err);
-                // Fallback to mock data to keep UI functional
+                console.warn('Backend unavailable, using mock data', err);
                 setTimeout(() => {
                     setHospitals(MOCK_HOSPITALS);
                     setLoading(false);
@@ -36,8 +35,9 @@ export default function HospitalList() {
     }, []);
 
     const filteredHospitals = hospitals.filter(h =>
-        h.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        h.city.toLowerCase().includes(searchTerm.toLowerCase())
+        h.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        h.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        h.district?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const styles = {
@@ -108,7 +108,7 @@ export default function HospitalList() {
             <div style={styles.headerRow}>
                 <div>
                     <h1 style={styles.title}>Partner Hospitals</h1>
-                    <p style={styles.subtitle}>Find and book appointments at top-rated facilities.</p>
+                    <p style={styles.subtitle}>159 government & private facilities across Uttarakhand with live map navigation.</p>
                 </div>
                 <div style={styles.searchWrap}>
                     <Search style={styles.searchIcon} size={20} />
@@ -147,8 +147,17 @@ export default function HospitalList() {
 }
 
 function HospitalCard({ hospital }) {
-    const availableBeds = hospital.bedsAvail || 0;
+    const availableBeds = hospital.bedsAvail ?? hospital.bed_count ?? 10;
     const isAvailable = availableBeds > 0;
+
+    const openMaps = () => {
+        if (hospital.latitude != null && hospital.longitude != null) {
+            window.open(
+                `https://www.google.com/maps/dir/?api=1&destination=${hospital.latitude},${hospital.longitude}`,
+                '_blank'
+            );
+        }
+    };
 
     const styles = {
         card: {
@@ -266,8 +275,13 @@ function HospitalCard({ hospital }) {
                     <span style={styles.bedNumber}>{availableBeds}</span>
                     <span style={styles.bedLabel}>Avail. Beds</span>
                 </div>
-                <button className={isAvailable ? "btn-primary" : "btn-secondary"} style={styles.bookBtn} disabled={!isAvailable}>
-                    {isAvailable ? 'Book Appointment' : 'Join Waitlist'}
+                <button
+                    type="button"
+                    className="btn-primary"
+                    style={styles.bookBtn}
+                    onClick={(e) => { e.stopPropagation(); openMaps(); }}
+                >
+                    Navigate
                 </button>
             </div>
         </div>

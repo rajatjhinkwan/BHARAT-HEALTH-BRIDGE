@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { API_BASE_URL } from '../config';
 
 const MOCK_BEDS = Array.from({ length: 12 }, (_, i) => ({
   id: `B-${i + 1}`,
@@ -12,7 +13,8 @@ export default function VisualFloorPlan({ wardName = "ICU Floor 1" }) {
   
   useEffect(() => {
     // Attempt WebSocket connection for strict real-time reqs
-    const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:4000');
+    const apiRoot = API_BASE_URL.replace(/\/api\/?$/, '');
+    const socket = io(apiRoot);
     
     socket.on('connect', () => {
        console.log('Socket connected for floor plan');

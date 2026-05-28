@@ -10,16 +10,19 @@ export const unstable_settings = {
 };
 
 import { useSegments, router } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { View } from 'react-native';
+import AnimatedSplashScreen from '@/components/ui/AnimatedSplashScreen';
 
 function RootLayoutNav() {
   const { user, loading } = useAuth();
   const segments = useSegments();
   const colorScheme = useColorScheme();
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || showSplash) return;
 
     const inAuthGroup = segments[0] === '(auth)';
 
@@ -30,24 +33,34 @@ function RootLayoutNav() {
       // Navigate to home if authenticated but still in auth group
       router.replace('/(tabs)');
     }
-  }, [user, loading, segments]);
+  }, [user, loading, segments, showSplash]);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
+      <View style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        </Stack>
+        <StatusBar style="auto" />
+        {showSplash && (
+          <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />
+        )}
+      </View>
     </ThemeProvider>
   );
 }
 
+import { ThemeProvider as AppThemeProvider } from '@/context/ThemeContext';
+
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <AppThemeProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </AppThemeProvider>
   );
 }
+

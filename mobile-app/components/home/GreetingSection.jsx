@@ -34,35 +34,6 @@ export default function GreetingSection({ C, user, entranceAnims }) {
                 </View>
                 <Text style={[styles.subtitle, { color: C.textSecondary }]}>Your health dashboard is live.</Text>
             </Animated.View>
-
-            <PressableScale style={styles.scoreSection}>
-                <View style={styles.rowBetween}>
-                    <Animated.View style={{ transform: [{ translateY: floatingY }] }}>
-                        <Text style={[styles.caption, { color: C.primaryBlue, fontWeight: '700' }]}>HEALTH SCORE</Text>
-                    </Animated.View>
-                    <View style={styles.weatherBadge}>
-                        <Ionicons name="sunny" size={12} color="#F59E0B" />
-                        <Text style={[styles.small, { color: C.textSecondary, marginLeft: 4 }]}>{user.location} {user.weather}</Text>
-                    </View>
-                </View>
-
-                <View style={styles.progressContainer}>
-                    <Text style={[styles.scoreValue, { color: C.textPrimary }]}>{user.healthScore}<Text style={styles.scoreTotal}>/100</Text></Text>
-                    <View style={[styles.progressBar, { backgroundColor: C.border }]}>
-                        <Animated.View style={[styles.progressFillWrapper, { width: progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) }]}>
-                            <LinearGradient colors={[C.primaryBlue, '#3B82F6']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.progressFill} />
-                        </Animated.View>
-                    </View>
-                </View>
-            </PressableScale>
-
-            <View style={[styles.searchBox, { borderColor: C.border, backgroundColor: 'rgba(255,255,255,0.7)' }]}>
-                <Ionicons name="search-outline" size={20} color={C.textSecondary} />
-                <TextInput placeholder="Search anything health..." placeholderTextColor={C.textSecondary} style={[styles.searchInput, { color: C.textPrimary }]} />
-                <PressableScale style={[styles.searchMic, { backgroundColor: C.primaryBlue }]}>
-                    <Ionicons name="mic-outline" size={16} color="#fff" />
-                </PressableScale>
-            </View>
         </View>
     );
 }

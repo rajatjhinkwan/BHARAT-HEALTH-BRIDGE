@@ -6,9 +6,11 @@ export const DEPARTMENTS = [
   { id: 'radiology', name: 'Radiology & Imaging', icon: '📡', color: '#8b5cf6' },
   { id: 'ot', name: 'Operation Theatre', icon: '🔬', color: '#ef4444' },
   { id: 'icu', name: 'ICU / Critical Care', icon: '❤️', color: '#f43f5e' },
+  { id: 'dialysis', name: 'Dialysis Ward', icon: '🩸', color: '#06b6d4' },
+  { id: 'chemo', name: 'Chemotherapy (Oncology)', icon: '🎗️', color: '#10b981' },
   { id: 'emergency', name: 'Emergency Dept', icon: '🚑', color: '#f59e0b' },
-  { id: 'laboratory', name: 'Laboratory / Pathology', icon: '🧪', color: '#10b981' },
-  { id: 'pharmacy', name: 'Pharmacy & Cold Chain', icon: '💊', color: '#06b6d4' },
+  { id: 'laboratory', name: 'Laboratory / Pathology', icon: '🧪', color: '#14b8a6' },
+  { id: 'pharmacy', name: 'Pharmacy & Cold Chain', icon: '💊', color: '#f43f5e' },
   { id: 'cardiology', name: 'Cardiology / Cath Lab', icon: '🫀', color: '#ec4899' },
   { id: 'physio', name: 'Physiotherapy & Rehab', icon: '🦴', color: '#84cc16' },
 ];
@@ -102,6 +104,21 @@ export const MACHINES = [
   m('TENS Unit', 'Omron', 'HV-F128', 'physio', 'operational', '3rd Floor, Physio PT-301', 98.2, '2026-03-10', '2026-09-10', '2023-01-15', 'Active', 'OMR-TENS-HV1-56789'),
   m('Spinal Traction Unit', 'Chattanooga (DJO)', 'Triton DTS', 'physio', 'offline', '3rd Floor, Physio PT-303', 89.5, '2026-02-25', '2026-04-29', '2021-07-20', 'Expired', 'CHA-TRC-TDT-67890'),
   m('CPM Machine (Knee)', 'Kinetec', 'Spectra Essential', 'physio', 'operational', '3rd Floor, Physio PT-304', 97.0, '2026-04-12', '2026-07-12', '2022-12-05', 'Active', 'KIN-CPM-SPE-78901'),
+
+  // ── Dialysis Ward ──
+  m('Hemodialysis Machine', 'Fresenius', '5008S CorDiax', 'dialysis', 'operational', '2nd Floor, Dialysis Bay 1', 98.4, '2026-04-12', '2026-07-12', '2023-05-18', 'Active', 'FRE-DL-5008S-88124'),
+  m('Hemodialysis Machine #2', 'Fresenius', '5008S CorDiax', 'dialysis', 'operational', '2nd Floor, Dialysis Bay 2', 97.9, '2026-04-12', '2026-07-12', '2023-05-18', 'Active', 'FRE-DL-5008S-88125'),
+  m('Nipro Surdial 55Plus', 'Nipro Corporation', 'Surdial 55Plus', 'dialysis', 'operational', '2nd Floor, Dialysis Bay 3', 98.2, '2026-04-05', '2026-07-05', '2024-01-20', 'Active', 'NIP-SD-55P-99231'),
+  m('Nipro Surdial 55Plus #2', 'Nipro Corporation', 'Surdial 55Plus', 'dialysis', 'standby', '2nd Floor, Dialysis Bay 4', 99.1, '2026-04-05', '2026-07-05', '2024-01-20', 'Active', 'NIP-SD-55P-99232'),
+  m('RO Water Treatment Plant', 'AquaBplus', 'TS-2000', 'dialysis', 'operational', 'Basement B1, Plant Room', 99.8, '2026-03-10', '2026-06-10', '2022-10-15', 'Active', 'AQB-RO-2K-77123'),
+  m('RO Water Treatment Plant #2', 'AquaBplus', 'TS-2000', 'dialysis', 'calibration', 'Basement B1, Plant Room', 95.5, '2026-04-15', '2026-05-15', '2022-10-15', 'Active', 'AQB-RO-2K-77124'),
+
+  // ── Chemotherapy (Oncology) ──
+  m('Chemotherapy Infusion Pump', 'Baxter', 'Colleague 3 CX', 'chemo', 'operational', '3rd Floor, Oncology Suite A', 98.7, '2026-04-18', '2026-07-18', '2023-06-22', 'Active', 'BAX-CH-COL-11234'),
+  m('Chemotherapy Infusion Pump #2', 'Baxter', 'Colleague 3 CX', 'chemo', 'operational', '3rd Floor, Oncology Suite B', 98.1, '2026-04-18', '2026-07-18', '2023-06-22', 'Active', 'BAX-CH-COL-11235'),
+  m('Biosafety Cabinet Class II', 'Esco', 'Airstream AC2-4E8', 'chemo', 'operational', '3rd Floor, Oncology Pharmacy', 99.2, '2026-03-25', '2026-09-25', '2023-02-14', 'Active', 'ESC-BC-AC2-66120'),
+  m('Scalp Cooling System', 'Paxman', 'Orbis II', 'chemo', 'standby', '3rd Floor, Oncology Suite C', 99.5, '2026-04-02', '2026-10-02', '2024-03-10', 'Active', 'PAX-SC-ORB-44123'),
+  m('Bio-hazard Compounding Hood', 'Thermo Scientific', 'Herasafe 2030i', 'chemo', 'maintenance', '3rd Floor, Oncology Pharmacy', 93.6, '2026-04-20', '2026-05-04', '2024-01-18', 'Active', 'THE-CH-HERA-55231'),
 ];
 
 export const getStatusCounts = () => {

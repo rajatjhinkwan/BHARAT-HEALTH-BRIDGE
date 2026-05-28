@@ -6,7 +6,7 @@ import {
   Code2, Layout, Database as DbIcon, ShieldAlert, Binary, 
   CheckCircle2, Hospital, ClipboardList, Pill, MousePointer2,
   Clock, ArrowRight, Layers, Fingerprint, FlaskConical, Droplets,
-  Truck, Siren, Calendar, BarChart3, Shield
+  Truck, Siren, Calendar, BarChart3, Shield, Compass
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -356,8 +356,8 @@ export default function Home() {
                         <h2 className="cta-title">Ready to digitize your hospital?</h2>
                         <p className="cta-desc">Join the 500+ hospitals already bridging the gap with Bharat Health Bridge.</p>
                         <div className="cta-buttons">
-                            <button onClick={() => navigate('/login')} className="btn-glow">Get Started Now</button>
-                            <button className="btn-outline">Contact Engineering</button>
+                            <button onClick={() => navigate('/login')} className="btn-glow">Hospital Staff Login</button>
+                            <button onClick={() => navigate('/patient-login')} className="btn-outline">Patient Portal</button>
                         </div>
                     </div>
                 </section>
@@ -390,6 +390,14 @@ export default function Home() {
                                 <li><a href="/inventory">Supply Chain</a></li>
                                 <li><a href="/hr">Staffing Logic</a></li>
                                 <li><a href="/emergency">Trauma Node</a></li>
+                            </ul>
+                        </div>
+                        <div className="footer-col">
+                            <h5>Patients</h5>
+                            <ul>
+                                <li><a href="/patient-login">My Health (Patient Login)</a></li>
+                                <li><a href="/hospitals">Find Hospitals</a></li>
+                                <li><a href="/patient-history">Medical History</a></li>
                             </ul>
                         </div>
                         <div className="footer-col">

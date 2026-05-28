@@ -1,8 +1,12 @@
 .emergency-dashboard-container {
+    --er-primary: var(--primary);
     padding: 2.5rem;
     max-width: 1600px;
     margin: 0 auto;
     background-color: var(--background);
+    background-image:
+        radial-gradient(at 0% 0%, var(--primary-light) 0, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(34, 211, 238, 0.05) 0, transparent 50%);
     min-height: 100vh;
 }
 
@@ -125,6 +129,103 @@
     font-weight: 800;
 }
 
+.emergency-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+
+.emergency-case-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 20px var(--primary-light);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.emergency-case-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 28px var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.emergency-case-card.priority-critical { border-left: 4px solid #ef4444; }
+.emergency-case-card.priority-serious { border-left: 4px solid #f59e0b; }
+.emergency-case-card.priority-stable { border-left: 4px solid #10b981; }
+
+.emergency-case-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.emergency-case-card .case-id {
+    font-size: 0.85rem;
+}
+
+.emergency-case-card-body {
+    margin-bottom: 1rem;
+}
+
+.emergency-case-card-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.emergency-case-card-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.emergency-case-card-footer {
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--divider);
+}
+
+.emergency-table-desktop {
+    display: none;
+}
+
+@media (min-width: 1280px) {
+    .emergency-table-desktop {
+        display: block;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .emergency-dashboard-container {
+        padding: 1rem;
+    }
+    .emergency-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .search-bar {
+        width: 100%;
+    }
+    .stats-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .emergency-cases-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .patient-cell {
     display: flex;
     flex-direction: column;
@@ -158,6 +259,7 @@
 .open-emr-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     background: var(--primary-light);
     color: var(--primary);
@@ -167,11 +269,24 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
+    width: 100%;
 }
 
 .open-emr-btn:hover {
-    background: var(--primary);
+    background: var(--primary-hover);
     color: white;
+}
+
+.btn-primary {
+    background: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.add-case-btn {
+    background: var(--primary);
 }
 
 /* Modal Styles */

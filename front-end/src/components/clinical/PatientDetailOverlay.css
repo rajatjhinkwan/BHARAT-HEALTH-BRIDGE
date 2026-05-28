@@ -1,0 +1,318 @@
+.pdo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: pdo-fade-in 0.2s ease;
+}
+
+.pdo-overlay--fullscreen {
+  padding: 0;
+}
+
+.pdo-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: min(92vh, 900px);
+  overflow: hidden;
+  animation: pdo-scale-in 0.25s ease;
+}
+
+.pdo-panel--compact {
+  width: min(520px, 100%);
+}
+
+.pdo-panel--fullscreen {
+  width: 100%;
+  height: 100%;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+.pdo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--divider);
+  background: var(--surface-hover);
+}
+
+.pdo-eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pdo-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.pdo-status-pill {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.pdo-header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pdo-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.pdo-icon-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-main);
+}
+
+.pdo-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pdo-identity {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.pdo-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pdo-identity-text h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.pdo-identity-text p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pdo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+}
+
+.pdo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--divider);
+}
+
+.pdo-tag--status {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: transparent;
+}
+
+.pdo-tag--critical { background: var(--danger-light); color: var(--danger); border-color: transparent; }
+.pdo-tag--serious { background: var(--warning-light); color: var(--warning); border-color: transparent; }
+.pdo-tag--stable { background: var(--success-light); color: var(--success); border-color: transparent; }
+
+.pdo-doctor-row,
+.pdo-condition {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--surface-hover);
+  border: 1px solid var(--divider);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.pdo-vitals h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pdo-vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.pdo-panel--fullscreen .pdo-vitals-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.pdo-vital {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.85rem;
+  border-radius: 12px;
+  background: var(--background);
+  border: 1px solid var(--divider);
+}
+
+.pdo-vital-label {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.15rem;
+}
+
+.pdo-vital strong {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.pdo-vital--danger .pdo-vital-icon { color: var(--danger); }
+.pdo-vital--primary .pdo-vital-icon { color: var(--primary); }
+.pdo-vital--purple .pdo-vital-icon { color: #8b5cf6; }
+.pdo-vital--warn .pdo-vital-icon { color: var(--warning); }
+.pdo-vital--muted .pdo-vital-icon { color: var(--text-muted); }
+
+.pdo-note {
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px dashed var(--primary-light);
+  background: rgba(14, 165, 233, 0.06);
+}
+
+.pdo-note-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.pdo-note p {
+  margin: 0 0 0.35rem;
+  font-style: italic;
+  color: var(--text-main);
+  line-height: 1.45;
+}
+
+.pdo-note span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.pdo-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid var(--divider);
+  background: var(--surface-hover);
+}
+
+.pdo-footer .hb-btn-primary,
+.pdo-footer .hb-btn-secondary,
+.pdo-footer .hb-btn-danger-outline {
+  flex: 1;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.hb-critical-card--clickable,
+.ward-patient-card--clickable,
+.patient-board-card--clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hb-critical-card--clickable:hover,
+.ward-patient-card--clickable:hover,
+.patient-board-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes pdo-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pdo-scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .pdo-vitals-grid {
+    grid-template-columns: 1fr;
+  }
+  .pdo-footer .hb-btn-primary,
+  .pdo-footer .hb-btn-secondary,
+  .pdo-footer .hb-btn-danger-outline {
+    flex: 1 1 100%;
+  }
+}

@@ -1,0 +1,386 @@
+.book-appt-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 3rem);
+}
+
+.book-appt-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.book-appt-header-icon {
+  background: var(--primary-light);
+  padding: 1.25rem;
+  border-radius: 20px;
+}
+
+.book-appt-header h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 900;
+  color: var(--text-main);
+}
+
+.book-appt-header p {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+.book-appt-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 32px;
+  box-shadow: var(--shadow-xl);
+}
+
+.book-appt-steps {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.book-appt-dot {
+  width: 40px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+
+.book-appt-dot.active {
+  background: var(--primary);
+}
+
+.book-appt-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.book-appt-section-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.book-appt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .book-appt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.book-appt-field-full {
+  grid-column: 1 / -1;
+}
+
+.book-appt-field label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.book-appt-field select,
+.book-appt-field input,
+.book-appt-field textarea {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text-main);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.book-appt-input-wrap {
+  position: relative;
+}
+
+.book-appt-icon {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.book-appt-input-wrap select,
+.book-appt-input-wrap input {
+  padding-left: 3rem;
+}
+
+.book-appt-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  background: var(--surface-hover);
+  padding: 1.5rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.book-appt-summary span {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.book-appt-summary strong {
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
+.book-appt-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.book-appt-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.book-appt-slot.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.book-appt-slot.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.book-appt-muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.book-appt-btn-primary,
+.book-appt-btn-secondary {
+  padding: 1rem 1.5rem;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.book-appt-btn-primary {
+  background: var(--primary);
+  color: white;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.book-appt-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.book-appt-actions .book-appt-btn-primary {
+  flex: 1;
+  margin-top: 0;
+}
+
+.book-appt-btn-secondary {
+  background: var(--surface-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  flex: 0.35;
+}
+
+.book-appt-success {
+  text-align: center;
+  padding: 2rem 0;
+  color: var(--success);
+}
+
+.book-appt-success h2 {
+  color: var(--text-main);
+  margin: 1rem 0;
+}
+
+.book-appt-summary-center {
+  margin: 1.5rem auto;
+  max-width: 480px;
+}
+
+.book-appt-actions-center {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.book-appt-actions-center .book-appt-btn-primary,
+.book-appt-actions-center .book-appt-btn-secondary {
+  width: auto;
+  min-width: 160px;
+}
+
+/* Interactive Custom Calendar Styles */
+.book-appt-calendar-container {
+  border: 1px solid var(--border);
+  border-radius: clamp(16px, 3vw, 24px);
+  padding: 1.5rem;
+  background: var(--background);
+  margin-bottom: 1.5rem;
+  font-family: inherit;
+}
+
+.book-appt-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.book-appt-calendar-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-transform: capitalize;
+}
+
+.book-appt-calendar-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  background: var(--surface-hover);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.book-appt-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.book-appt-calendar-weekday {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding-bottom: 0.5rem;
+}
+
+.book-appt-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px;
+}
+
+.book-appt-calendar-day.empty {
+  cursor: default;
+  pointer-events: none;
+}
+
+.book-appt-calendar-day.out-of-range {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: var(--border-light);
+}
+
+.book-appt-calendar-day.in-range {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.book-appt-calendar-day.in-range:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+}
+
+.book-appt-calendar-day.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff !important;
+}
+
+.book-appt-calendar-day.selected .book-appt-day-num {
+  color: #ffffff;
+}
+
+.book-appt-calendar-day.selected .book-appt-day-badge {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.book-appt-day-num {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.book-appt-day-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-top: 2px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.book-appt-day-badge.full {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.book-appt-day-badge.some {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}

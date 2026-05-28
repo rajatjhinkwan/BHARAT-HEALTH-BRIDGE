@@ -73,7 +73,6 @@ function MenuPanel({ C, slide, onClose }) {
 
   const items = [
     { icon: 'home-outline', label: 'Home', to: '/(tabs)' },
-    { icon: 'people-outline', label: 'Family ecosystem', to: '/family' },
     { icon: 'time-outline', label: 'Medical History', to: '/history' },
     { icon: 'medkit-outline', label: 'Emergency Help', to: '/emergency' },
     { icon: 'settings-outline', label: 'My Passport & Settings', to: '/profile' },

@@ -1,0 +1,62 @@
+.live-feed-page {
+  min-height: calc(100vh - 80px);
+  background: var(--background);
+  color: var(--text-main);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.live-feed-body {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.live-feed-section-head {
+  margin-bottom: 1rem;
+}
+
+.live-feed-section-head h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.live-feed-section-head p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.live-feed-section-head.compact h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.live-feed-activity-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  box-shadow: var(--shadow-sm);
+  min-height: 520px;
+}
+
+.live-feed-metrics-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 1024px) {
+  .live-feed-body {
+    grid-template-columns: 1fr;
+  }
+}

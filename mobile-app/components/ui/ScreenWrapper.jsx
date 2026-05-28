@@ -21,7 +21,7 @@ export default function ScreenWrapper({ children, style, scroll = true }) {
     }, []);
 
     const content = (
-        <Animated.View style={[{ opacity, transform: [{ translateY }] }, style]}>
+        <Animated.View style={[{ opacity, transform: [{ translateY }] }, scroll ? null : { flex: 1 }, style]}>
             {children}
         </Animated.View>
     );
