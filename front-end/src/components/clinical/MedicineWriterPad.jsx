@@ -21,6 +21,7 @@ export default function MedicineWriterPad({
   onFinalize,
   finalizeLoading = false,
   sessionDoctor = 'Dr. Lena Park',
+  showVoice = true,
 }) {
   const padRef = useRef(null);
   const canvasApiRef = useRef(null);
@@ -155,14 +156,16 @@ export default function MedicineWriterPad({
       />
 
       <div className="writer-footer">
-        <button
-          type="button"
-          className={`voice-status${isRecording ? ' recording' : ''}`}
-          onClick={onVoiceToggle}
-        >
-          <Mic size={14} />
-          {isRecording ? 'Recording…' : 'Voice dictation available'}
-        </button>
+        {showVoice && (
+          <button
+            type="button"
+            className={`voice-status${isRecording ? ' recording' : ''}`}
+            onClick={onVoiceToggle}
+          >
+            <Mic size={14} />
+            {isRecording ? 'Recording…' : 'Voice dictation available'}
+          </button>
+        )}
         <span className="autosave-status">Auto-saved · {secondsAgo}s ago</span>
       </div>
 

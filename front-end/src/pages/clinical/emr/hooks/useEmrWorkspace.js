@@ -27,7 +27,7 @@ export function useEmrWorkspace({
   const [activeActionTab, setActiveActionTab] = useState('Medicine');
   const [pages, setPages] = useState(INITIAL_PAGES);
   const [currentPageIdx, setCurrentPageIdx] = useState(0);
-  const [gridVisible, setGridVisible] = useState(50);
+  const [gridVisible, setGridVisible] = useState(100);
   const [gridSpacing, setGridSpacing] = useState(25);
   const [a4Zoom, setA4Zoom] = useState(1);
   const [structuredMedsState, setStructuredMeds] = useState(structuredMeds || [{ name: '', dose: '', freq: 'TID', days: '' }]);

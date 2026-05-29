@@ -73,7 +73,7 @@ export default function EmrWorkspaceCanvas({
         >
           {/* Integrated Docked Toolbar inside the actual page column container styled using Vanilla CSS */}
           <div className="emr-ws-canvas-toolbar select-none">
-            {/* Toolbar Row 1: Draw tool selector & tool sizes & zoom */}
+            {/* Single Row: Draw tools, Zoom & History controls */}
             <div className="emr-ws-toolbar-row">
               {/* Pen / Eraser toggles */}
               <div className="emr-ws-toggle-container">
@@ -103,36 +103,6 @@ export default function EmrWorkspaceCanvas({
                 </button>
               </div>
 
-              {/* Contextual Brush Sizes */}
-              <div className="emr-ws-toolbar-group">
-                <span className="emr-ws-toolbar-label">SIZE</span>
-                {drawingTool === 'pen' ? (
-                  <select
-                    value={strokeWidth}
-                    onChange={(e) => setStrokeWidth(Number(e.target.value))}
-                    className="emr-ws-select"
-                  >
-                    {penSizes.map((s) => (
-                      <option key={s.value} value={s.value}>
-                        {s.label} ({s.value}px)
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <select
-                    value={eraserWidth}
-                    onChange={(e) => setEraserWidth(Number(e.target.value))}
-                    className="emr-ws-select"
-                  >
-                    {eraserSizes.map((s) => (
-                      <option key={s.value} value={s.value}>
-                        {s.label} ({s.value}px)
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-
               {/* Zoom Actions */}
               <div className="emr-ws-zoom-box">
                 <button
@@ -159,59 +129,6 @@ export default function EmrWorkspaceCanvas({
                   <ZoomIn size={11} />
                 </button>
               </div>
-            </div>
-
-            {/* Toolbar Row 2: Grid and safety navigation */}
-            <div className="emr-ws-toolbar-row row-border-top">
-              {/* Paper Grid Selector */}
-              <div className="emr-ws-toolbar-group">
-                <span className="emr-ws-toolbar-label">SHEET</span>
-                <select
-                  value={gridStyle}
-                  onChange={(e) => setGridStyle(e.target.value)}
-                  className="emr-ws-select"
-                >
-                  <option value="grid">Square Grid</option>
-                  <option value="ruled">notebook Ruled</option>
-                  <option value="dots">Dotted Grid</option>
-                  <option value="none">Plain Sheet</option>
-                </select>
-              </div>
-
-              {/* Grid Properties */}
-              {gridStyle !== 'none' && (
-                <div className="emr-ws-toolbar-group">
-                  <label className="emr-ws-slider-label">
-                    OPACITY
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={gridVisible}
-                      onChange={(e) => setGridVisible(Number(e.target.value))}
-                      className="emr-ws-slider"
-                    />
-                  </label>
-                  <label className="emr-ws-spacing-label">
-                    SPACING
-                    <button
-                      type="button"
-                      onClick={() => setGridSpacing(Math.max(10, gridSpacing - 5))}
-                      className="emr-ws-spacing-btn"
-                    >
-                      −
-                    </button>
-                    <span className="emr-ws-spacing-value">{gridSpacing}px</span>
-                    <button
-                      type="button"
-                      onClick={() => setGridSpacing(Math.min(50, gridSpacing + 5))}
-                      className="emr-ws-spacing-btn"
-                    >
-                      +
-                    </button>
-                  </label>
-                </div>
-              )}
 
               {/* History Rig */}
               <div className="emr-ws-history-rig">
@@ -259,12 +176,6 @@ export default function EmrWorkspaceCanvas({
                   </button>
                 )}
               </div>
-            </div>
-
-            {/* Smart Optimizer Banner inside the frame */}
-            <div className="emr-ws-optimizer-banner">
-              <Sparkles size={9} className="sparkle-icon" />
-              <span>Layout Optimizer Active: empty margins are automatically trimmed when saving.</span>
             </div>
           </div>
 

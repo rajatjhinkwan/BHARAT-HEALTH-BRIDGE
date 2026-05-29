@@ -40,6 +40,9 @@ export default function EmrWorkspacePages({
           );
         })}
       </div>
+      <div className="mt-auto pt-2 text-[8px] text-slate-400 font-black leading-normal border-t border-slate-100 flex items-center gap-1 uppercase tracking-wider select-none">
+        <span>✨ Margin Optimizer Active</span>
+      </div>
     </aside>
   );
 }

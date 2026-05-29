@@ -80,41 +80,43 @@ export default function EmrWorkspaceModal({
         />
 
         {/* WhatsApp Voice Notes dashboard strip */}
-        <div className="emr-ws-voice-strip non-printable flex flex-wrap gap-4 items-center justify-between p-3 bg-slate-50 border-b border-slate-200">
-          <div className="flex flex-col gap-0.5">
-            <h4 className="text-[10px] font-black text-[#128C7E] flex items-center gap-1.5 uppercase tracking-wider">
-              <Mic size={12} className="text-[#25D366] animate-pulse" />
-              WhatsApp Voice Instructions
-            </h4>
-            <p className="text-[9px] text-slate-500 font-bold">
-              Record spoken prescriptions. The patient will see active audio waveforms!
-            </p>
+        {patient?.tokenNumber?.startsWith('APT-') && (
+          <div className="emr-ws-voice-strip non-printable flex flex-wrap gap-4 items-center justify-between p-3 bg-slate-50 border-b border-slate-200">
+            <div className="flex flex-col gap-0.5">
+              <h4 className="text-[10px] font-black text-[#128C7E] flex items-center gap-1.5 uppercase tracking-wider">
+                <Mic size={12} className="text-[#25D366] animate-pulse" />
+                WhatsApp Voice Instructions
+              </h4>
+              <p className="text-[9px] text-slate-500 font-bold">
+                Record spoken prescriptions. The patient will see active audio waveforms!
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4 flex-wrap">
+              {/* Live WhatsApp visual waveform recorder */}
+              <VoiceMessageRecorder
+                isRecording={voice.isRecording}
+                onToggle={voice.toggleRecording}
+              />
+
+              {/* Scrollable list of recent voice notes in this consultation */}
+              {voiceNotes.length > 0 && (
+                <div className="flex items-center gap-2 overflow-x-auto max-w-[450px] py-0.5 border-l border-slate-350 pl-3">
+                  {voiceNotes.slice(0, 3).map((note) => (
+                    <VoiceMessageBubble
+                      key={note.id || note.url}
+                      noteUrl={note.url}
+                      timestamp={note.timestamp}
+                      senderName={user?.name || 'Dr. Attending'}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+        )}
 
-          <div className="flex items-center gap-4 flex-wrap">
-            {/* Live WhatsApp visual waveform recorder */}
-            <VoiceMessageRecorder
-              isRecording={voice.isRecording}
-              onToggle={voice.toggleRecording}
-            />
-
-            {/* Scrollable list of recent voice notes in this consultation */}
-            {voiceNotes.length > 0 && (
-              <div className="flex items-center gap-2 overflow-x-auto max-w-[450px] py-0.5 border-l border-slate-350 pl-3">
-                {voiceNotes.slice(0, 3).map((note) => (
-                  <VoiceMessageBubble
-                    key={note.id || note.url}
-                    noteUrl={note.url}
-                    timestamp={note.timestamp}
-                    senderName={user?.name || 'Dr. Attending'}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className={`emr-ws-body${isReferral ? ' is-referral' : ''}`}>
+        <div className={`emr-ws-body${isReferral ? ' is-referral' : ''}${!showCanvas ? ' no-canvas' : ''}`}>
           {isReferral ? (
             <div className="emr-ws-referral-wrap">
               <ReferralPanel

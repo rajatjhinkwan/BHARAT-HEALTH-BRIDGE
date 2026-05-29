@@ -249,6 +249,7 @@ export default function ElectronicMedicalRecord() {
             onFinalize: workspace.handleSaveSession,
             finalizeLoading: clinical.actionLoading,
             sessionDoctor: user?.name || 'Attending physician',
+            showVoice: patient?.tokenNumber?.startsWith('APT-'),
           }}
         />
         </aside>

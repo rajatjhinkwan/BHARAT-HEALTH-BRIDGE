@@ -172,6 +172,10 @@
   grid-template-columns: 1fr;
 }
 
+.emr-ws-body.no-canvas {
+  grid-template-columns: 140px minmax(0, 1fr);
+}
+
 .emr-ws-pages {
   background: #fff;
   border-right: 1px solid #e2e8f0;
