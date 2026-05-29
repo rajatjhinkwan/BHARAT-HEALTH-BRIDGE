@@ -59,8 +59,11 @@ export default function BookAppointment() {
   useEffect(() => {
     const load = async () => {
       try {
+        const token = localStorage.getItem('hospflow_auth_token');
         const [pRes, dRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/clinical/patients`),
+          fetch(`${API_BASE_URL}/clinical/patients`, {
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          }),
           fetch(`${API_BASE_URL}/departments`),
         ]);
         if (pRes.ok) setPatients(await pRes.json());
