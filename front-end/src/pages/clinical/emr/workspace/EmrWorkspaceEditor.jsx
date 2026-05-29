@@ -98,17 +98,53 @@ export default function EmrWorkspaceEditor({
         )}
         {activeTab === 'Notes' && (
           <div className="emr-clinical-notes">
-            <h5 className="emr-notes-title">{activeTab}</h5>
-            <textarea
-              className="emr-textarea emr-ws-textarea"
-              placeholder={`Enter ${activeTab.toLowerCase()} details…`}
-              value={page?.typed || ''}
-              onChange={(e) => onUpdateTyped(e.target.value)}
-              rows={8}
-            />
-            <p className="emr-notes-hint">
+            <h5 className="emr-notes-title">Advice & Notes</h5>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '5px', letterSpacing: '0.5px' }}>
+                  General Advice & Recommendations
+                </label>
+                <textarea
+                  className="emr-textarea emr-ws-textarea"
+                  placeholder="Enter general medical advice, diet restrictions, rest, lifestyle suggestions..."
+                  value={page?.generalAdvice || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const followUpVal = page?.followUpAdvice || '';
+                    onUpdateTyped({
+                      generalAdvice: val,
+                      typed: `General Advice:\n${val}\n\nFollow-up Advice:\n${followUpVal}`
+                    });
+                  }}
+                  rows={4}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '5px', letterSpacing: '0.5px' }}>
+                  Follow-up Advice
+                </label>
+                <textarea
+                  className="emr-textarea emr-ws-textarea"
+                  placeholder="Enter follow-up advice (e.g., 'Review with reports after 5 days' or 'SOS if symptoms persist')..."
+                  value={page?.followUpAdvice || ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    const generalVal = page?.generalAdvice || '';
+                    onUpdateTyped({
+                      followUpAdvice: val,
+                      typed: `General Advice:\n${generalVal}\n\nFollow-up Advice:\n${val}`
+                    });
+                  }}
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <p className="emr-notes-hint" style={{ marginTop: '12px' }}>
               <Edit3 size={14} />
-              Type additional consultation notes.
+              Type general clinical advice and follow-up directives separately for clear printing.
             </p>
           </div>
         )}

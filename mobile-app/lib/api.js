@@ -379,11 +379,24 @@ export async function listDoctors(department) {
       const parsed = JSON.parse(raw);
       if (parsed?.token === 'dev_bypass_token') {
         return [
-          { employeeId: 1, name: 'Dr. Anoop Chauhan', department: 'Cardiology', specialization: 'Cardiology' },
-          { employeeId: 2, name: 'Dr. Ramesh Chaudhary', department: 'Cardiology', specialization: 'Cardiology' },
-          { employeeId: 3, name: 'Dr. Vinod Bisht', department: 'Cardiology', specialization: 'Cardiology' },
-          { employeeId: 4, name: 'Dr. Rajat Jhinkwan', department: 'Neurology', specialization: 'Neurology' },
-          { employeeId: 5, name: 'Dr. Kartikay Jhinkwan', department: 'Orthopedics', specialization: 'Orthopedics' }
+          { employeeId: 'DOC-GEN-123', name: 'Dr. Rahul Negi', department: 'General Medicine', specialization: 'General Medicine' },
+          { employeeId: 'DOC-CARD-123', name: 'Dr. Anoop Chauhan', department: 'Cardiology', specialization: 'Cardiology' },
+          { employeeId: 'DOC-NEUR-123', name: 'Dr. Rajat Jhinkwan', department: 'Neurology', specialization: 'Neurology Specialist' },
+          { employeeId: 'DOC-NEPH-123', name: 'Dr. Deepak Bhandari', department: 'Nephrology', specialization: 'Nephrology Specialist' },
+          { employeeId: 'DOC-ORTH-123', name: 'Dr. Kartikay Jhinkwan', department: 'Orthopedics', specialization: 'Trauma Specialist' },
+          { employeeId: 'DOC-ENT-123', name: 'Dr. Ramesh Chaudhary', department: 'ENT', specialization: 'ENT Consultant' },
+          { employeeId: 'DOC-DERM-123', name: 'Dr. Vinod Bisht', department: 'Dermatology', specialization: 'Clinical Dermatologist' },
+          { employeeId: 'DOC-PED-123', name: 'Dr. Renu Pant', department: 'Pediatrics', specialization: 'Neonatology' },
+          { employeeId: 'DOC-GYN-123', name: 'Dr. Priya Rawat', department: 'Gynecology', specialization: 'Obstetrics Specialist' },
+          { employeeId: 'DOC-PSY-123', name: 'Dr. Suresh Negi', department: 'Psychiatry', specialization: 'Clinical Psychiatry' },
+          { employeeId: 'DOC-RAD-123', name: 'Dr. Surendra Singh Rawat', department: 'Radiology', specialization: 'Diagnostic Imaging' },
+          { employeeId: 'DOC-ONC-123', name: 'Dr. Mohit Chauhan', department: 'Oncology', specialization: 'Medical Oncology' },
+          { employeeId: 'DOC-PULM-123', name: 'Dr. Susheela Tiwari', department: 'Pulmonology', specialization: 'Respiratory Medicine' },
+          { employeeId: 'DOC-UROL-123', name: 'Dr. Vikram Bhandari', department: 'Urology', specialization: 'Urology Specialist' },
+          { employeeId: 'DOC-GAST-123', name: 'Dr. Kumar Bisht', department: 'Gastroenterology', specialization: 'Gastroenterology Head' },
+          { employeeId: 'DOC-ENDO-123', name: 'Dr. Shashank Negi', department: 'Endocrinology', specialization: 'Endocrine Specialist' },
+          { employeeId: 'DOC-OPHT-123', name: 'Dr. Ajay Rawat', department: 'Ophthalmology', specialization: 'Ophthalmic Surgeon' },
+          { employeeId: 'DOC-EMER-123', name: 'Dr. Ganesh Singh Parihar', department: 'Emergency', specialization: 'Emergency Medicine' }
         ];
       }
     }
@@ -400,7 +413,26 @@ export async function listDepartments() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed?.token === 'dev_bypass_token') {
-        return ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'ENT', 'Dermatology', 'Eye Care', 'Gastroenterology'];
+        return [
+          'General Medicine',
+          'Cardiology',
+          'Neurology',
+          'Nephrology',
+          'Orthopedics',
+          'ENT',
+          'Dermatology',
+          'Pediatrics',
+          'Gynecology',
+          'Psychiatry',
+          'Radiology',
+          'Oncology',
+          'Pulmonology',
+          'Urology',
+          'Gastroenterology',
+          'Endocrinology',
+          'Ophthalmology',
+          'Emergency'
+        ];
       }
     }
   } catch (_) {}

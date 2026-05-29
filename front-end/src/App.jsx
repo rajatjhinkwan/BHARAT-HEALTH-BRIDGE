@@ -191,8 +191,8 @@ function App() {
                 <Route path="/sessions" element={<SpecializedSessionDashboard />} />
               </Route>
               
-              {/* Catch-all 404 Route */}
-              <Route path="*" element={<NotFound />} />
+              {/* Catch-all Route - redirect to home page */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
           <FooterWrapper />

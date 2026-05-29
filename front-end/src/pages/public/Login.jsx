@@ -106,6 +106,14 @@ export default function Login() {
     if (!showDept) setDepartment('');
   }, [showDept]);
 
+  useEffect(() => {
+    if (window.location.search.includes('expired=true')) {
+      setError('Session expired. Please sign in again.');
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
+
   const handleOtpChange = (index, value) => {
     if (isNaN(value)) return;
     const newOtp = [...otp];

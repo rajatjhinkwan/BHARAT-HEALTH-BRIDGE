@@ -12,6 +12,14 @@ export default function PatientLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (window.location.search.includes('expired=true')) {
+      setError('Session expired. Please sign in again.');
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');

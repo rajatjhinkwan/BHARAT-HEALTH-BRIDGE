@@ -8,7 +8,7 @@ const INITIAL_PAGES = {
   Medicine: [{ content: null, typed: '' }],
   Diagnosis: [{ content: null, typed: '' }],
   'Blood Test': [{ content: null, typed: '' }],
-  Notes: [{ content: null, typed: '' }],
+  Notes: [{ content: null, typed: '', generalAdvice: '', followUpAdvice: '' }],
 };
 
 export function useEmrWorkspace({
@@ -110,10 +110,11 @@ export function useEmrWorkspace({
       },
       medications: structuredMedsState.filter((m) => m.name),
       investigations: (pages['Blood Test']?.[0]?.typed || '').split('\n').filter((l) => l.trim()),
-      followUp: pages.Notes?.[0]?.typed || dischargeForm?.followUp || 'Review as advised.',
+      followUp: pages.Notes?.[0]?.followUpAdvice || 'Review as advised.',
+      generalAdvice: pages.Notes?.[0]?.generalAdvice || '',
       blockchainHash: null,
     }),
-    [patient, user, pages, structuredMedsState, dischargeForm]
+    [patient, user, pages, structuredMedsState]
   );
 
   const handlePrint = useReactToPrint({
@@ -139,11 +140,15 @@ export function useEmrWorkspace({
   );
 
   const updatePageTyped = useCallback(
-    (text) => {
+    (textOrObj) => {
       setPages((prev) => {
         const next = { ...prev };
         const current = next[activeActionTab][currentPageIdx] || { content: null, typed: '' };
-        next[activeActionTab][currentPageIdx] = { ...current, typed: text };
+        if (textOrObj && typeof textOrObj === 'object') {
+          next[activeActionTab][currentPageIdx] = { ...current, ...textOrObj };
+        } else {
+          next[activeActionTab][currentPageIdx] = { ...current, typed: textOrObj };
+        }
         return next;
       });
     },

@@ -6,8 +6,13 @@ import cors from 'cors'
 import { Server } from 'socket.io'
 import http from 'http'
 import { notFound, errorHandler } from './middleware/errorHandler.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 dotenv.config()
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const CLIENT_URL = process.env.CLIENT_URL || '*'
 const allowedOrigins = CLIENT_URL === '*' 
@@ -30,6 +35,9 @@ app.use(cors({ origin: CLIENT_URL === '*' ? true : allowedOrigins }))
 app.use(express.json())
 app.use(morgan('dev'))
 app.use('/uploads', express.static('uploads'))
+
+const frontendDist = path.join(__dirname, '../../front-end/dist')
+app.use(express.static(frontendDist))
 
 // Attach io to app to use in routes
 app.set('io', io)
@@ -95,6 +103,18 @@ app.get('/api/health', (req, res) => {
 
 // Modular routes
 app.use('/api', (await import('./routes/index.js')).default)
+
+// Fallback wildcard to serve built frontend SPA index.html for all subroutes
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+    return next()
+  }
+  res.sendFile(path.join(frontendDist, 'index.html'), (err) => {
+    if (err) {
+      next()
+    }
+  })
+})
 
 app.use(notFound)
 app.use(errorHandler)

@@ -36,6 +36,17 @@ export async function apiFetch(path, options = {}) {
 
 export async function apiJson(path, options = {}) {
   const res = await apiFetch(path, options);
+  
+  if (res.status === 401) {
+    localStorage.removeItem('hospflow_auth_user');
+    localStorage.removeItem('hospflow_auth_token');
+    const isPatient = window.location.pathname.startsWith('/patient');
+    const loginPath = isPatient ? '/patient-login' : '/login';
+    if (window.location.pathname !== '/login' && window.location.pathname !== '/patient-login') {
+      window.location.href = `${loginPath}?expired=true`;
+    }
+  }
+
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const err = new Error(data.message || data.error || `Request failed (${res.status})`);

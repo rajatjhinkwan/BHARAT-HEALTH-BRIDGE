@@ -7,8 +7,8 @@ import {
 const TABS = [
   { id: 'Medicine', label: 'Prescription', icon: Pill },
   { id: 'Diagnosis', label: 'Diagnosis', icon: Activity },
-  { id: 'Blood Test', label: 'Laboratory', icon: FlaskConical },
-  { id: 'Notes', label: 'Notes', icon: FileText },
+  { id: 'Blood Test', label: 'Investigation', icon: FlaskConical },
+  { id: 'Notes', label: 'Advice & Notes', icon: FileText },
   { id: 'Referral', label: 'Referral', icon: Share2 },
 ];
 

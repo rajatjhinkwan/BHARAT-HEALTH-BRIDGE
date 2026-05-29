@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { Shield, CheckCircle, Activity, Heart, Thermometer, Droplets } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
-const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications, investigations, followUp, blockchainHash }, ref) => {
+const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications, investigations, followUp, generalAdvice, blockchainHash }, ref) => {
   const today = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'long',
@@ -152,15 +152,30 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
           </div>
         </section>
 
-        {/* 4. FOLLOW-UP ADVICE */}
+        {/* 4. GENERAL ADVICE */}
+        {(generalAdvice || clinicalData?.notesText) && (
+          <section className="pdf-section">
+            <div className="section-header">
+              <div className="section-symbol">📝</div>
+              <h3>General Advice</h3>
+            </div>
+            <div className="section-body">
+              <div className="advice-box">
+                <p style={{ whiteSpace: 'pre-line' }}>{generalAdvice || clinicalData?.notesText}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 5. FOLLOW-UP ADVICE */}
         <section className="pdf-section">
           <div className="section-header">
             <div className="section-symbol">📅</div>
-            <h3>Follow-up & General Advice</h3>
+            <h3>Follow-up Advice</h3>
           </div>
           <div className="section-body">
             <div className="advice-box">
-               <p>{followUp || 'Review with reports after 7 days.'}</p>
+              <p>{followUp || 'Review as advised.'}</p>
             </div>
           </div>
         </section>
@@ -169,24 +184,14 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
       {/* FOOTER SECTION */}
       <footer className="pdf-footer">
         <div className="footer-left">
-          <div className="blockchain-badge">
-             < Shield size={14} />
-             <span>BLOCKCHAIN LEDGER SECURED</span>
-          </div>
-          <div className="hash-details">
-             <p className="label">TRANSACTION HASH (EMR-SYNC):</p>
-             <p className="hash-val">{blockchainHash || '0x612bc3ee1584de4d7920691c2251330df4734528e97bbfa54e3135d18bf382ed'}</p>
-          </div>
-          <div className="qr-box">
-             <QRCodeSVG value={blockchainHash || 'https://bharathealthbridge.in/verify'} size={60} />
-             <span className="qr-label">Scan to Verify</span>
-          </div>
+          <p className="footer-disclaimer">This is a digitally generated prescription under the National Digital Health Mission.</p>
+          <p className="footer-date">Generated on: {today}</p>
         </div>
         <div className="footer-right">
           <div className="signature-area">
              <div className="signature-line"></div>
              <p className="sig-label">Authorized Signature</p>
-             <p className="sig-name">Dr. {doctor?.name}</p>
+             <p className="sig-name">Dr. {doctor?.name || 'A. Sharma'}</p>
           </div>
         </div>
       </footer>
@@ -431,43 +436,19 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
           border-top: 1px solid #e2e8f0;
         }
 
-        .blockchain-badge {
-          display: flex;
-          align-items: center;
-          gap: 2mm;
-          background: #0f172a;
-          color: #10b981;
-          padding: 1.5mm 3mm;
-          border-radius: 1mm;
-          font-size: 9px;
-          font-weight: 900;
-          width: fit-content;
-          margin-bottom: 2mm;
-        }
-
-        .hash-details {
-          margin-bottom: 4mm;
-        }
-
-        .hash-val {
-          font-family: monospace;
-          font-size: 8px;
-          color: #94a3b8;
-          word-break: break-all;
-          max-width: 80mm;
-        }
-
-        .qr-box {
-          display: flex;
-          align-items: center;
-          gap: 3mm;
-        }
-
-        .qr-label {
-          font-size: 9px;
-          font-weight: 800;
+        .footer-disclaimer {
+          font-size: 10px;
           color: #64748b;
-          text-transform: uppercase;
+          margin: 0 0 2px 0;
+          font-weight: 500;
+          max-width: 120mm;
+        }
+
+        .footer-date {
+          font-size: 10px;
+          color: #94a3b8;
+          margin: 0;
+          font-weight: 600;
         }
 
         .signature-area {

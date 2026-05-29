@@ -151,7 +151,20 @@ const FALLBACK_DOCTORS = [
   { id: 'DOC-CARD-123', name: 'Dr. Anoop Chauhan', dept: 'cardiology', exp: '15 years', rating: 4.9, available: 3, nextSlot: '10:30 AM', employeeId: 'DOC-CARD-123' },
   { id: 'DOC-NEUR-123', name: 'Dr. Rajat Jhinkwan', dept: 'neurology', exp: '12 years', rating: 4.9, available: 2, nextSlot: '2:00 PM', employeeId: 'DOC-NEUR-123' },
   { id: 'DOC-NEPH-123', name: 'Dr. Deepak Bhandari', dept: 'nephrology', exp: '11 years', rating: 4.7, available: 2, nextSlot: '11:00 AM', employeeId: 'DOC-NEPH-123' },
-  { id: 'DOC-ORTH-123', name: 'Dr. Kartikay Jhinkwan', dept: 'orthopedics', exp: '14 years', rating: 4.8, available: 5, nextSlot: '9:00 AM', employeeId: 'DOC-ORTH-123' }
+  { id: 'DOC-ORTH-123', name: 'Dr. Kartikay Jhinkwan', dept: 'orthopedics', exp: '14 years', rating: 4.8, available: 5, nextSlot: '9:00 AM', employeeId: 'DOC-ORTH-123' },
+  { id: 'DOC-ENT-123', name: 'Dr. Ramesh Chaudhary', dept: 'ent', exp: '13 years', rating: 4.7, available: 3, nextSlot: '11:30 AM', employeeId: 'DOC-ENT-123' },
+  { id: 'DOC-DERM-123', name: 'Dr. Vinod Bisht', dept: 'dermatology', exp: '9 years', rating: 4.6, available: 4, nextSlot: '3:00 PM', employeeId: 'DOC-DERM-123' },
+  { id: 'DOC-PED-123', name: 'Dr. Renu Pant', dept: 'pediatrics', exp: '16 years', rating: 4.9, available: 4, nextSlot: '10:15 AM', employeeId: 'DOC-PED-123' },
+  { id: 'DOC-GYN-123', name: 'Dr. Priya Rawat', dept: 'gynecology', exp: '12 years', rating: 4.8, available: 3, nextSlot: '1:30 PM', employeeId: 'DOC-GYN-123' },
+  { id: 'DOC-PSY-123', name: 'Dr. Suresh Negi', dept: 'psychiatry', exp: '14 years', rating: 4.7, available: 2, nextSlot: '2:30 PM', employeeId: 'DOC-PSY-123' },
+  { id: 'DOC-RAD-123', name: 'Dr. Surendra Singh Rawat', dept: 'radiology', exp: '15 years', rating: 4.8, available: 4, nextSlot: '11:00 AM', employeeId: 'DOC-RAD-123' },
+  { id: 'DOC-ONC-123', name: 'Dr. Mohit Chauhan', dept: 'oncology', exp: '17 years', rating: 4.9, available: 3, nextSlot: '10:00 AM', employeeId: 'DOC-ONC-123' },
+  { id: 'DOC-PULM-123', name: 'Dr. Susheela Tiwari', dept: 'pulmonology', exp: '11 years', rating: 4.6, available: 3, nextSlot: '12:00 PM', employeeId: 'DOC-PULM-123' },
+  { id: 'DOC-UROL-123', name: 'Dr. Vikram Bhandari', dept: 'urology', exp: '13 years', rating: 4.7, available: 2, nextSlot: '3:30 PM', employeeId: 'DOC-UROL-123' },
+  { id: 'DOC-GAST-123', name: 'Dr. Kumar Bisht', dept: 'gastroenterology', exp: '12 years', rating: 4.8, available: 4, nextSlot: '11:00 AM', employeeId: 'DOC-GAST-123' },
+  { id: 'DOC-ENDO-123', name: 'Dr. Shashank Negi', dept: 'endocrinology', exp: '10 years', rating: 4.7, available: 3, nextSlot: '9:30 AM', employeeId: 'DOC-ENDO-123' },
+  { id: 'DOC-OPHT-123', name: 'Dr. Ajay Rawat', dept: 'ophthalmology', exp: '14 years', rating: 4.8, available: 3, nextSlot: '10:45 AM', employeeId: 'DOC-OPHT-123' },
+  { id: 'DOC-EMER-123', name: 'Dr. Ganesh Singh Parihar', dept: 'emergency', exp: '15 years', rating: 4.9, available: 5, nextSlot: '24/7', employeeId: 'DOC-EMER-123' }
 ];
 
 const TIMESLOTS = [
@@ -182,7 +195,10 @@ function format24to12(time24) {
 }
 
 const INITIAL_DEPTS = [
-  'General Medicine', 'Cardiology', 'Neurology', 'Nephrology', 'Orthopedics', 'ENT'
+  'General Medicine', 'Cardiology', 'Neurology', 'Nephrology', 'Orthopedics',
+  'ENT', 'Dermatology', 'Pediatrics', 'Gynecology', 'Psychiatry',
+  'Radiology', 'Oncology', 'Pulmonology', 'Urology', 'Gastroenterology',
+  'Endocrinology', 'Ophthalmology', 'Emergency'
 ].map(name => {
   const id = name.toLowerCase().replace(/\s+/g, '-');
   const meta = DEPARTMENT_METADATA[id] || {

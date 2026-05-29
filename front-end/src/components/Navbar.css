@@ -322,6 +322,30 @@
   color: var(--text-main);
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.app-navbar__menu-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+[data-theme='light'] .app-navbar__menu-btn {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+[data-theme='dark'] .app-navbar__menu-btn {
+  background: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.app-navbar__menu-btn svg {
+  stroke: currentColor;
+  display: block;
 }
 
 .app-navbar__mobile-panel {
