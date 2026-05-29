@@ -45,6 +45,7 @@ import PatientHistory from './pages/patient/PatientHistory';
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalSearch from './components/clinical/GlobalSearch';
 import React, { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFound from './pages/public/NotFound';
 import './App.css';
@@ -195,6 +196,7 @@ function App() {
             </Routes>
           </div>
           <FooterWrapper />
+          <Analytics />
         </div>
             </ErrorBoundary>
           </NotificationProvider>
