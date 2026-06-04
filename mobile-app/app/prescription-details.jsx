@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, ActivityIndicator, Image as RNImage, Platform }
 import { Ionicons } from '@expo/vector-icons';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';
 import AppHeader from '@/components/ui/app-header';
-import { Radius, Shadow } from '@/constants/theme';
+import { Radius, Shadow , Colors } from '@/constants/theme';
 import { HOME_MOCK_DATA } from '@/constants/mockData';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors } from '@/constants/theme';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import PressableScale from '@/components/ui/PressableScale';
 import { useLocalSearchParams } from 'expo-router';

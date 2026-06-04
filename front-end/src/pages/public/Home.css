@@ -50,7 +50,7 @@
 .path-pulse {
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    animation: pulse-draw 8s linear infinite;
+    animation: pulse-draw 4s linear infinite;
     filter: drop-shadow(0 0 8px var(--primary));
 }
 
@@ -384,8 +384,8 @@
 
 .module-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
     margin-top: 4rem;
 }
 
@@ -393,7 +393,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: 2.5rem;
+    padding: 1.5rem;
     transition: all var(--transition);
     position: relative;
     overflow: hidden;

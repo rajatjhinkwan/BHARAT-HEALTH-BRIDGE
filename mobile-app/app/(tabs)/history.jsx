@@ -204,37 +204,9 @@ export default function HistoryScreen() {
   };
 
   const fallbackToTts = async (record) => {
-    const transcript = record.voiceNoteDetails?.transcript;
-    if (!transcript) {
-      setPlayingVoiceId(null);
-      setLoadingAudioId(null);
-      return;
-    }
-
-    try {
-      setLoadingAudioId(null);
-      setPlayingVoiceId(record._id);
-      setPlaybackProgress(0);
-
-      Speech.speak(transcript, {
-        onDone: () => {
-          setPlayingVoiceId(null);
-          setPlaybackProgress(0);
-        },
-        onError: () => {
-          setPlayingVoiceId(null);
-          setPlaybackProgress(0);
-        },
-        onStopped: () => {
-          setPlayingVoiceId(null);
-          setPlaybackProgress(0);
-        },
-      });
-    } catch (err) {
-      console.warn("TTS fallback error:", err);
-      setPlayingVoiceId(null);
-      setLoadingAudioId(null);
-    }
+    Alert.alert("Audio Unavailable", "The original audio file is not available. Please refer to the transcript.");
+    setPlayingVoiceId(null);
+    setLoadingAudioId(null);
   };
 
   const fetchHistory = async () => {
@@ -292,6 +264,7 @@ export default function HistoryScreen() {
       }
     } catch (err) {
       console.error(err);
+      Alert.alert('Upload Error', 'Failed to upload document. Please try again.');
     }
   };
 
@@ -631,7 +604,7 @@ export default function HistoryScreen() {
                               )}
 
                               {/* Privacy Consent & Control Area */}
-                              <View style={[styles.actionRow, { borderTopColor: C.border, justifycontent: 'flex-end' }]}>
+                              <View style={[styles.actionRow, { borderTopColor: C.border, justifyContent: 'flex-end' }]}>
                                 <PressableScale onPress={() => shareRecord(record)} style={styles.shareBtn}>
                                   <Ionicons name="share-social-outline" size={16} color={C.primaryBlue} />
                                   <Text style={{ color: C.primaryBlue, fontWeight: '800', fontSize: 12, marginLeft: 4 }}>Share</Text>
@@ -651,7 +624,7 @@ export default function HistoryScreen() {
       </View>
 
       {/* Immersive Full Screen Prescription Zoom Modal */}
-      {Boolean(fullScreenImageUri || fullScreenStrokesData) && (
+      <Modal visible={Boolean(fullScreenImageUri || fullScreenStrokesData)} transparent={true} animationType="fade" onRequestClose={() => { setFullScreenImageUri(null); setFullScreenStrokesData(null); setModalZoomScale(1); }}>
         <View style={styles.modalOverlay} role="dialog" aria-modal="true">
           <View style={styles.modalHeaderRow}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -748,10 +721,10 @@ export default function HistoryScreen() {
             </ScrollView>
           </ScrollView>
         </View>
-      )}
+      </Modal>
 
       {/* WhatsApp-style Voice Notes Overlay Modal */}
-      {Boolean(voiceNotesModalData) && (
+      <Modal visible={Boolean(voiceNotesModalData)} transparent={true} animationType="slide" onRequestClose={() => { setVoiceNotesModalData(null); stopAudio(); }}>
         <View style={styles.modalOverlay} role="dialog" aria-modal="true">
           {/* Chat Header */}
           <View style={styles.chatHeader}>
@@ -811,26 +784,7 @@ export default function HistoryScreen() {
                       )}
                       
                       {/* Audio wave simulation or progress bar */}
-                      <View style={styles.chatProgressContainer}>
-                        {/* Audio Waveform Simulator */}
-                        <View style={styles.waveformContainer}>
-                          {[30, 60, 45, 75, 50, 90, 40, 65, 80, 50, 70, 45, 60, 85, 40, 75, 55, 30].map((h, i) => {
-                            const isBarPlayed = isPlaying && (i / 18) <= playbackProgress;
-                            return (
-                              <View 
-                                key={i} 
-                                style={{
-                                  width: 2,
-                                  height: (h * 20) / 100,
-                                  backgroundColor: isBarPlayed ? '#10B981' : (scheme === 'dark' ? '#4B5563' : '#D1D5DB'),
-                                  borderRadius: 1,
-                                  opacity: isBarPlayed ? 1 : 0.6,
-                                  marginHorizontal: 1
-                                }} 
-                              />
-                            );
-                          })}
-                        </View>
+                      <View style={[styles.chatProgressContainer, { height: 20, justifyContent: 'center', marginHorizontal: 10 }]}>
                         {/* Thin progress track */}
                         <View style={styles.chatProgressTrack}>
                           <View style={[
@@ -868,7 +822,7 @@ export default function HistoryScreen() {
             })}
           </ScrollView>
         </View>
-      )}
+      </Modal>
     </ScreenWrapper>
   );
 }

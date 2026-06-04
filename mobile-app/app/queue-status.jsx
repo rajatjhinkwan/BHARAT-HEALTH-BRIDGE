@@ -60,7 +60,7 @@ export default function QueueStatusScreen() {
     );
     pulse.start();
     return () => pulse.stop();
-  }, []);
+  }, [fadeAnim, pulseAnim, slideAnim]);
 
   const fetchQueue = useCallback(async () => {
     if (!department) return;

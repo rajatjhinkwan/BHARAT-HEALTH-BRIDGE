@@ -22,7 +22,7 @@ const MedicalPulse = () => (
     <svg width="100%" height="100%" viewBox="0 0 1000 300" preserveAspectRatio="none">
       <path
         className="path-pulse"
-        d="M0,150 L200,150 L220,100 L240,200 L260,150 L400,150 L420,50 L440,250 L460,150 L600,150 L620,120 L640,180 L660,150 L1000,150"
+        d="M0,150 L200,150 L220,50 L240,250 L260,150 L400,150 L420,0 L440,300 L460,150 L600,150 L620,80 L640,220 L660,150 L1000,150"
         fill="none"
         stroke="#0ea5e9"
         strokeWidth="2"
@@ -79,14 +79,6 @@ export default function Home() {
             features: ["Inventory Control", "Generic Search", "Order Tracking"],
             link: "/pharmacy",
             color: "#10b981"
-        },
-        {
-            title: "Blood Bank Node",
-            desc: "Real-time inventory management with critical shortage alerts and donor tracking.",
-            icon: <Droplets size={24} />,
-            features: ["Stock Registry", "Compatibility Check", "Urgent Requests"],
-            link: "/bloodbank",
-            color: "#dc2626"
         },
         {
             title: "Lab & Diagnostics",
@@ -255,7 +247,7 @@ export default function Home() {
 
                 {/* MODULE UNIVERSE */}
                 <section id="ecosystem" className="ecosystem-section">
-                    <div className="section-title-wrapper">
+                    <div className="section-title-wrapper centered">
                         <span className="section-label">Platform Modules</span>
                         <h2 className="section-main-title">The Bharat Health Universe</h2>
                         <p className="section-subtitle">A comprehensive suite of clinical and operational nodes working in perfect sync.</p>

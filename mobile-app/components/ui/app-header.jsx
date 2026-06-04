@@ -4,6 +4,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import PressableScale from './PressableScale';
 
 export default function AppHeader({ title, showBell = false, bellBadge = 0, showBack = false }) {
@@ -11,6 +12,7 @@ export default function AppHeader({ title, showBell = false, bellBadge = 0, show
   const C = Colors[scheme];
   const [menuOpen, setMenuOpen] = useState(false);
   const slide = useRef(new Animated.Value(0)).current;
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (menuOpen) {
@@ -21,7 +23,7 @@ export default function AppHeader({ title, showBell = false, bellBadge = 0, show
   }, [menuOpen]);
 
   return (
-    <View style={[styles.header, { borderBottomColor: 'rgba(0,0,0,0.05)', backgroundColor: 'transparent' }]}>
+    <View style={[styles.header, { paddingTop: insets.top, height: 64 + insets.top, borderBottomColor: 'rgba(0,0,0,0.05)', backgroundColor: 'transparent' }]}>
       {showBack ? (
         <PressableScale
           accessibilityLabel="Go back"

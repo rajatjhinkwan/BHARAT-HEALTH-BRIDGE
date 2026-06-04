@@ -63,6 +63,7 @@ export default function HospitalFinder() {
   const [emergencyMode, setEmergencyMode] = useState(false);
   const [activeFilter, setActiveFilter] = useState('Nearest');
   const [districtFilter, setDistrictFilter] = useState('All');
+  const [showSyncToast, setShowSyncToast] = useState(false);
   const mapRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [selectedHospitalId, setSelectedHospitalId] = useState(null);
@@ -96,6 +97,8 @@ export default function HospitalFinder() {
       }
 
       setHospitals(data);
+      setShowSyncToast(true);
+      setTimeout(() => setShowSyncToast(false), 4000);
     } catch (err) {
       console.warn('Hospital API failed, using offline Uttarakhand list:', err.message);
       let offline = UTTARAKHAND_HOSPITALS.map(mapOfflineRow);
@@ -166,10 +169,10 @@ export default function HospitalFinder() {
           h?.district?.toLowerCase().includes(q)
       );
     }
-    if (activeFilter === 'Best Rated') {
-      list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (activeFilter === 'Govt Only') {
+    if (activeFilter === 'Govt Only') {
       list = list.filter((h) => h?.type === 'Govt');
+    } else if (activeFilter === 'Private Only') {
+      list = list.filter((h) => h?.type === 'Private');
     } else if (activeFilter === 'Nearest' && list[0]?.distance != null) {
       list.sort((a, b) => (a.distance || 999) - (b.distance || 999));
     }
@@ -221,15 +224,12 @@ export default function HospitalFinder() {
         </View>
       ) : null}
 
-      {!loading && !usingOffline && !error ? (
-        <View style={[styles.banner, { backgroundColor: '#ECFDF5' }]}>
+      {!loading && !usingOffline && !error && showSyncToast ? (
+        <View style={[styles.banner, { backgroundColor: '#ECFDF5', position: 'absolute', top: 70, left: 16, right: 16, zIndex: 100, borderRadius: 12, elevation: 4 }]}>
           <Ionicons name="cloud-done-outline" size={18} color="#059669" />
           <Text style={[styles.bannerText, { color: '#047857' }]}>
-            ● Live Cloud Sync Active — Connected to Bharat Health Server
+            ● Live Cloud Sync Active
           </Text>
-          <TouchableOpacity onPress={() => fetchHospitals(location)} style={[styles.syncRefreshBtn, { backgroundColor: 'rgba(4, 120, 87, 0.1)' }]}>
-            <Ionicons name="refresh-outline" size={14} color="#047857" />
-          </TouchableOpacity>
         </View>
       ) : null}
 
@@ -342,17 +342,7 @@ export default function HospitalFinder() {
         {!isMinimized && (
           <View style={styles.sheetHeader}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-              <PressableScale
-                onPress={toggleEmergency}
-                style={[
-                  styles.pill,
-                  emergencyMode ? styles.pillEmergency : { backgroundColor: C.cardWhite, borderColor: C.border },
-                ]}
-              >
-                <Ionicons name="warning" size={14} color={emergencyMode ? '#fff' : '#EF4444'} />
-                <Text style={[styles.pillText, emergencyMode && { color: '#fff' }]}>Emergency</Text>
-              </PressableScale>
-              {['Nearest', 'Best Rated', 'Govt Only'].map((f) => (
+              {['Nearest', 'Govt Only', 'Private Only'].map((f) => (
                 <FilterPill key={f} label={f} active={activeFilter === f} onPress={() => setActiveFilter(f)} C={C} />
               ))}
             </ScrollView>
@@ -381,10 +371,6 @@ export default function HospitalFinder() {
                   h={h}
                   C={C}
                   isSelected={selectedHospitalId === h._id}
-                  onDetails={() => {
-                    setSelectedHospitalId(h._id);
-                    router.push(`/hospital-details?id=${h._id}`);
-                  }}
                   onNavigate={() => {
                     setSelectedHospitalId(h._id);
                     openNavigation(h);
@@ -413,18 +399,18 @@ function FilterPill({ label, active, onPress, C }) {
   );
 }
 
-function HospitalCard({ h, C, isSelected, onDetails, onNavigate }) {
+function HospitalCard({ h, C, isSelected, onNavigate }) {
   const isEmergency = h.emergency_support;
   return (
-    <View style={[
-      styles.card, 
-      { 
-        backgroundColor: C.cardWhite, 
-        borderColor: isSelected ? C.primaryBlue : (isEmergency ? '#FEF2F2' : C.border),
-        borderWidth: isSelected ? 2.5 : 1
-      }
-    ]}>
-      <PressableScale onPress={onDetails}>
+    <PressableScale onPress={onNavigate}>
+      <View style={[
+        styles.card, 
+        { 
+          backgroundColor: C.cardWhite, 
+          borderColor: isSelected ? C.primaryBlue : (isEmergency ? '#FEF2F2' : C.border),
+          borderWidth: isSelected ? 2.5 : 1
+        }
+      ]}>
         <View style={styles.cardHeader}>
           <View style={[styles.hospitalIcon, { backgroundColor: isEmergency ? '#FEF2F2' : C.background }]}>
             <Ionicons name="medical" size={22} color={isEmergency ? '#EF4444' : C.primaryBlue} />
@@ -444,17 +430,14 @@ function HospitalCard({ h, C, isSelected, onDetails, onNavigate }) {
             {h.distance != null ? `${h.distance.toFixed(1)} km` : h.city}
           </Text>
         </View>
-      </PressableScale>
-      <View style={styles.cardActions}>
-        <PressableScale onPress={onNavigate} style={[styles.navBtn, { backgroundColor: C.primaryBlue }]}>
-          <Ionicons name="navigate" size={16} color="#fff" />
-          <Text style={styles.navBtnText}>Navigate</Text>
-        </PressableScale>
-        <PressableScale onPress={onDetails} style={[styles.detailBtn, { borderColor: C.border }]}>
-          <Text style={{ color: C.primaryBlue, fontWeight: '700', fontSize: 13 }}>Details</Text>
-        </PressableScale>
+        <View style={styles.cardActions}>
+          <View style={[styles.navBtn, { backgroundColor: C.primaryBlue }]}>
+            <Ionicons name="navigate" size={16} color="#fff" />
+            <Text style={styles.navBtnText}>Navigate</Text>
+          </View>
+        </View>
       </View>
-    </View>
+    </PressableScale>
   );
 }
 

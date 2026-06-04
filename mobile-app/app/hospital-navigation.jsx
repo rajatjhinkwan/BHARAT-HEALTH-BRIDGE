@@ -170,22 +170,7 @@ export default function HospitalNavigation() {
           <Text style={[styles.indoorBtnText, { color: C.primaryBlue }]}>Enter Indoor GPS Map</Text>
         </PressableScale>
 
-        <View style={styles.secondaryRow}>
-          <PressableScale
-            onPress={() => router.push(`/hospital-details?id=${id}`)}
-            style={[styles.secondaryBtn, { borderColor: C.border }]}
-          >
-            <Ionicons name="information-circle-outline" size={18} color={C.primaryBlue} />
-            <Text style={{ color: C.primaryBlue, fontWeight: '700' }}>Details</Text>
-          </PressableScale>
-          <PressableScale
-            onPress={() => router.push(`/booking?hospitalId=${id}`)}
-            style={[styles.secondaryBtn, { borderColor: C.border }]}
-          >
-            <Ionicons name="calendar-outline" size={18} color={C.primaryBlue} />
-            <Text style={{ color: C.primaryBlue, fontWeight: '700' }}>Book OPD</Text>
-          </PressableScale>
-        </View>
+
       </View>
     </View>
   );

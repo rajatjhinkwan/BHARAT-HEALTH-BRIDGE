@@ -3,10 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';
 import AppHeader from '@/components/ui/app-header';
-import { Radius } from '@/constants/theme';
+import { Radius , Colors } from '@/constants/theme';
 import { HOME_MOCK_DATA } from '@/constants/mockData';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { Colors } from '@/constants/theme';
+
 import { router } from 'expo-router';
 import PressableScale from '@/components/ui/PressableScale';
 import { useAuth } from '@/context/AuthContext';

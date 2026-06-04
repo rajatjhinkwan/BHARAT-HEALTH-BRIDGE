@@ -1,19 +1,20 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { Stack , useSegments, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
-
-import { useSegments, router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { View } from 'react-native';
 import AnimatedSplashScreen from '@/components/ui/AnimatedSplashScreen';
+
+import { ThemeProvider as AppThemeProvider } from '@/context/ThemeContext';
+
+export const unstable_settings = {
+  anchor: '(tabs)',
+};
 
 function RootLayoutNav() {
   const { user, loading } = useAuth();
@@ -51,8 +52,6 @@ function RootLayoutNav() {
     </ThemeProvider>
   );
 }
-
-import { ThemeProvider as AppThemeProvider } from '@/context/ThemeContext';
 
 export default function RootLayout() {
   return (

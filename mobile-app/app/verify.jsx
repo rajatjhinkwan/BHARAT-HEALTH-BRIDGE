@@ -10,7 +10,6 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';
 import { API_BASE_URL } from '@/constants/api';
 
-const { width } = Dimensions.get('window');
 
 const triggerHaptic = async (type) => {
     try {
@@ -81,7 +80,7 @@ export default function MagicLinkVerifyScreen() {
         };
 
         verifyAndLogin();
-    }, [token]);
+    }, [token, initialName, login]);
 
     return (
         <ScreenWrapper scroll={false}>

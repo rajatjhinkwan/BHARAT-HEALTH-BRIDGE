@@ -167,37 +167,65 @@ EQUIPMENT — ${ms.total ?? 0} units | ${ms.operational ?? 0} operational
         </section>
 
         <section style={{ ...styles.statCard, padding: '1.25rem' }}>
-          <h2 style={{ ...styles.sectionTitle, marginTop: 0 }}>
-            <Pill size={20} style={{ verticalAlign: 'middle', marginRight: 8 }} />
-            Pharmacy snapshot
+          <h2 style={{ ...styles.sectionTitle, marginTop: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Pill size={20} color="var(--success)" /> Pharmacy snapshot
           </h2>
-          <p style={{ margin: '0 0 0.75rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            Out of stock: <strong>{ph.stats?.outOfStock ?? 0}</strong> · Expiring soon: <strong>{ph.stats?.expiringSoon ?? 0}</strong>
-          </p>
-          <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem' }}>
-            {(ph.lowStock || []).slice(0, 5).map((m, i) => (
-              <li key={i}>{m.name} — {m.stock} left (min {m.min})</li>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <span className="badge badge-danger">Out of stock: {ph.stats?.outOfStock ?? 0}</span>
+            <span className="badge badge-warning">Expiring: {ph.stats?.expiringSoon ?? 0}</span>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.25rem' }}>
+            {(ph.lowStock || []).slice(0, 4).map((m, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--surface-hover)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+                <span style={{ fontWeight: 600 }}>{m.name}</span>
+                <span style={{ color: 'var(--warning)', fontWeight: 600 }}>{m.stock} left</span>
+              </div>
             ))}
-            {(ph.outOfStock || []).slice(0, 3).map((m, i) => (
-              <li key={`o-${i}`} style={{ color: 'var(--danger)' }}>{m.name} — out of stock</li>
+            {(ph.outOfStock || []).slice(0, 2).map((m, i) => (
+              <div key={`o-${i}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+                <span style={{ fontWeight: 600 }}>{m.name}</span>
+                <span style={{ fontWeight: 700 }}>Empty</span>
+              </div>
             ))}
-          </ul>
-          <Link to="/pharmacy" className="btn-primary" style={{ display: 'inline-flex', marginTop: '1rem', fontSize: '0.85rem' }}>
-            Open pharmacy <ArrowRight size={14} />
+          </div>
+          <Link to="/pharmacy" className="btn-primary w-full" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', marginTop: 'auto' }}>
+            Open Pharmacy OS <ArrowRight size={16} />
           </Link>
         </section>
 
-        <section style={{ ...styles.statCard, padding: '1.25rem' }}>
-          <h2 style={{ ...styles.sectionTitle, marginTop: 0 }}>Lab & equipment</h2>
-          <p>Pending orders: <strong>{lab.pending ?? 0}</strong></p>
-          <p>Processing: <strong>{lab.processing ?? 0}</strong></p>
-          <p>Critical alerts: <strong style={{ color: 'var(--danger)' }}>{lab.critical ?? 0}</strong></p>
-          <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '1rem 0' }} />
-          <p>Equipment: <strong>{ms.operational ?? 0}</strong> / {ms.total ?? 0} operational</p>
-          <p>Avg uptime: <strong>{ms.avgUptime ?? 0}%</strong></p>
-          <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-            <Link to="/lab" className="btn-primary" style={{ fontSize: '0.85rem' }}>Laboratory</Link>
-            <Link to="/machines" className="btn-primary" style={{ fontSize: '0.85rem' }}>Equipment</Link>
+        <section style={{ ...styles.statCard, padding: '1.25rem', display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ ...styles.sectionTitle, marginTop: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <TestTube size={20} color="#8b5cf6" /> Lab & Equipment
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--surface-hover)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+              <span>Pending lab orders</span> <strong style={{ color: 'var(--text-main)' }}>{lab.pending ?? 0}</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--surface-hover)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+              <span>Processing samples</span> <strong style={{ color: 'var(--primary)' }}>{lab.processing ?? 0}</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+              <span style={{ color: 'var(--danger)' }}>Critical lab alerts</span> <strong style={{ color: 'var(--danger)' }}>{lab.critical ?? 0}</strong>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.25rem', flex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--surface-hover)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+              <span>Biomedical Equipment</span> <strong>{ms.operational ?? 0} / {ms.total ?? 0} active</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--surface-hover)', borderRadius: 'var(--radius)', fontSize: '0.85rem' }}>
+              <span>Network Uptime</span> <strong style={{ color: 'var(--success)' }}>{ms.avgUptime ?? 0}%</strong>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: 'auto' }}>
+            <Link to="/lab" className="btn-primary" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0.75rem', fontSize: '0.9rem' }}>
+              Laboratory
+            </Link>
+            <Link to="/machines" className="btn-outline" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '0.75rem', fontSize: '0.9rem', borderColor: 'var(--primary)', color: 'var(--primary)', border: '1px solid' }}>
+              Equipment
+            </Link>
           </div>
         </section>
       </div>

@@ -237,10 +237,7 @@ export default function PremiumSuiteScreen() {
                   </View>
 
                   <View style={styles.medicalCardFooter}>
-                    <TouchableOpacity style={[styles.miniBtn, { backgroundColor: C.primaryBlue }]} onPress={() => setShowQRModal(true)}>
-                      <Ionicons name="qr-code-outline" size={14} color="#fff" />
-                      <Text style={styles.miniBtnText}>Doctor Scan QR</Text>
-                    </TouchableOpacity>
+
                     <TouchableOpacity style={[styles.miniBtn, { backgroundColor: '#10B981' }]} onPress={() => alert('PDF downloaded locally!')}>
                       <Ionicons name="download-outline" size={14} color="#fff" />
                       <Text style={styles.miniBtnText}>Save E-Card PDF</Text>
@@ -556,25 +553,7 @@ export default function PremiumSuiteScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* QR IDENTITY DECRYPTED DIALOG */}
-      <Modal visible={showQRModal} transparent={true} animationType="slide">
-        <View style={styles.modalBg}>
-          <View style={[styles.qrModalCard, { backgroundColor: C.cardWhite }]}>
-            <Text style={[styles.qrTitle, { color: C.textPrimary }]}>Your Decrypted Patient Access QR</Text>
-            <Text style={[styles.qrSub, { color: C.textSecondary }]}>Allow hospital reception or doctors to scan this for secure timeline authorization</Text>
-            
-            <View style={styles.qrContainerBG}>
-              <Ionicons name="qr-code" size={200} color="#1E293B" />
-            </View>
 
-            <Text style={styles.qrTimeCounter}>⏱ Temporary Access Token: Expiring in 2:45 mins</Text>
-
-            <TouchableOpacity style={[styles.closeModalBtn, { backgroundColor: C.primaryBlue }]} onPress={() => setShowQRModal(false)}>
-              <Text style={{ color: '#fff', fontWeight: '800' }}>Done</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       {/* AI ASSISTANT CHAT DIALOG OVERLAY */}
       <Modal visible={showChat} transparent={true} animationType="slide">

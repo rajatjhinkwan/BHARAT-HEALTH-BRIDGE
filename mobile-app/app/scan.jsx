@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Animated, Easing, Alert } from 'react-native';
 import { useCameraPermissions, CameraView } from 'expo-camera';
 import { Image } from 'expo-image';
-import { Colors, Shadow } from '@/constants/theme';
+import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -27,7 +27,7 @@ export default function ScanPrescription() {
         ])
       ).start();
     }
-  }, [photoUri, permission]);
+  }, [photoUri, permission, scanAnim]);
 
   if (!permission || !permission.granted) {
     return (
@@ -81,8 +81,12 @@ export default function ScanPrescription() {
               style={styles.shutterOuter}
               onPress={async () => {
                 if (!cameraRef.current) return;
-                const photo = await cameraRef.current.takePictureAsync({ quality: 0.8 });
-                setPhotoUri(photo?.uri ?? null);
+                try {
+                  const photo = await cameraRef.current.takePictureAsync({ quality: 0.8 });
+                  setPhotoUri(photo?.uri ?? null);
+                } catch (error) {
+                  Alert.alert('Scan Error', 'Failed to capture prescription image. Please try again.');
+                }
               }}
             >
               <View style={styles.shutterInner} />
