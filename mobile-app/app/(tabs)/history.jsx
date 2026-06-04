@@ -15,6 +15,7 @@ import { usePatientRealtime } from '@/hooks/usePatientRealtime';
 import * as Haptics from 'expo-haptics';
 import { HistorySkeleton } from '@/components/ui/SkeletonLoader';
 import * as Speech from 'expo-speech';
+import { Audio } from 'expo-av';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -101,39 +102,138 @@ export default function HistoryScreen() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [expandedRecordId, setExpandedRecordId] = useState(null);
 
-  // Pinch Zoom and Speech States
+  // Pinch Zoom, Speech and Audio States
   const [playingVoiceId, setPlayingVoiceId] = useState(null);
+  const [loadingAudioId, setLoadingAudioId] = useState(null);
+  const [playbackProgress, setPlaybackProgress] = useState(0);
+  const soundRef = React.useRef(null);
+
   const [fullScreenImageUri, setFullScreenImageUri] = useState(null);
   const [fullScreenStrokesData, setFullScreenStrokesData] = useState(null);
   const [modalZoomScale, setModalZoomScale] = useState(1);
   const [voiceNotesModalData, setVoiceNotesModalData] = useState(null);
 
-  // Stop Speech Narration on Screen Unmount
+  // Stop and cleanup audio/speech on unmount and setup audio configurations
   useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      shouldRouteThroughEarpieceAndroid: false,
+      staysActiveInBackground: false,
+    }).catch(err => console.warn("Failed to set audio mode:", err));
+
     return () => {
-      Speech.stop();
+      stopAudio();
     };
   }, []);
 
+  const stopAudio = async () => {
+    try {
+      if (soundRef.current) {
+        await soundRef.current.stopAsync().catch(() => {});
+        await soundRef.current.unloadAsync().catch(() => {});
+        soundRef.current = null;
+      }
+      Speech.stop();
+      setPlayingVoiceId(null);
+      setPlaybackProgress(0);
+      setLoadingAudioId(null);
+    } catch (err) {
+      console.warn("Error stopping audio:", err);
+    }
+  };
+
   const toggleVoiceNote = async (record) => {
+    const audioUrl = record.voiceNoteDetails?.audioUrl;
     const transcript = record.voiceNoteDetails?.transcript;
-    if (!transcript) return;
+
+    if (playingVoiceId === record._id) {
+      await stopAudio();
+      return;
+    }
+
+    await stopAudio();
+
+    if (audioUrl) {
+      setLoadingAudioId(record._id);
+      setPlayingVoiceId(record._id);
+      setPlaybackProgress(0);
+
+      try {
+        let resolvedUrl = audioUrl;
+        const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '');
+        if (!audioUrl.startsWith('http')) {
+          resolvedUrl = `${baseUrl}${audioUrl}`;
+        } else {
+          resolvedUrl = resolvedUrl
+            .replace('http://localhost:4000', baseUrl)
+            .replace('http://127.0.0.1:4000', baseUrl);
+        }
+
+        const { sound } = await Audio.Sound.createAsync(
+          { uri: resolvedUrl },
+          { shouldPlay: true },
+          (status) => {
+            if (status.isLoaded) {
+              if (status.isPlaying) {
+                setLoadingAudioId(null);
+              }
+              if (status.durationMillis && status.positionMillis) {
+                setPlaybackProgress(status.positionMillis / status.durationMillis);
+              }
+              if (status.didJustFinish) {
+                setPlayingVoiceId(null);
+                setPlaybackProgress(0);
+                soundRef.current?.unloadAsync().catch(() => {});
+                soundRef.current = null;
+              }
+            } else if (status.error) {
+              console.warn("Playback status error:", status.error);
+              fallbackToTts(record);
+            }
+          }
+        );
+        soundRef.current = sound;
+      } catch (err) {
+        console.warn("Failed to load audio file, falling back to TTS:", err);
+        await fallbackToTts(record);
+      }
+    } else if (transcript) {
+      await fallbackToTts(record);
+    }
+  };
+
+  const fallbackToTts = async (record) => {
+    const transcript = record.voiceNoteDetails?.transcript;
+    if (!transcript) {
+      setPlayingVoiceId(null);
+      setLoadingAudioId(null);
+      return;
+    }
 
     try {
-      if (playingVoiceId === record._id) {
-        Speech.stop();
-        setPlayingVoiceId(null);
-      } else {
-        Speech.stop();
-        setPlayingVoiceId(record._id);
-        Speech.speak(transcript, {
-          onDone: () => setPlayingVoiceId(null),
-          onError: () => setPlayingVoiceId(null),
-          onStopped: () => setPlayingVoiceId(null),
-        });
-      }
+      setLoadingAudioId(null);
+      setPlayingVoiceId(record._id);
+      setPlaybackProgress(0);
+
+      Speech.speak(transcript, {
+        onDone: () => {
+          setPlayingVoiceId(null);
+          setPlaybackProgress(0);
+        },
+        onError: () => {
+          setPlayingVoiceId(null);
+          setPlaybackProgress(0);
+        },
+        onStopped: () => {
+          setPlayingVoiceId(null);
+          setPlaybackProgress(0);
+        },
+      });
     } catch (err) {
-      console.warn("Speech playback error:", err);
+      console.warn("TTS fallback error:", err);
+      setPlayingVoiceId(null);
+      setLoadingAudioId(null);
     }
   };
 
@@ -656,10 +756,9 @@ export default function HistoryScreen() {
           {/* Chat Header */}
           <View style={styles.chatHeader}>
             <PressableScale 
-              onPress={() => {
+              onPress={async () => {
                 setVoiceNotesModalData(null);
-                setPlayingVoiceId(null);
-                Speech.stop();
+                await stopAudio();
               }}
               style={styles.chatBackBtn}
             >
@@ -697,43 +796,58 @@ export default function HistoryScreen() {
                     
                     {/* Voice Message Player UI (WhatsApp Style) */}
                     <View style={styles.chatPlayerRow}>
-                      <PressableScale onPress={() => toggleVoiceNote(note)}>
-                        <Ionicons 
-                          name={isPlaying ? "pause-circle" : "play-circle"} 
-                          size={40} 
-                          color="#0EA5E9" 
-                        />
-                      </PressableScale>
+                      {loadingAudioId === note._id ? (
+                        <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                          <ActivityIndicator size="small" color="#0EA5E9" />
+                        </View>
+                      ) : (
+                        <PressableScale onPress={() => toggleVoiceNote(note)}>
+                          <Ionicons 
+                            name={isPlaying ? "pause-circle" : "play-circle"} 
+                            size={40} 
+                            color="#0EA5E9" 
+                          />
+                        </PressableScale>
+                      )}
                       
                       {/* Audio wave simulation or progress bar */}
                       <View style={styles.chatProgressContainer}>
                         {/* Audio Waveform Simulator */}
                         <View style={styles.waveformContainer}>
-                          {[30, 60, 45, 75, 50, 90, 40, 65, 80, 50, 70, 45, 60, 85, 40, 75, 55, 30].map((h, i) => (
-                            <View 
-                              key={i} 
-                              style={{
-                                width: 2,
-                                height: (h * 20) / 100,
-                                backgroundColor: isPlaying ? '#10B981' : '#D1D5DB',
-                                borderRadius: 1,
-                                opacity: isPlaying ? 1 : 0.6,
-                                marginHorizontal: 1
-                              }} 
-                            />
-                          ))}
+                          {[30, 60, 45, 75, 50, 90, 40, 65, 80, 50, 70, 45, 60, 85, 40, 75, 55, 30].map((h, i) => {
+                            const isBarPlayed = isPlaying && (i / 18) <= playbackProgress;
+                            return (
+                              <View 
+                                key={i} 
+                                style={{
+                                  width: 2,
+                                  height: (h * 20) / 100,
+                                  backgroundColor: isBarPlayed ? '#10B981' : (scheme === 'dark' ? '#4B5563' : '#D1D5DB'),
+                                  borderRadius: 1,
+                                  opacity: isBarPlayed ? 1 : 0.6,
+                                  marginHorizontal: 1
+                                }} 
+                              />
+                            );
+                          })}
                         </View>
                         {/* Thin progress track */}
                         <View style={styles.chatProgressTrack}>
                           <View style={[
                             styles.chatProgressFilled,
-                            { width: isPlaying ? '100%' : '0%' }
+                            { 
+                              width: isPlaying ? `${playbackProgress * 100}%` : '0%',
+                              backgroundColor: '#10B981'
+                            }
                           ]} />
                         </View>
                       </View>
                       
                       <Text style={[styles.chatDuration, { color: C.textSecondary }]}>
-                        {note.voiceNoteDetails?.duration || 30}s
+                        {isPlaying 
+                          ? `${Math.round(playbackProgress * (note.voiceNoteDetails?.duration || 30))}s`
+                          : `${note.voiceNoteDetails?.duration || 30}s`
+                        }
                       </Text>
                     </View>
 

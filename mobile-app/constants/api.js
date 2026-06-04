@@ -30,3 +30,4 @@ if (__DEV__) {
 
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || `http://${DEV_IP}:4000/api`;
 export const OCR_BASE_URL = process.env.EXPO_PUBLIC_OCR_URL || `http://${DEV_IP}:8000`;
+export const LOCAL_OCR_BASE_URL = `http://${DEV_IP}:8000`;

@@ -3,6 +3,7 @@ import { MedicalHistory, Patient } from '../models/index.js';
 import { clinicalUpload, clinicalFileUrl } from '../lib/uploadClinical.js';
 import { emitPrescriptionUpdate } from '../lib/realtime.js';
 import { escapeRegExp } from '../lib/regexHelpers.js';
+import { addRecordBlock } from '../lib/blockchain.js';
 
 const router = Router();
 
@@ -89,6 +90,12 @@ router.post('/prescription', async (req, res) => {
 
     const saved = await newRecord.save();
 
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for prescription:', bcErr);
+    }
+
     // Trigger Timeline updates on Patient Model (compatibility)
     await Patient.findByIdAndUpdate(patientId, {
       $push: {
@@ -136,6 +143,12 @@ router.post('/report/upload', clinicalUpload.single('file'), async (req, res) =>
 
     const saved = await newRecord.save();
 
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for report upload:', bcErr);
+    }
+
     await Patient.findByIdAndUpdate(patientId, {
       $push: {
         timeline: {
@@ -180,6 +193,12 @@ router.post('/discharge', async (req, res) => {
     });
 
     const saved = await newRecord.save();
+
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for discharge summary:', bcErr);
+    }
 
     await Patient.findByIdAndUpdate(patientId, {
       $push: {
@@ -227,6 +246,12 @@ router.post('/report', async (req, res) => {
     });
 
     const saved = await newRecord.save();
+
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for report:', bcErr);
+    }
 
     // Auto-link report to Patient Timeline
     await Patient.findByIdAndUpdate(patientId, {
@@ -283,6 +308,12 @@ router.post('/voicenote/upload', clinicalUpload.single('file'), async (req, res)
 
     const saved = await newRecord.save();
 
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for voicenote upload:', bcErr);
+    }
+
     await Patient.findByIdAndUpdate(patientId, {
       $push: {
         timeline: {
@@ -333,6 +364,12 @@ router.post('/voicenote', async (req, res) => {
     });
 
     const saved = await newRecord.save();
+
+    try {
+      await addRecordBlock(saved._id, saved.patientId, saved);
+    } catch (bcErr) {
+      console.error('[Blockchain-Integration] Failed to add block for voicenote:', bcErr);
+    }
 
     await Patient.findByIdAndUpdate(patientId, {
       $push: {

@@ -15,5 +15,7 @@ export { default as StockTransaction } from './StockTransaction.js'
 export { default as DispensingLog } from './DispensingLog.js'
 export { default as PurchaseOrder } from './PurchaseOrder.js'
 export { default as Machine } from './Machine.js'
+export { default as Block } from './Block.js'
+
 
 

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Layers, Activity, Users, DownloadCloud, TestTube, Crosshair,
   List, UserCog, ArrowRight, Server, Wind, HeartPulse, Stethoscope,
-  Radio, AlertTriangle, Pill, Calendar,
+  Radio, AlertTriangle, Pill, Calendar, Database,
 } from 'lucide-react';
 import { fetchAdminOverview } from '../../services/wardApi';
 import { useAuth } from '../../context/AuthContext';
@@ -90,6 +90,7 @@ EQUIPMENT — ${ms.total ?? 0} units | ${ms.operational ?? 0} operational
     { name: 'Live Hospital Feed', path: '/live-feed', icon: <Radio color="var(--accent)" />, color: 'var(--accent)', desc: 'Real-time overview' },
     { name: 'ICU', path: '/icu', icon: <HeartPulse color="var(--danger)" />, color: 'var(--danger)', desc: 'Critical care' },
     { name: 'Emergency', path: '/emergency', icon: <AlertTriangle color="var(--warning)" />, color: 'var(--warning)', desc: 'ER workflow' },
+    { name: 'Security Ledger', path: '/admin/blockchain', icon: <Database color="#a855f7" />, color: '#a855f7', desc: 'Tamper-proof medical records' },
   ];
 
   const o = overview || {};

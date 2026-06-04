@@ -30,6 +30,7 @@ import RadiologyDashboard from './pages/services/RadiologyDashboard';
 import DepartmentalQueue from './pages/clinical/DepartmentalQueue';
 import SurgeryDashboard from './pages/services/SurgeryDashboard';
 import SpecializedSessionDashboard from './pages/services/SpecializedSessionDashboard';
+import GenericAlternativeEngine from './pages/services/GenericAlternativeEngine';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,12 +43,14 @@ import PatientPortal from './pages/patient/PatientPortal';
 import PatientLogin from './pages/patient/PatientLogin';
 import PatientSettings from './pages/patient/PatientSettings';
 import PatientHistory from './pages/patient/PatientHistory';
+import BlockchainDashboard from './pages/admin/BlockchainDashboard';
 import { NotificationProvider } from './context/NotificationContext';
 import GlobalSearch from './components/clinical/GlobalSearch';
 import React, { useState } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotFound from './pages/public/NotFound';
+import { Toaster } from 'react-hot-toast';
 import './App.css';
 
 const Unauthorized = () => (
@@ -90,6 +93,7 @@ function App() {
         <AuthProvider>
           <NotificationProvider>
             <ErrorBoundary>
+              <Toaster position="top-right" />
               {showSearch && <GlobalSearch onClose={() => setShowSearch(false)} />}
               <div style={styles.appContainer}>
                 <NavbarWrapper onSearch={() => setShowSearch(true)} />
@@ -158,6 +162,7 @@ function App() {
 
               <Route element={<ProtectedRoute requiredPermission="canViewAuditLogs" />}>
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/blockchain" element={<BlockchainDashboard />} />
                 <Route path="/governance" element={<UHGSContainer />} />
                 <Route path="/hierarchy" element={<EmployeeHierarchy />} />
                 <Route path="/machines" element={<MachineTrackingDashboard />} />
@@ -166,6 +171,7 @@ function App() {
               
               <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'admin', 'ADMIN', 'hospital_admin', 'super_admin', 'lab_tech', 'pharmacist']} />}>
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/alternatives" element={<GenericAlternativeEngine />} />
               </Route>
               
               <Route element={<ProtectedRoute allowedRoles={['doctor', 'nurse', 'receptionist', 'hospital_admin', 'super_admin', 'admin', 'ADMIN']} />}>

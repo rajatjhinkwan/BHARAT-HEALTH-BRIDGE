@@ -1,0 +1,345 @@
+{
+  "regions": [
+    {
+      "text": "off",
+      "confidence": 0.76,
+      "bbox": [
+        972,
+        0,
+        1023,
+        28
+      ],
+      "corrected": false
+    },
+    {
+      "text": "paracetantal",
+      "confidence": 0.94,
+      "bbox": [
+        99,
+        25,
+        291,
+        89
+      ],
+      "corrected": false
+    },
+    {
+      "text": "ibuprofen",
+      "confidence": 0.88,
+      "bbox": [
+        102,
+        81,
+        277,
+        154
+      ],
+      "corrected": false
+    },
+    {
+      "text": "ameo xicalli h",
+      "confidence": 0.95,
+      "bbox": [
+        98,
+        152,
+        340,
+        203
+      ],
+      "corrected": false
+    },
+    {
+      "text": "cetirizing",
+      "confidence": 0.9,
+      "bbox": [
+        97,
+        197,
+        331,
+        265
+      ],
+      "corrected": false
+    },
+    {
+      "text": "met fashion",
+      "confidence": 0.92,
+      "bbox": [
+        100,
+        256,
+        325,
+        329
+      ],
+      "corrected": false
+    },
+    {
+      "text": "striping in",
+      "confidence": 0.92,
+      "bbox": [
+        129,
+        312,
+        295,
+        388
+      ],
+      "corrected": false
+    },
+    {
+      "text": "pazi there mycin",
+      "confidence": 0.95,
+      "bbox": [
+        125,
+        370,
+        433,
+        439
+      ],
+      "corrected": false
+    },
+    {
+      "text": "o meppresole",
+      "confidence": 0.94,
+      "bbox": [
+        124,
+        427,
+        383,
+        496
+      ],
+      "corrected": false
+    },
+    {
+      "text": "paravitan",
+      "confidence": 0.88,
+      "bbox": [
+        118,
+        476,
+        321,
+        545
+      ],
+      "corrected": false
+    },
+    {
+      "text": "solubutamol",
+      "confidence": 0.92,
+      "bbox": [
+        118,
+        523,
+        370,
+        608
+      ],
+      "corrected": false
+    },
+    {
+      "text": "oldelahivgklwvnahyushuaxx",
+      "confidence": 0.044,
+      "bbox": [
+        61,
+        628,
+        689,
+        727
+      ],
+      "corrected": false
+    },
+    {
+      "text": "cabc",
+      "confidence": 0.78,
+      "bbox": [
+        62,
+        755,
+        164,
+        802
+      ],
+      "corrected": false
+    },
+    {
+      "text": "girls",
+      "confidence": 0.8,
+      "bbox": [
+        56,
+        803,
+        161,
+        945
+      ],
+      "corrected": false
+    },
+    {
+      "text": "ghi",
+      "confidence": 0.76,
+      "bbox": [
+        70,
+        852,
+        128,
+        900
+      ],
+      "corrected": false
+    },
+    {
+      "text": "phine",
+      "confidence": 0.8,
+      "bbox": [
+        68,
+        956,
+        161,
+        995
+      ],
+      "corrected": false
+    },
+    {
+      "text": "p cyn",
+      "confidence": 0.8,
+      "bbox": [
+        74,
+        996,
+        165,
+        1051
+      ],
+      "corrected": false
+    },
+    {
+      "text": "stu",
+      "confidence": 0.76,
+      "bbox": [
+        62,
+        1060,
+        148,
+        1112
+      ],
+      "corrected": false
+    },
+    {
+      "text": "cuzzo try",
+      "confidence": 0.88,
+      "bbox": [
+        56,
+        1124,
+        192,
+        1181
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        43,
+        1175,
+        391,
+        1267
+      ],
+      "corrected": false
+    },
+    {
+      "text": "ampry",
+      "confidence": 0.8,
+      "bbox": [
+        670,
+        1238,
+        826,
+        1310
+      ],
+      "corrected": false
+    },
+    {
+      "text": "south dakota",
+      "confidence": 0.94,
+      "bbox": [
+        69,
+        1257,
+        742,
+        1389
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        297,
+        1269,
+        527,
+        1359
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        164,
+        1305,
+        264,
+        1346
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        36,
+        1327,
+        141,
+        1377
+      ],
+      "corrected": false
+    },
+    {
+      "text": "glonneef",
+      "confidence": 0.86,
+      "bbox": [
+        755,
+        1339,
+        965,
+        1425
+      ],
+      "corrected": false
+    },
+    {
+      "text": "dolo",
+      "confidence": 0.78,
+      "bbox": [
+        652,
+        1365,
+        755,
+        1417
+      ],
+      "corrected": false
+    },
+    {
+      "text": "men mrs moss",
+      "confidence": 0.94,
+      "bbox": [
+        262,
+        1379,
+        589,
+        1470
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        383,
+        1392,
+        949,
+        1488
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        34,
+        1412,
+        207,
+        1508
+      ],
+      "corrected": false
+    },
+    {
+      "text": "shrews",
+      "confidence": 0.82,
+      "bbox": [
+        733,
+        1479,
+        868,
+        1551
+      ],
+      "corrected": false
+    }
+  ]
+}

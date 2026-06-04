@@ -234,15 +234,32 @@ export default function BookingScreen() {
   const [selectedDept, setSelectedDept] = useState(null);
   const [searchDept, setSearchDept] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const formatDateLocal = (date) => {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const getMinBookingDate = () => {
     const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    const istDate = new Date(utc + (3600000 * 5.5));
-    const hour = istDate.getHours();
+    
+    // Get hours in Indian Standard Time (IST)
+    const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', hour12: false };
+    const formatter = new Intl.DateTimeFormat('en-US', options);
+    const hour = parseInt(formatter.format(now), 10);
+    
+    // Construct the date in India's timezone
+    const optionsDate = { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'numeric', day: 'numeric' };
+    const formatterDate = new Intl.DateTimeFormat('en-US', optionsDate);
+    const [month, day, year] = formatterDate.format(now).split('/');
+    
+    const istDate = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), 0, 0, 0, 0);
+    
+    // If it is 4:00 PM (16:00) or later in India, advance to the next day
     if (hour >= 16) {
       istDate.setDate(istDate.getDate() + 1);
     }
-    istDate.setHours(0, 0, 0, 0);
     return istDate;
   };
 
@@ -338,7 +355,7 @@ export default function BookingScreen() {
     const doc = doctors.find((d) => d.id === selectedDoctor) || FALLBACK_DOCTORS.find((d) => d.id === selectedDoctor);
     if (!doc?.employeeId) return;
 
-    const dateStr = currentDate.toISOString().split('T')[0];
+    const dateStr = formatDateLocal(currentDate);
     getDoctorAvailability(doc.employeeId, dateStr)
       .then((res) => {
         if (res && Array.isArray(res.slots)) {
@@ -395,7 +412,7 @@ export default function BookingScreen() {
         patientId: patientProfileId,
         doctorId: doc?.employeeId || doc?.id || selectedDoctor,
         department: deptName,
-        appointmentDate: currentDate.toISOString().split('T')[0],
+        appointmentDate: formatDateLocal(currentDate),
         appointmentTime,
         reason: details || selectedSymptoms.join(', ') || 'OPD Consultation'
       });

@@ -20,6 +20,7 @@ import doctors from './doctors.js'
 import machines from './machines.js'
 import admin from './admin.js'
 import registrations from './registrations.js'
+import blockchain from './blockchain.js'
 import { Router } from 'express'
 
 const api = Router()
@@ -44,6 +45,7 @@ api.use('/doctors', doctors)
 api.use('/machines', machines)
 api.use('/admin', admin)
 api.use('/registrations', registrations)
+api.use('/blockchain', blockchain)
 api.use('/', catalog)
 
 

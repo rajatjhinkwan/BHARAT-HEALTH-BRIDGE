@@ -4,11 +4,9 @@ import shutil
 import os
 import uuid
 from main import OCRPipeline
-import json
 
-app = FastAPI()
+app = FastAPI(title="Genocr Prescription Scanner")
 
-# Enable CORS for mobile/web app communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,87 +14,88 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global pipeline variable
 pipeline = None
 is_loading = False
+
 
 def get_pipeline():
     global pipeline, is_loading
     if pipeline is None:
         if not is_loading:
             is_loading = True
-            print("--- Initializing OCR Pipeline (this may take a while) ---")
+            print("--- Initializing Genocr OCR Pipeline (models may take a while) ---")
             try:
                 pipeline = OCRPipeline()
-                print("--- OCR Pipeline Ready ---")
+                print("--- Genocr OCR Pipeline Ready ---")
             except Exception as e:
-                print(f"Failed to initialize pipeline: {e}")
                 is_loading = False
+                print(f"Failed to initialize pipeline: {e}")
                 raise e
-        else:
-            return None # Still loading
     return pipeline
+
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
+@app.on_event("startup")
+async def warm_up_pipeline():
+    try:
+        get_pipeline()
+    except Exception as e:
+        print(f"Startup warm-up failed (will retry on first request): {e}")
+
+
 @app.post("/ocr")
 async def process_prescription(file: UploadFile = File(...)):
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file uploaded")
+
+    file_extension = os.path.splitext(file.filename)[1] or ".jpg"
+    file_id = str(uuid.uuid4())
+    file_path = os.path.join(UPLOAD_DIR, f"{file_id}{file_extension}")
+    saved = False
+
     try:
-        # Save the uploaded file
-        file_extension = os.path.splitext(file.filename)[1]
-        file_id = str(uuid.uuid4())
-        file_path = os.path.join(UPLOAD_DIR, f"{file_id}{file_extension}")
-        
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        
-        # Get pipeline (triggering lazy load if needed)
-        p = get_pipeline()
-        
-        if p is None:
-            # If still loading, return a friendly mock response so the app doesn't crash
-            print("Pipeline still loading, returning mock data")
-            return {
-                "status": "success",
-                "message": "AI models are warming up. Using high-fidelity mock data for now.",
-                "data": [
-                    {
-                        "medicine": "Amoxicillin 500mg",
-                        "generic_equivalent": "Amoxicillin Generic",
-                        "dosage": "500mg",
-                        "frequency": "TDS",
-                        "duration": "5 days"
-                    }
-                ]
-            }
+        saved = True
 
-        # Process with OCR Pipeline
-        print(f"Processing image: {file_path}")
+        p = get_pipeline()
+        if p is None:
+            raise HTTPException(status_code=503, detail="OCR pipeline is still loading. Try again shortly.")
+
+        print(f"Processing image with Genocr: {file_path}")
         result = p.process(file_path)
-        
+
         return {
             "status": "success",
-            "data": result
+            "engine": "genocr",
+            "data": result,
         }
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Error in /ocr: {str(e)}")
-        # Even on error, try to return mock data to prevent mobile crash during demo
-        return {
-            "status": "success",
-            "is_mock": True,
-            "data": [{"medicine": "Augmentin 625", "generic_equivalent": "Amoxicillin + Clavulanic Acid"}]
-        }
+        print(f"Error in /ocr: {e}")
+        raise HTTPException(status_code=500, detail=f"OCR processing failed: {e}")
+    finally:
+        if saved and os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
 
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy",
+        "engine": "genocr",
         "pipeline_ready": pipeline is not None,
-        "is_loading": is_loading
+        "is_loading": is_loading,
     }
+
 
 if __name__ == "__main__":
     import uvicorn
-    # Start immediately, don't wait for models
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -105,7 +105,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api', (await import('./routes/index.js')).default)
 
 // Fallback wildcard to serve built frontend SPA index.html for all subroutes
-app.get('*', (req, res, next) => {
+app.get(/.*/, (req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
     return next()
   }
