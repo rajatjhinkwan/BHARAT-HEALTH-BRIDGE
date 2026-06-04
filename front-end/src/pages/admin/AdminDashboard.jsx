@@ -90,7 +90,7 @@ EQUIPMENT — ${ms.total ?? 0} units | ${ms.operational ?? 0} operational
     { name: 'Live Hospital Feed', path: '/live-feed', icon: <Radio color="var(--accent)" />, color: 'var(--accent)', desc: 'Real-time overview' },
     { name: 'ICU', path: '/icu', icon: <HeartPulse color="var(--danger)" />, color: 'var(--danger)', desc: 'Critical care' },
     { name: 'Emergency', path: '/emergency', icon: <AlertTriangle color="var(--warning)" />, color: 'var(--warning)', desc: 'ER workflow' },
-    { name: 'Security Ledger', path: '/admin/blockchain', icon: <Database color="#a855f7" />, color: '#a855f7', desc: 'Tamper-proof medical records' },
+    { name: 'Security Ledger', path: '/admin/blockchain', icon: <Database color="#a855f7" />, color: '#a855f7', desc: 'Medical record integrity audit' },
   ];
 
   const o = overview || {};

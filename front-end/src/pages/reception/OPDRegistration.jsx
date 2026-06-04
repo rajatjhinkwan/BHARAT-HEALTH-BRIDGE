@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { UserPlus } from 'lucide-react';
-import { generateBlockchainHash } from '../../utils/blockchain';
 import { API_BASE_URL } from '../../config';
 
 export default function OPDRegistration() {
@@ -72,17 +71,6 @@ export default function OPDRegistration() {
     setLoading(true);
 
     try {
-      try {
-        await generateBlockchainHash({
-          type: 'PATIENT_REGISTRATION',
-          patientName: formData.patientName,
-          aadhar: formData.aadharCardId,
-          timestamp: new Date().toISOString(),
-        });
-      } catch {
-        // Blockchain hash is optional
-      }
-
       const payload = {
         ...formData,
       };

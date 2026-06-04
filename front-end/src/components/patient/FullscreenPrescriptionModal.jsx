@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { X, ZoomIn, ZoomOut, RotateCcw, Printer, FileText } from 'lucide-react';
+import { X, ZoomIn, ZoomOut, RotateCcw, Printer, FileText, ArrowLeft } from 'lucide-react';
+import { usePinchZoom } from '../../hooks/usePinchZoom';
 
 export default function FullscreenPrescriptionModal({ prescription, onClose }) {
-  const [scale, setScale] = useState(1);
+  const { scale, setScale, reset, touchHandlers } = usePinchZoom(1, { min: 0.5, max: 4 });
 
   if (!prescription) return null;
 
-  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.15, 2.5));
-  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.15, 0.5));
-  const handleReset = () => setScale(1);
+  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.15, 4));
+  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.15, 0.5));
+  const handleReset = () => reset();
 
   const handlePrint = () => {
     window.print();
@@ -28,6 +29,9 @@ export default function FullscreenPrescriptionModal({ prescription, onClose }) {
             </div>
           </div>
           <div className="pp-modal-actions">
+            <button type="button" className="pp-zoom-btn pp-modal-back-btn" onClick={onClose} title="Back">
+              <ArrowLeft size={16} /> Back
+            </button>
             <button type="button" className="pp-zoom-btn" onClick={handleZoomOut} title="Zoom Out">
               <ZoomOut size={16} />
             </button>
@@ -47,9 +51,14 @@ export default function FullscreenPrescriptionModal({ prescription, onClose }) {
           </div>
         </header>
 
-        <div className="pp-modal-body">
+        <p className="pp-pinch-hint">Pinch with two fingers on the prescription pad to zoom (or use + / −)</p>
+        <div
+          className="pp-modal-body"
+          onTouchStart={touchHandlers.onTouchStart}
+          onTouchMove={touchHandlers.onTouchMove}
+        >
           <div className="pp-scale-wrapper">
-            <div className="pp-print-area" style={{ transform: `scale(${scale})`, transformOrigin: 'top center', transition: 'transform 0.15s ease' }}>
+            <div className="pp-print-area" style={{ transform: `scale(${scale})`, transformOrigin: 'top center', transition: 'transform 0.08s ease-out' }}>
               <div className="pp-prescription-paper">
                 {/* Flag Accent */}
                 <div className="pp-tricolor-bar">
@@ -132,8 +141,8 @@ export default function FullscreenPrescriptionModal({ prescription, onClose }) {
                 {prescription.fileUrl && (prescription.fileUrl.startsWith('data:image/') || prescription.fileUrl.startsWith('http')) && (
                   <div className="pp-presc-section visual-pad-section">
                     <h4 className="section-title">Visual Doctor Pad</h4>
-                    <div className="visual-pad-frame">
-                      <img src={prescription.fileUrl} alt="Visual Doctor Pad Drawing" className="visual-pad-image" />
+                    <div className="visual-pad-frame pp-pinch-target">
+                      <img src={prescription.fileUrl} alt="Visual Doctor Pad Drawing" className="visual-pad-image pp-pinch-target" />
                     </div>
                   </div>
                 )}

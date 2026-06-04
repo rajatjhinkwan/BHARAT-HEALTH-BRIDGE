@@ -412,6 +412,32 @@
   background: #0369a1;
 }
 
+.pp-modal-back-btn {
+  width: auto;
+  padding: 0 0.65rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  gap: 0.25rem;
+}
+
+.pp-pinch-hint {
+  margin: 0 1.25rem 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-muted, #64748b);
+  text-align: center;
+}
+
+.pp-pinch-target {
+  touch-action: none;
+}
+
+.pp-history-back {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .pp-modal-close-btn {
   display: inline-flex;
   align-items: center;

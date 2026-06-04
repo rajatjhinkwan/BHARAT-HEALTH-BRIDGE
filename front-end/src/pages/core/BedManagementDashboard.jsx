@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { BedDouble, Calendar, Activity, Info, LogOut, CheckCircle, Navigation } from 'lucide-react';
-import { generateBlockchainHash } from '../../utils/blockchain';
-
 const INITIAL_BEDS = [
   ...Array.from({ length: 5 }, (_, i) => ({
     id: `ICU-B${i + 1}`,
@@ -72,8 +70,6 @@ export default function BedManagementDashboard() {
              timestamp: new Date().toISOString()
          };
          
-         const hash = await generateBlockchainHash({ type: "BED_ALLOCATION", ...allocationRecord });
-         
          setBeds(eds => eds.map(b => b.id === selectedBed.id ? {
              ...b, 
              status: 'occupied', 
@@ -84,7 +80,7 @@ export default function BedManagementDashboard() {
          setSelectedBed(null);
          setUhidInput('');
          setExpectedDays('');
-         alert("Bed Allocated. Transaction Logged:\\n" + hash);
+         alert('Bed allocated successfully.');
      } catch (err) {
          console.error(err);
          alert("Error allocating bed.");

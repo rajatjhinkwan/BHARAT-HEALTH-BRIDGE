@@ -213,9 +213,9 @@ export async function auditChain() {
           if (block.data.dataHash !== currentRecordHash) {
             auditResults.isValid = false;
             blockDetails.status = 'BREACHED';
-            const msg = `Data Tampering detected on Medical Record #${block.data.recordId}. Blockchain hash: ${block.data.dataHash.substring(0, 10)}... DB hash: ${currentRecordHash.substring(0, 10)}...`;
+            const msg = `Integrity mismatch on Medical Record #${block.data.recordId}. Ledger seal: ${block.data.dataHash.substring(0, 10)}... Current: ${currentRecordHash.substring(0, 10)}...`;
             auditResults.errors.push(msg);
-            blockDetails.details.push('Medical record data does not match blockchain seal (TAMPERED)');
+            blockDetails.details.push('Medical record data does not match ledger seal');
           }
         }
       }

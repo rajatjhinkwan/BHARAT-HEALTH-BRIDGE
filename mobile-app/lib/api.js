@@ -333,10 +333,22 @@ export async function listAppointments(patientId) {
 }
 
 export async function bookAppointment(body) {
-  return apiFetch('/appointments', {
+  const headers = await getAuthHeaders();
+  if (headers.Authorization === 'Bearer dev_bypass_token') {
+    throw new Error(
+      'Please sign in with your patient account (not demo mode) to book on the live hospital server.'
+    );
+  }
+  const res = await fetch(`${API_BASE_URL}/appointments`, {
     method: 'POST',
+    headers,
     body: JSON.stringify(body),
   });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || data.message || `Booking failed (${res.status})`);
+  }
+  return data;
 }
 
 export async function getDoctorAvailability(doctorId, date) {

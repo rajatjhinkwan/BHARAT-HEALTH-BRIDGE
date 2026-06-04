@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Calendar, Pill, Building2, Settings, RefreshCw, LogOut, ListOrdered } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { usePatientRealtime } from '../../hooks/usePatientRealtime';
 import PatientJourneyFlow from '../../components/patient/PatientJourneyFlow';
 import FullscreenPrescriptionModal from '../../components/patient/FullscreenPrescriptionModal';
+import VoiceNotesPanel from '../../components/patient/VoiceNotesPanel';
 import './PatientPortal.css';
 
 export default function PatientPortal() {
@@ -68,10 +69,24 @@ export default function PatientPortal() {
     },
   });
 
+  const appointments = useMemo(() => {
+    const upcoming = dashboard?.upcomingAppointments || [];
+    const all = dashboard?.appointments || [];
+    const byKey = new Map();
+    [...upcoming, ...all].forEach((a) => {
+      const key = a._id || a.appointmentId || `${a.appointmentDate}-${a.appointmentTime}-${a.doctorId}`;
+      if (!byKey.has(key)) byKey.set(key, a);
+    });
+    return Array.from(byKey.values()).sort((a, b) => {
+      const da = `${a.appointmentDate || ''} ${a.appointmentTime || ''}`;
+      const db = `${b.appointmentDate || ''} ${b.appointmentTime || ''}`;
+      return db.localeCompare(da);
+    });
+  }, [dashboard]);
+
   if (!user) return null;
 
   const prescriptions = history.filter((r) => r.type === 'prescription');
-  const appointments = dashboard?.appointments || [];
   const queue = dashboard?.queueStatus;
   const journey = dashboard?.patientJourney;
 
@@ -145,6 +160,8 @@ export default function PatientPortal() {
             </ul>
           )}
         </section>
+
+        <VoiceNotesPanel records={history} />
 
         <section className="pp-card">
           <h2><Pill size={18} /> Prescriptions</h2>

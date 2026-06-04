@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { API_BASE_URL } from '../../config';
 import { usePatientRealtime } from '../../hooks/usePatientRealtime';
 import FullscreenPrescriptionModal from '../../components/patient/FullscreenPrescriptionModal';
+import VoiceNotesPanel from '../../components/patient/VoiceNotesPanel';
 import { ShieldCheck, ShieldAlert, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './PatientPortal.css';
@@ -93,7 +94,12 @@ export default function PatientHistory() {
   return (
     <div className="patient-portal">
       <h1>Medical history</h1>
-      <Link to="/patient">← My Health</Link>
+      <Link to="/patient" className="pp-history-back">← Back to My Health</Link>
+      {!loading && records.some((r) => r.type === 'voice_note') && (
+        <div style={{ marginTop: '1rem' }}>
+          <VoiceNotesPanel records={records} />
+        </div>
+      )}
       {loading ? (
         <p className="muted">Loading…</p>
       ) : records.length === 0 ? (
@@ -132,7 +138,7 @@ export default function PatientHistory() {
                     </span>
                   ) : (
                     <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'var(--danger-light)', padding: '2px 8px', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                      <ShieldAlert size={12} /> Tampered Record! ({verifications[r._id].reason || 'Hash mismatch'})
+                      <ShieldAlert size={12} /> Integrity issue ({verifications[r._id].reason || 'Hash mismatch'})
                     </span>
                   )
                 ) : (
@@ -142,7 +148,7 @@ export default function PatientHistory() {
                     style={{ fontSize: '0.72rem', padding: '0.2rem 0.5rem', borderRadius: '8px', border: '1px solid var(--border)', display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'var(--surface-hover)', cursor: 'pointer' }}
                     onClick={() => verifyRecord(r._id)}
                   >
-                    <ShieldCheck size={12} color="var(--primary)" /> Check Blockchain Seal
+                    <ShieldCheck size={12} color="var(--primary)" /> Verify ledger seal
                   </button>
                 )}
               </div>

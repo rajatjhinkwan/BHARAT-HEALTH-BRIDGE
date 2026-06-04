@@ -58,7 +58,7 @@ export default function Home() {
     const modules = [
         {
             title: "Electronic Medical Records",
-            desc: "Next-gen EMR with high-fidelity digital ink and blockchain-secured prescriptions.",
+            desc: "Next-gen EMR with high-fidelity digital ink and ledger-secured medical records.",
             icon: <PenTool size={24} />,
             features: ["Action Pad Engine", "Secure Prescription", "History Timeline"],
             link: "/emr",
@@ -155,7 +155,7 @@ export default function Home() {
                             </h1>
 
                             <p className="hero-subtitle animate-slide-up delay-100">
-                                Bharat Health Bridge is an enterprise-grade hospital ecosystem that bridges the gap between clinical excellence and digital precision. From blockchain-secured EMRs to AI-driven logistics, we orchestrate the future of Indian healthcare.
+                                Bharat Health Bridge is an enterprise-grade hospital ecosystem that bridges the gap between clinical excellence and digital precision. From cryptographically sealed EMRs to AI-driven logistics, we orchestrate the future of Indian healthcare.
                             </p>
 
                             <div className="hero-cta-group animate-slide-up delay-200">
@@ -231,7 +231,7 @@ export default function Home() {
                             <div className="step-number">03</div>
                             <div className="step-content">
                                 <h3>Precise Encounter</h3>
-                                <p>Digital ink documentation with Action Pad and blockchain prescriptions.</p>
+                                <p>Digital ink documentation with Action Pad and integrity-verified prescriptions.</p>
                             </div>
                         </div>
                         <div className="journey-line"></div>
@@ -277,7 +277,7 @@ export default function Home() {
                     <div className="deep-dive-row">
                         <div className="deep-dive-content">
                             <div className="module-badge">SECURITY ARCHITECTURE</div>
-                            <h2 className="deep-dive-title">Built on Trust, Secured by Blockchain</h2>
+                            <h2 className="deep-dive-title">Built on Trust, Secured by the Security Ledger</h2>
                             <p className="deep-dive-text">
                                 Data integrity is the foundation of healthcare. Bharat Health Bridge employs a distributed ledger system where every clinical event—from triage vitals to prescriptions—is cryptographically hashed.
                             </p>
@@ -337,7 +337,7 @@ export default function Home() {
                         <div className="tech-item">
                             <Binary className="tech-icon" />
                             <div className="tech-name">EtherMesh</div>
-                            <span className="tech-tag">Blockchain Logic</span>
+                            <span className="tech-tag">SHA-256 Ledger</span>
                         </div>
                     </div>
                 </section>
@@ -397,7 +397,7 @@ export default function Home() {
                             <ul>
                                 <li><a href="#">Privacy Mesh</a></li>
                                 <li><a href="#">Terms of Service</a></li>
-                                <li><a href="#">Blockchain Audit</a></li>
+                                <li><a href="/admin/blockchain">Security Ledger</a></li>
                             </ul>
                         </div>
                     </div>

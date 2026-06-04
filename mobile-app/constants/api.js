@@ -1,9 +1,10 @@
 import { Platform, NativeModules } from 'react-native';
 import Constants from 'expo-constants';
 
-// Safely extract the exact IP address the Metro bundler is using by reading the expo config hostUri or bundle URL.
-// This is mathematically guaranteed to be correct for physical devices on ANY Wi-Fi network.
-let DEV_IP = '10.0.2.2'; 
+const PROD_API_URL = 'https://bhb-api.onrender.com/api';
+const PROD_OCR_URL = 'https://bhb-ocr.onrender.com';
+
+let DEV_IP = '10.0.2.2';
 
 if (__DEV__) {
   let host = Constants.expoConfig?.hostUri;
@@ -22,12 +23,26 @@ if (__DEV__) {
     }
   }
 
-  // If resolved to localhost loopback on Android emulator, redirect to 10.0.2.2 loopback tunnel
   if ((DEV_IP === 'localhost' || DEV_IP === '127.0.0.1') && Platform.OS === 'android') {
     DEV_IP = '10.0.2.2';
   }
 }
 
-export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || `http://${DEV_IP}:4000/api`;
-export const OCR_BASE_URL = process.env.EXPO_PUBLIC_OCR_URL || `http://${DEV_IP}:8000`;
+const extra = Constants.expoConfig?.extra || {};
+const localDevUrl = `http://${DEV_IP}:4000/api`;
+
+// syncWithProduction: mobile bookings & records go to the same MongoDB as the deployed web app
+const syncWithProduction = extra.syncWithProduction === true;
+
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  (syncWithProduction ? PROD_API_URL : null) ||
+  (__DEV__ ? localDevUrl : PROD_API_URL);
+
+export const OCR_BASE_URL =
+  process.env.EXPO_PUBLIC_OCR_URL ||
+  extra.ocrUrl ||
+  (syncWithProduction ? PROD_OCR_URL : null) ||
+  (__DEV__ ? `http://${DEV_IP}:8000` : PROD_OCR_URL);
+
 export const LOCAL_OCR_BASE_URL = `http://${DEV_IP}:8000`;

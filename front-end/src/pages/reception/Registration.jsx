@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { User, MapPin, Phone, Hash, AlertCircle, FileCheck, Droplet, Users, Activity, Link as LinkIcon, Fingerprint } from 'lucide-react';
-import { generateBlockchainHash } from '../../utils/blockchain';
-
 export default function Registration() {
   const generateNewUHID = () => 'UHID-DL-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 899999 + 100000);
 
@@ -24,7 +22,6 @@ export default function Registration() {
   });
 
   const [registeredData, setRegisteredData] = useState(null);
-  const [txHash, setTxHash] = useState('');
   const [loading, setLoading] = useState(false);
   const printRef = useRef(null);
 
@@ -62,16 +59,6 @@ export default function Registration() {
       }
       const savedPatient = await response.json();
 
-      // Generate Blockchain Hash simulation for UI flair
-      const payloadString = JSON.stringify({
-         type: "PATIENT_IDENTITY_CREATION",
-         timestamp: new Date().toISOString(),
-         uhid: savedPatient.uhid,
-         aadharHash: savedPatient.aadharCardId
-      });
-      const hash = await generateBlockchainHash(payloadString);
-      
-      setTxHash(hash);
       setRegisteredData({ ...savedPatient, registrationDate: savedPatient.createdAt });
       setLoading(false);
     } catch(err) {
@@ -105,13 +92,13 @@ export default function Registration() {
           <div style={{ textAlign: 'center' }}>
             <FileCheck size={48} color="var(--success)" style={{ marginBottom: '1rem' }} />
             <h2 style={styles.title}>Registration Successful</h2>
-            <p style={styles.subtitle}>Patient Identity Record hashed to the simulated blockchain.</p>
+            <p style={styles.subtitle}>Patient registered successfully. UHID assigned for hospital records.</p>
           </div>
           
           <div style={{ width: '100%', maxWidth: '800px' }}>
-             <div style={styles.hashBox}>
-               <strong style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--text-main)'}}><LinkIcon size={16}/> Blockchain Transaction Hash Target</strong>
-               {txHash}
+             <div style={styles.uhidBox}>
+               <Fingerprint size={20} color="var(--primary)" />
+               <p style={styles.uhidText}>UHID: {registeredData.uhid}</p>
              </div>
              
              <button onClick={() => handlePrint()} className="btn-primary" style={{ marginTop: '1.5rem', width: '100%', padding: '1rem' }}>
@@ -135,7 +122,6 @@ export default function Registration() {
                  <p><strong>Phone:</strong> {registeredData.phone}</p>
                  <p><strong>Emergency Contact:</strong> {registeredData.emergencyContactName} ({registeredData.emergencyContactPhone})</p>
                  <p><strong>Allergies:</strong> {registeredData.allergies || 'None'}</p>
-                 <p><strong>Blockchain TX:</strong> <br/><span style={{fontSize: '0.8rem', wordBreak: 'break-all'}}>{txHash}</span></p>
                </div>
              </div>
           </div>
@@ -274,7 +260,7 @@ export default function Registration() {
         </div>
 
         <button type="submit" disabled={loading} className="btn-primary" style={{ ...styles.submitBtn, opacity: loading ? 0.7 : 1 }}>
-          {loading ? 'Hashing Data & Registering...' : 'Register Patient to Blockchain'}
+          {loading ? 'Registering…' : 'Register patient'}
         </button>
       </form>
     </div>

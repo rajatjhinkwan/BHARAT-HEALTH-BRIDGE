@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Alert, Switch, ActivityIndicator, Share, Image, Platform, Dimensions, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ActivityIndicator, Share, Image, Platform, Dimensions, Modal } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Polyline } from 'react-native-svg';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';
@@ -14,6 +15,7 @@ import { getPatientHistory } from '@/lib/api';
 import { usePatientRealtime } from '@/hooks/usePatientRealtime';
 import * as Haptics from 'expo-haptics';
 import { HistorySkeleton } from '@/components/ui/SkeletonLoader';
+import PinchZoomView from '@/components/ui/PinchZoomView';
 import * as Speech from 'expo-speech';
 import { Audio } from 'expo-av';
 
@@ -623,15 +625,32 @@ export default function HistoryScreen() {
         )}
       </View>
 
-      {/* Immersive Full Screen Prescription Zoom Modal */}
-      <Modal visible={Boolean(fullScreenImageUri || fullScreenStrokesData)} transparent={true} animationType="fade" onRequestClose={() => { setFullScreenImageUri(null); setFullScreenStrokesData(null); setModalZoomScale(1); }}>
-        <View style={styles.modalOverlay} role="dialog" aria-modal="true">
+      {/* Full-screen prescription — pinch with two fingers to zoom */}
+      <Modal
+        visible={Boolean(fullScreenImageUri || fullScreenStrokesData)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          setFullScreenImageUri(null);
+          setFullScreenStrokesData(null);
+          setModalZoomScale(1);
+        }}
+      >
+        <SafeAreaView style={styles.modalOverlay} edges={['top', 'bottom']}>
           <View style={styles.modalHeaderRow}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Ionicons name="document-text-outline" size={22} color="#000000" />
-              <Text style={styles.modalHeaderTitle}>Prescription Full Screen</Text>
-            </View>
-            <PressableScale 
+            <PressableScale
+              onPress={() => {
+                setFullScreenImageUri(null);
+                setFullScreenStrokesData(null);
+                setModalZoomScale(1);
+              }}
+              style={styles.modalBackRow}
+            >
+              <Ionicons name="arrow-back" size={22} color="#000000" />
+              <Text style={styles.modalBackLabel}>Back</Text>
+            </PressableScale>
+            <Text style={styles.modalHeaderTitle}>Prescription</Text>
+            <PressableScale
               onPress={() => {
                 setFullScreenImageUri(null);
                 setFullScreenStrokesData(null);
@@ -643,99 +662,106 @@ export default function HistoryScreen() {
             </PressableScale>
           </View>
 
-          {/* Clean zoom controls */}
+          <Text style={styles.modalPinchHint}>Pinch with two fingers to zoom in or out</Text>
+
           <View style={styles.modalZoomToolbar}>
-            <PressableScale 
-              onPress={() => setModalZoomScale(z => Math.max(1, z - 0.5))} 
+            <PressableScale
+              onPress={() => setModalZoomScale((z) => Math.max(1, z - 0.5))}
               style={[styles.modalZoomBtn, { backgroundColor: '#E5E7EB' }]}
               disabled={modalZoomScale <= 1}
             >
               <Ionicons name="remove" size={18} color="#000000" />
             </PressableScale>
             <Text style={styles.modalZoomLabel}>{Math.round(modalZoomScale * 100)}%</Text>
-            <PressableScale 
-              onPress={() => setModalZoomScale(z => Math.min(6, z + 0.5))} 
+            <PressableScale
+              onPress={() => setModalZoomScale((z) => Math.min(6, z + 0.5))}
               style={[styles.modalZoomBtn, { backgroundColor: '#3B82F6' }]}
               disabled={modalZoomScale >= 6}
             >
               <Ionicons name="add" size={18} color="#FFFFFF" />
             </PressableScale>
             {modalZoomScale > 1 && (
-              <PressableScale 
-                onPress={() => setModalZoomScale(1)} 
-                style={styles.modalZoomBtnReset}
-              >
+              <PressableScale onPress={() => setModalZoomScale(1)} style={styles.modalZoomBtnReset}>
                 <Text style={styles.modalZoomResetText}>Reset</Text>
               </PressableScale>
             )}
           </View>
 
-          <ScrollView 
-            maximumZoomScale={6} 
-            minimumZoomScale={1} 
-            bouncesZoom={true}
+          <ScrollView
             contentContainerStyle={styles.modalScrollContent}
-            showsHorizontalScrollIndicator={true}
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator
+            showsHorizontalScrollIndicator
+            maximumZoomScale={6}
+            minimumZoomScale={1}
+            bouncesZoom
+            centerContent
           >
-            <ScrollView horizontal contentContainerStyle={styles.modalScrollContent}>
-              <View style={{
-                width: (SCREEN_WIDTH - 20) * modalZoomScale,
-                height: (SCREEN_HEIGHT - 200) * modalZoomScale,
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-                backgroundColor: '#FFFFFF',
-              }}>
+            <PinchZoomView style={{ width: SCREEN_WIDTH - 24, minHeight: SCREEN_HEIGHT * 0.55 }}>
+              <View
+                style={{
+                  width: (SCREEN_WIDTH - 24) * modalZoomScale,
+                  minHeight: (SCREEN_HEIGHT - 220) * modalZoomScale,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: 12,
+                }}
+              >
                 {fullScreenImageUri ? (
-                  <Image 
-                    source={{ uri: fullScreenImageUri }} 
-                    style={{ width: '100%', height: '100%', borderRadius: 12 }} 
-                    resizeMode="contain" 
+                  <Image
+                    source={{ uri: fullScreenImageUri }}
+                    style={{ width: '100%', height: (SCREEN_HEIGHT - 220) * modalZoomScale }}
+                    resizeMode="contain"
                   />
-                ) : (
-                  <View style={{ width: '100%', height: '100%', backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center' }}>
-                    <Svg 
-                      viewBox={`0 0 ${fullScreenStrokesData.width || 320} ${fullScreenStrokesData.height || 220}`}
-                      width={(SCREEN_WIDTH - 20) * modalZoomScale}
-                      height={(SCREEN_HEIGHT - 200) * modalZoomScale}
-                    >
-                      {fullScreenStrokesData.strokes.map((stroke, index) => {
-                        if (!stroke.points || stroke.points.length === 0) return null;
-                        return (
-                          <Polyline 
-                            key={index}
-                            points={stroke.points.map(p => `${p.x},${p.y}`).join(' ')}
-                            fill="none"
-                            stroke="#000000"
-                            strokeWidth={stroke.width || 2.5}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        );
-                      })}
-                    </Svg>
-                  </View>
-                )}
+                ) : fullScreenStrokesData ? (
+                  <Svg
+                    viewBox={`0 0 ${fullScreenStrokesData.width || 320} ${fullScreenStrokesData.height || 220}`}
+                    width={(SCREEN_WIDTH - 24) * modalZoomScale}
+                    height={(SCREEN_HEIGHT - 220) * modalZoomScale}
+                  >
+                    {fullScreenStrokesData.strokes.map((stroke, index) => {
+                      if (!stroke.points || stroke.points.length === 0) return null;
+                      return (
+                        <Polyline
+                          key={index}
+                          points={stroke.points.map((p) => `${p.x},${p.y}`).join(' ')}
+                          fill="none"
+                          stroke="#000000"
+                          strokeWidth={stroke.width || 2.5}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      );
+                    })}
+                  </Svg>
+                ) : null}
               </View>
-            </ScrollView>
+            </PinchZoomView>
           </ScrollView>
-        </View>
+        </SafeAreaView>
       </Modal>
 
-      {/* WhatsApp-style Voice Notes Overlay Modal */}
-      <Modal visible={Boolean(voiceNotesModalData)} transparent={true} animationType="slide" onRequestClose={() => { setVoiceNotesModalData(null); stopAudio(); }}>
-        <View style={styles.modalOverlay} role="dialog" aria-modal="true">
-          {/* Chat Header */}
-          <View style={styles.chatHeader}>
-            <PressableScale 
+      {/* Doctor voice notes — full screen with back */}
+      <Modal
+        visible={Boolean(voiceNotesModalData)}
+        animationType="slide"
+        onRequestClose={async () => {
+          setVoiceNotesModalData(null);
+          await stopAudio();
+        }}
+      >
+        <SafeAreaView style={[styles.voiceModalRoot, { backgroundColor: scheme === 'dark' ? '#111827' : '#F3F4F6' }]} edges={['top', 'bottom']}>
+          <View style={[styles.chatHeader, { borderBottomColor: C.border }]}>
+            <PressableScale
               onPress={async () => {
                 setVoiceNotesModalData(null);
                 await stopAudio();
               }}
               style={styles.chatBackBtn}
+              accessibilityLabel="Go back"
             >
               <Ionicons name="arrow-back" size={24} color={C.textPrimary} />
+              <Text style={[styles.chatBackLabel, { color: C.textPrimary }]}>Back</Text>
             </PressableScale>
             <View style={styles.chatHeaderAvatar}>
               <Ionicons name="mic-circle" size={32} color="#0EA5E9" />
@@ -743,18 +769,17 @@ export default function HistoryScreen() {
             <View style={{ flex: 1, marginLeft: 10 }}>
               <Text style={[styles.chatHeaderTitle, { color: C.textPrimary }]}>Consultation Voice Notes</Text>
               <Text style={[styles.chatHeaderSubtitle, { color: C.textSecondary }]}>
-                {voiceNotesModalData.length} voice messages from your doctors
+                {voiceNotesModalData?.length || 0} voice messages from your doctors
               </Text>
             </View>
           </View>
 
-          {/* Chat Messages Timeline */}
-          <ScrollView 
+          <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.chatListContent}
-            style={{ width: '100%', flex: 1, backgroundColor: scheme === 'dark' ? '#111827' : '#F3F4F6' }}
+            style={{ width: '100%', flex: 1 }}
           >
-            {voiceNotesModalData.map((note) => {
+            {(voiceNotesModalData || []).map((note) => {
               const isPlaying = playingVoiceId === note._id;
               
               return (
@@ -821,7 +846,7 @@ export default function HistoryScreen() {
               );
             })}
           </ScrollView>
-        </View>
+        </SafeAreaView>
       </Modal>
     </ScreenWrapper>
   );
@@ -1020,14 +1045,9 @@ const styles = StyleSheet.create({
 
   // Immersive Modal Zoom and Expansion Styles
   modalOverlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    flex: 1,
+    width: '100%',
     backgroundColor: '#FFFFFF',
-    zIndex: 9999,
-    paddingTop: Platform.OS === 'ios' ? 50 : 30,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
@@ -1036,7 +1056,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginBottom: 20,
+    marginBottom: 8,
+  },
+  modalBackRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 6,
+    paddingRight: 8,
+  },
+  modalBackLabel: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#000000',
+  },
+  modalPinchHint: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 12,
+    textAlign: 'center',
+    width: '100%',
+  },
+  voiceModalRoot: {
+    flex: 1,
+    width: '100%',
   },
   modalHeaderTitle: {
     color: '#000000',
@@ -1126,11 +1170,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   chatBackBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 8,
+    paddingRight: 10,
+    minWidth: 72,
+  },
+  chatBackLabel: {
+    fontSize: 16,
+    fontWeight: '800',
   },
   chatHeaderAvatar: {
     marginLeft: 8,
