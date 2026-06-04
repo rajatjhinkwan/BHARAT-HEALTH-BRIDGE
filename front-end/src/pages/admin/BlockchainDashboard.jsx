@@ -14,11 +14,9 @@ export default function BlockchainDashboard() {
   const [loading, setLoading] = useState(true);
   const [auditing, setAuditing] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const [tampering, setTampering] = useState(false);
-
-  // Form fields for tampering simulation
-  const [selectedRecordId, setSelectedRecordId] = useState('');
-  const [tamperText, setTamperText] = useState('UNAUTHORIZED_DATA_MODIFICATION');
+  const [syncing, setSyncing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const blocksPerPage = 5; // Show 5 blocks per page for a compact view
   
   // Console logs to print during audit checks
   const [consoleLogs, setConsoleLogs] = useState([
@@ -139,42 +137,6 @@ export default function BlockchainDashboard() {
     }
   };
 
-  const handleTamperSimulation = async (e) => {
-    e.preventDefault();
-    if (!selectedRecordId) {
-      toast.error('Please select a record to tamper');
-      return;
-    }
-
-    try {
-      setTampering(true);
-      const res = await fetch(`${API_BASE_URL}/blockchain/tamper`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recordId: selectedRecordId,
-          tamperValue: tamperText
-        })
-      });
-
-      if (res.ok) {
-        toast.success('Database record modified directly! Run audit to check.');
-        setConsoleLogs(prev => [
-          ...prev,
-          `[${new Date().toLocaleTimeString()}] WARNING: User injected database alteration on Record ${selectedRecordId.substring(0, 10)}...`,
-          `[${new Date().toLocaleTimeString()}] Modification done bypass-level. Blockchain ledger NOT updated. Hash mismatch simulated.`
-        ]);
-        await loadLedger();
-      } else {
-        toast.error('Tampering simulation failed');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Network error during tampering simulation');
-    } finally {
-      setTampering(false);
-    }
-  };
 
   useEffect(() => {
     loadLedger();
@@ -222,6 +184,15 @@ export default function BlockchainDashboard() {
     },
     codeHash: { fontFamily: 'Courier New, monospace', fontSize: '0.82rem', background: 'rgba(0, 0, 0, 0.05)', padding: '2px 6px', borderRadius: '4px', wordBreak: 'break-all' },
     darkCodeHash: { fontFamily: 'Courier New, monospace', fontSize: '0.82rem', background: 'rgba(0, 0, 0, 0.4)', color: '#94a3b8', padding: '2px 6px', borderRadius: '4px', wordBreak: 'break-all' }
+  };
+
+  const indexOfLastBlock = currentPage * blocksPerPage;
+  const indexOfFirstBlock = indexOfLastBlock - blocksPerPage;
+  const currentBlocks = blocks.slice(indexOfFirstBlock, indexOfLastBlock);
+  const totalPages = Math.ceil(blocks.length / blocksPerPage);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -336,7 +307,34 @@ export default function BlockchainDashboard() {
             </div>
           ) : (
             <div style={styles.ledgerView}>
-              {blocks.map((block, idx) => {
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                  Showing {indexOfFirstBlock + 1} to {Math.min(indexOfLastBlock, blocks.length)} of {blocks.length} blocks
+                </span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button 
+                    className="btn-outline" 
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))} 
+                    disabled={currentPage === 1}
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                  >
+                    Previous
+                  </button>
+                  <span style={{ display: 'flex', alignItems: 'center', padding: '0 0.5rem', fontWeight: 600 }}>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button 
+                    className="btn-outline" 
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))} 
+                    disabled={currentPage === totalPages}
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+              
+              {currentBlocks.map((block, idx) => {
                 const isGenesis = block.data.recordId === 'genesis';
                 
                 // Check if this block has been flagged as breached in the last audit report
@@ -378,16 +376,17 @@ export default function BlockchainDashboard() {
                           </div>
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <span style={{ color: 'var(--text-muted)' }}><strong>Previous Block Hash:</strong></span>
-                          <span style={styles.codeHash}>{block.previousHash}</span>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                          <span style={{ color: 'var(--text-muted)' }}><strong>Current Block Hash:</strong></span>
-                          <span style={{ ...styles.codeHash, color: isTampered ? 'var(--danger)' : 'var(--text-main)', fontWeight: isTampered ? 'bold' : 'normal' }}>
-                            {block.hash}
-                          </span>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}><strong>Previous Block Hash:</strong></span>
+                            <span style={styles.codeHash}>{block.previousHash.substring(0, 32)}...</span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <span style={{ color: 'var(--text-muted)' }}><strong>Current Block Hash:</strong></span>
+                            <span style={{ ...styles.codeHash, color: isTampered ? 'var(--danger)' : 'var(--text-main)', fontWeight: isTampered ? 'bold' : 'normal' }}>
+                              {block.hash.substring(0, 32)}...
+                            </span>
+                          </div>
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', paddingTop: '0.4rem', borderTop: '1px solid var(--divider)' }}>
@@ -407,6 +406,26 @@ export default function BlockchainDashboard() {
                   </div>
                 );
               })}
+              
+              {/* Pagination Controls at Bottom */}
+              {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+                  <button 
+                    className="btn-outline" 
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))} 
+                    disabled={currentPage === 1}
+                  >
+                    Previous Page
+                  </button>
+                  <button 
+                    className="btn-outline" 
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))} 
+                    disabled={currentPage === totalPages}
+                  >
+                    Next Page
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -449,64 +468,7 @@ export default function BlockchainDashboard() {
             </div>
           </div>
 
-          {/* Tamper Simulation Panel */}
-          <div style={styles.statCard}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-              <Flame size={20} color="var(--danger)" />
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Evaluator Tampering Sim</h2>
-            </div>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-              Use this simulator to bypass the application backend and write modified values directly to MongoDB, demonstrating the blockchain audit catch.
-            </p>
 
-            {blocks.filter(b => b.data.recordId !== 'genesis').length === 0 ? (
-              <div style={{ padding: '1rem', border: '1px dashed var(--border)', borderRadius: '8px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                No database records available. Please sync or create records to simulate hacking.
-              </div>
-            ) : (
-              <form onSubmit={handleTamperSimulation} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label htmlFor="tamper-record">Target MongoDB Record ID</label>
-                  <select
-                    id="tamper-record"
-                    value={selectedRecordId}
-                    onChange={(e) => setSelectedRecordId(e.target.value)}
-                    required
-                  >
-                    {blocks
-                      .filter(b => b.data.recordId !== 'genesis')
-                      .map((b) => (
-                        <option key={b._id} value={b.data.recordId}>
-                          Block #{b.index} - Record {b.data.recordId.substring(0, 12)}...
-                        </option>
-                      ))}
-                  </select>
-                </div>
-
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label htmlFor="tamper-text">Injected Modified Title</label>
-                  <input
-                    id="tamper-text"
-                    type="text"
-                    value={tamperText}
-                    onChange={(e) => setTamperText(e.target.value)}
-                    placeholder="e.g. FAKE_PRESCRIPTION_DOSAGE_CHANGED"
-                    required
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={tampering}
-                  style={{ background: 'linear-gradient(135deg, var(--danger), #f43f5e)', width: '100%' }}
-                >
-                  <Flame size={16} />
-                  {tampering ? 'Tampering...' : 'Inject Database Modification'}
-                </button>
-              </form>
-            )}
-          </div>
         </div>
 
       </div>

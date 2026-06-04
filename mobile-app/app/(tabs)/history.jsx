@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Alert, Switch, ActivityIndicator, Share, Image, Platform, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, Alert, Switch, ActivityIndicator, Share, Image, Platform, Dimensions, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Polyline } from 'react-native-svg';
 import ScreenWrapper from '@/components/ui/ScreenWrapper';

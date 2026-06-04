@@ -57,44 +57,4 @@ router.post('/sync', async (req, res) => {
   }
 });
 
-// ==========================================
-// 5. SIMULATE DATABASE TAMPERING (DEMO ONLY)
-// ==========================================
-router.post('/tamper', async (req, res) => {
-  try {
-    const { recordId, tamperValue } = req.body;
-    if (!recordId) {
-      return res.status(400).json({ error: 'recordId is required for tampering simulation' });
-    }
-
-    const valueToSet = tamperValue || 'CORRUPTED_BY_INTRUSION';
-
-    const record = await MedicalHistory.findById(recordId);
-    if (!record) {
-      return res.status(404).json({ error: 'Record not found to tamper' });
-    }
-
-    // Intentionally alter record data directly in MongoDB WITHOUT mining a block.
-    // This creates a mismatch between DB content and blockchain record seal.
-    record.title = `[ALERT] ${valueToSet} (${record.title})`;
-    
-    // If it's a prescription, let's also tamper with the diagnosis
-    if (record.type === 'prescription' && record.prescriptionDetails) {
-      record.prescriptionDetails.diagnosis = `HACKED: Unauthorized modification of diagnostics.`;
-    }
-
-    await record.save();
-
-    console.warn(`[Blockchain-Demo] Tampered with MedicalHistory record: ${recordId}`);
-    res.json({
-      success: true,
-      message: 'Record successfully tampered in the database. Blockchain ledger was NOT updated, making this modification detectable.',
-      tamperedRecord: record
-    });
-  } catch (error) {
-    console.error('Tampering simulation error:', error);
-    res.status(500).json({ error: 'Server error simulating tampering' });
-  }
-});
-
 export default router;
