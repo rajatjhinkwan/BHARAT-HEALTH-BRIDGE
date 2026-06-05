@@ -116,7 +116,7 @@ export default function EmrWorkspaceModal({
           </div>
         )}
 
-        <div className={`emr-ws-body${isReferral ? ' is-referral' : ''}${!showCanvas ? ' no-canvas' : ''}`}>
+        <div className={`emr-ws-body${isReferral ? ' is-referral' : ''}${!isReferral && !showCanvas ? ' no-canvas' : ''}`}>
           {isReferral ? (
             <div className="emr-ws-referral-wrap">
               <ReferralPanel

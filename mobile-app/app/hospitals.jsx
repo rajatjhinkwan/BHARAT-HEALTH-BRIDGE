@@ -489,8 +489,8 @@ const styles = StyleSheet.create({
     ...Shadow.sm,
   },
   bottomSheet: { flex: 0.6, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginTop: -12, paddingTop: 8 },
-  districtScroll: { paddingHorizontal: 16, marginBottom: 8, maxHeight: 44 },
-  sheetHeader: { paddingHorizontal: 16, marginBottom: 8 },
+  districtScroll: { paddingHorizontal: 16, marginBottom: 12 },
+  sheetHeader: { paddingHorizontal: 16, marginBottom: 12 },
   filterRow: { flexDirection: 'row', gap: 8, paddingRight: 24 },
   countLabel: { fontSize: 12, fontWeight: '700', marginTop: 8 },
   pill: {

@@ -109,6 +109,17 @@ export default function HistoryScreen() {
   const [loadingAudioId, setLoadingAudioId] = useState(null);
   const [playbackProgress, setPlaybackProgress] = useState(0);
   const soundRef = React.useRef(null);
+  const [playbackRate, setPlaybackRate] = useState(1.0);
+
+  const cyclePlaybackRate = async () => {
+    const rates = [1.0, 1.2, 1.5, 1.75, 2.0];
+    const currentIndex = rates.indexOf(playbackRate);
+    const nextRate = rates[(currentIndex + 1) % rates.length];
+    setPlaybackRate(nextRate);
+    if (soundRef.current) {
+      await soundRef.current.setRateAsync(nextRate, true, Audio.PitchCorrectionQuality.High);
+    }
+  };
 
   const [fullScreenImageUri, setFullScreenImageUri] = useState(null);
   const [fullScreenStrokesData, setFullScreenStrokesData] = useState(null);
@@ -174,7 +185,7 @@ export default function HistoryScreen() {
 
         const { sound } = await Audio.Sound.createAsync(
           { uri: resolvedUrl },
-          { shouldPlay: true },
+          { shouldPlay: true, rate: playbackRate, shouldCorrectPitch: true },
           (status) => {
             if (status.isLoaded) {
               if (status.isPlaying) {
@@ -750,7 +761,7 @@ export default function HistoryScreen() {
           await stopAudio();
         }}
       >
-        <SafeAreaView style={[styles.voiceModalRoot, { backgroundColor: scheme === 'dark' ? '#111827' : '#F3F4F6' }]} edges={['top', 'bottom']}>
+        <SafeAreaView style={[styles.voiceModalRoot, { backgroundColor: scheme === 'dark' ? '#111827' : '#F3F4F6', paddingTop: Platform.OS === 'android' ? 40 : 0 }]} edges={['top', 'bottom']}>
           <View style={[styles.chatHeader, { borderBottomColor: C.border }]}>
             <PressableScale
               onPress={async () => {
@@ -789,8 +800,6 @@ export default function HistoryScreen() {
                     styles.chatBubble, 
                     { backgroundColor: scheme === 'dark' ? '#1F2937' : '#FFFFFF', borderColor: scheme === 'dark' ? '#374151' : '#E5E7EB' }
                   ]}>
-                    {/* Doctor Badge */}
-                    <Text style={styles.chatBubbleDoctor}>{note.doctor} • {note.hospital}</Text>
                     
                     {/* Voice Message Player UI (WhatsApp Style) */}
                     <View style={styles.chatPlayerRow}>
@@ -822,19 +831,17 @@ export default function HistoryScreen() {
                         </View>
                       </View>
                       
-                      <Text style={[styles.chatDuration, { color: C.textSecondary }]}>
-                        {isPlaying 
-                          ? `${Math.round(playbackProgress * (note.voiceNoteDetails?.duration || 30))}s`
-                          : `${note.voiceNoteDetails?.duration || 30}s`
-                        }
-                      </Text>
-                    </View>
-
-                    {/* AI Transcript Box */}
-                    <View style={[styles.chatTranscriptBox, { backgroundColor: scheme === 'dark' ? '#111827' : '#F9FAFB' }]}>
-                      <Text style={[styles.chatTranscriptText, { color: C.textPrimary }]}>
-                        &quot;{note.voiceNoteDetails?.transcript}&quot;
-                      </Text>
+                      <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                        <PressableScale onPress={cyclePlaybackRate} style={styles.playbackRateBtn}>
+                          <Text style={styles.playbackRateText}>{playbackRate}x</Text>
+                        </PressableScale>
+                        <Text style={[styles.chatDuration, { color: C.textSecondary, marginTop: 4 }]}>
+                          {isPlaying 
+                            ? `${Math.round(playbackProgress * (note.voiceNoteDetails?.duration || 30))}s`
+                            : `${note.voiceNoteDetails?.duration || 30}s`
+                          }
+                        </Text>
+                      </View>
                     </View>
 
                     {/* Message Timestamp */}
@@ -1270,5 +1277,18 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     fontWeight: '700',
     textAlign: 'right',
+  },
+  playbackRateBtn: {
+    backgroundColor: '#E5E7EB',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playbackRateText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#4B5563',
   },
 });
