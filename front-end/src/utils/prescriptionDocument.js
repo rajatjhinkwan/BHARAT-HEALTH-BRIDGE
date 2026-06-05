@@ -1,5 +1,5 @@
 const PRESCRIPTION_STYLES = `
-  @page { size: A4; margin: 12mm; }
+  @page { size: A4; margin: 7mm; }
   * { box-sizing: border-box; }
   html, body {
     margin: 0;
@@ -11,79 +11,113 @@ const PRESCRIPTION_STYLES = `
     print-color-adjust: exact;
   }
   .prescription-pdf-container {
-    width: 210mm;
-    min-height: 277mm;
-    padding: 16mm;
+    width: 100%;
+    max-width: 196mm;
+    min-height: auto;
+    padding: 0;
     background: white;
     margin: 0 auto;
+    display: block;
+  }
+  .pdf-header {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4mm;
+    margin-bottom: 2.5mm;
   }
-  .pdf-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5mm; }
-  .hospital-branding { display: flex; gap: 5mm; align-items: center; }
+  .hospital-branding { display: flex; gap: 3mm; align-items: center; }
   .logo-placeholder {
-    width: 44px; height: 44px; border-radius: 10px; background: #eff6ff;
+    width: 34px; height: 34px; border-radius: 8px; background: #eff6ff;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 900; color: #2563eb; font-size: 18px;
+    font-weight: 900; color: #2563eb; font-size: 15px; flex-shrink: 0;
   }
-  .hospital-names h1 { margin: 0; font-size: 22px; font-weight: 900; color: #2563eb; }
-  .sub-branding { margin: 0; font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; }
-  .hospital-address { margin: 2px 0 0; font-size: 10px; color: #94a3b8; font-weight: 600; }
-  .doctor-info-box { text-align: right; }
-  .doctor-name { margin: 0; font-size: 15px; font-weight: 800; }
-  .doctor-dept { margin: 2px 0; font-size: 11px; font-weight: 700; color: #3b82f6; }
-  .doctor-reg { margin: 0; font-size: 10px; color: #64748b; font-weight: 600; }
-  .divider-line { height: 3px; width: 100%; margin: 4mm 0; }
+  .hospital-names h1 { margin: 0; font-size: 17px; font-weight: 900; color: #2563eb; line-height: 1.15; }
+  .sub-branding { margin: 0; font-size: 7.5px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+  .hospital-address { margin: 1px 0 0; font-size: 9px; color: #94a3b8; font-weight: 600; }
+  .doctor-info-box { text-align: right; flex-shrink: 0; }
+  .doctor-name { margin: 0; font-size: 13px; font-weight: 800; line-height: 1.2; }
+  .doctor-dept { margin: 1px 0; font-size: 10px; font-weight: 700; color: #3b82f6; }
+  .doctor-reg { margin: 0; font-size: 9px; color: #64748b; font-weight: 600; }
+  .divider-line { height: 2px; width: 100%; margin: 2mm 0; }
   .divider-line.primary { background: #2563eb; }
-  .divider-line.thin { height: 1px; background: #e2e8f0; }
-  .patient-info-panel { background: #f8fafc; padding: 5mm; border-radius: 4mm; margin-bottom: 5mm; border: 1px solid #f1f5f9; }
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin-bottom: 4mm; }
-  .info-col p { margin: 1.5mm 0; font-size: 11px; line-height: 1.4; }
-  .label { font-weight: 800; color: #64748b; text-transform: uppercase; font-size: 9px; margin-right: 2mm; }
+  .divider-line.thin { height: 1px; background: #e2e8f0; margin: 2.5mm 0; }
+  .patient-info-panel {
+    background: #f8fafc;
+    padding: 3mm 3.5mm;
+    border-radius: 3mm;
+    margin-bottom: 2.5mm;
+    border: 1px solid #f1f5f9;
+  }
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-bottom: 2mm; }
+  .info-col p { margin: 0.8mm 0; font-size: 10px; line-height: 1.35; }
+  .label { font-weight: 800; color: #64748b; text-transform: uppercase; font-size: 8px; margin-right: 1.5mm; }
   .val { font-weight: 700; color: #1e293b; }
   .pdf-vitals-strip {
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 3mm;
-    background: #fff; padding: 3mm; border-radius: 2mm; border: 1px solid #e2e8f0;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2mm;
+    background: #fff; padding: 2mm 2.5mm; border-radius: 2mm; border: 1px solid #e2e8f0;
   }
-  .vital-item { font-size: 10px; font-weight: 800; }
-  .pdf-section { margin-bottom: 7mm; page-break-inside: avoid; }
+  .vital-item { font-size: 9px; font-weight: 800; white-space: nowrap; }
+  .pdf-medical-content { margin: 0; }
+  .pdf-section { margin-bottom: 3mm; page-break-inside: avoid; }
+  .pdf-section:last-child { margin-bottom: 0; }
   .section-header {
-    display: flex; align-items: center; gap: 3mm; margin-bottom: 3mm;
-    border-bottom: 1px solid #f1f5f9; padding-bottom: 2mm;
+    display: flex; align-items: center; gap: 2mm; margin-bottom: 1.5mm;
+    border-bottom: 1px solid #f1f5f9; padding-bottom: 1mm;
   }
   .section-symbol {
-    width: 8mm; height: 8mm; background: #3b82f6; color: #fff; border-radius: 2mm;
-    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900;
+    width: 6mm; height: 6mm; background: #3b82f6; color: #fff; border-radius: 1.5mm;
+    display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900;
+    flex-shrink: 0;
   }
   .section-header h3 {
-    margin: 0; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.4px;
+    margin: 0; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3px;
   }
-  .section-body { padding-left: 11mm; font-size: 11px; color: #334155; line-height: 1.6; }
-  .handwriting-img { max-width: 100%; height: auto; border: 1px solid #e2e8f0; border-radius: 2mm; display: block; }
-  .med-table { width: 100%; border-collapse: collapse; }
+  .section-body { padding-left: 0; font-size: 10px; color: #334155; line-height: 1.45; }
+  .canvas-content { margin-top: 1.5mm; }
+  .handwriting-img {
+    max-width: 100%;
+    max-height: 42mm;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 1px solid #e2e8f0;
+    border-radius: 1.5mm;
+    display: block;
+  }
+  .med-table { width: 100%; border-collapse: collapse; margin-top: 0; }
   .med-table th {
-    text-align: left; background: #f1f5f9; padding: 2.5mm; font-size: 9px;
+    text-align: left; background: #f1f5f9; padding: 1.5mm 2mm; font-size: 8px;
     font-weight: 800; text-transform: uppercase; color: #64748b;
   }
-  .med-table td { padding: 2.5mm; border-bottom: 1px solid #f1f5f9; }
+  .med-table td { padding: 1.5mm 2mm; border-bottom: 1px solid #f1f5f9; font-size: 10px; }
   .font-bold { font-weight: 800; }
-  .investigation-list { padding-left: 5mm; margin: 0; }
-  .investigation-list li { margin-bottom: 1mm; font-weight: 700; }
-  .advice-box { font-style: italic; background: #f8fafc; padding: 3mm; border-left: 3px solid #3b82f6; }
-  .pdf-footer {
-    margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end;
-    padding-top: 8mm; border-top: 1px solid #e2e8f0;
+  .investigation-list { padding-left: 4mm; margin: 0; }
+  .investigation-list li { margin-bottom: 0.5mm; font-weight: 700; }
+  .advice-box {
+    font-style: italic; background: #f8fafc; padding: 2mm 2.5mm;
+    border-left: 2px solid #3b82f6; margin: 0;
   }
-  .footer-disclaimer { font-size: 10px; color: #64748b; margin: 0 0 2px; max-width: 120mm; }
-  .footer-date { font-size: 10px; color: #94a3b8; margin: 0; font-weight: 600; }
-  .signature-area { text-align: center; min-width: 50mm; }
-  .signature-line { height: 1px; background: #1e293b; margin-bottom: 2mm; }
-  .sig-label { font-size: 9px; font-weight: 800; color: #64748b; margin: 0; }
-  .sig-name { font-size: 12px; font-weight: 900; margin: 1mm 0 0; }
-  .empty-val { color: #cbd5e1; font-style: italic; }
-  .typed-content { white-space: pre-line; }
+  .advice-box p { margin: 0; }
+  .pdf-footer {
+    margin-top: 4mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 4mm;
+    padding-top: 3mm;
+    border-top: 1px solid #e2e8f0;
+  }
+  .footer-disclaimer { font-size: 8.5px; color: #64748b; margin: 0 0 1px; max-width: 115mm; line-height: 1.35; }
+  .footer-date { font-size: 8.5px; color: #94a3b8; margin: 0; font-weight: 600; }
+  .signature-area { text-align: center; min-width: 42mm; flex-shrink: 0; }
+  .signature-line { height: 1px; background: #1e293b; margin-bottom: 1mm; }
+  .sig-label { font-size: 8px; font-weight: 800; color: #64748b; margin: 0; }
+  .sig-name { font-size: 10px; font-weight: 900; margin: 0.5mm 0 0; }
+  .empty-val { color: #cbd5e1; font-style: italic; margin: 0; }
+  .typed-content { white-space: pre-line; margin: 0; }
   @media print {
-    .prescription-pdf-container { margin: 0; padding: 12mm; width: auto; min-height: auto; }
+    .prescription-pdf-container { margin: 0; padding: 0; width: 100%; min-height: auto; }
   }
 `;
 
@@ -157,25 +191,56 @@ export function buildPrescriptionDocumentHtml(pdfData, documentTitle = 'Prescrip
     ? `<div class="typed-content">${escapeHtml(clinicalData.diagnosisText)}</div>`
     : clinicalData.diagnosisCanvas
       ? imgTag(clinicalData.diagnosisCanvas, 'Handwritten Diagnosis')
-      : '<p class="empty-val">No specific history recorded.</p>';
+      : '';
 
-  const medsBlock =
-    medications.length > 0
-      ? `<table class="med-table">
-          <thead><tr><th>Medication Name</th><th>Dosage</th><th>Frequency</th><th>Duration</th></tr></thead>
-          <tbody>${buildMedicationRows(medications)}</tbody>
-        </table>`
-      : !clinicalData.medicineCanvas
-        ? '<p class="empty-val">No medications prescribed.</p>'
-        : '';
+  const hasDiagnosis = Boolean(diagnosisBlock);
+  const hasMedications = medications.length > 0;
+  const hasMedicineCanvas = Boolean(clinicalData.medicineCanvas);
+  const hasInvestigations = investigations.length > 0;
+  const hasInvestigationCanvas = Boolean(clinicalData.investigationCanvas);
+  const hasAdvice = Boolean(generalAdvice || clinicalData.notesText);
 
-  const adviceBlock =
-    generalAdvice || clinicalData.notesText
+  const medsBlock = hasMedications
+    ? `<table class="med-table">
+        <thead><tr><th>Medication Name</th><th>Dosage</th><th>Frequency</th><th>Duration</th></tr></thead>
+        <tbody>${buildMedicationRows(medications)}</tbody>
+      </table>`
+    : '';
+
+  const diagnosisSection = hasDiagnosis
+    ? `<section class="pdf-section">
+        <div class="section-header"><div class="section-symbol">Rx</div><h3>Clinical History &amp; Diagnosis</h3></div>
+        <div class="section-body">${diagnosisBlock}</div>
+      </section>`
+    : '';
+
+  const medicationSection =
+    hasMedications || hasMedicineCanvas
       ? `<section class="pdf-section">
-          <div class="section-header"><div class="section-symbol">📝</div><h3>General Advice</h3></div>
-          <div class="section-body"><div class="advice-box"><p style="white-space:pre-line">${escapeHtml(generalAdvice || clinicalData.notesText)}</p></div></div>
+          <div class="section-header"><div class="section-symbol">Rx</div><h3>Medication Order</h3></div>
+          <div class="section-body">${medsBlock}${imgTag(clinicalData.medicineCanvas, 'Handwritten Medications')}</div>
         </section>`
       : '';
+
+  const investigationSection =
+    hasInvestigations || hasInvestigationCanvas
+      ? `<section class="pdf-section">
+          <div class="section-header"><div class="section-symbol">Lab</div><h3>Investigation Advice</h3></div>
+          <div class="section-body">${hasInvestigations ? buildInvestigationList(investigations) : ''}${imgTag(clinicalData.investigationCanvas, 'Handwritten Investigations')}</div>
+        </section>`
+      : '';
+
+  const adviceBlock = hasAdvice
+    ? `<section class="pdf-section">
+        <div class="section-header"><div class="section-symbol">Adv</div><h3>General Advice</h3></div>
+        <div class="section-body"><div class="advice-box"><p style="white-space:pre-line">${escapeHtml(generalAdvice || clinicalData.notesText)}</p></div></div>
+      </section>`
+    : '';
+
+  const followUpBlock = `<section class="pdf-section">
+      <div class="section-header"><div class="section-symbol">FU</div><h3>Follow-up Advice</h3></div>
+      <div class="section-body"><div class="advice-box"><p>${escapeHtml(followUp || 'Review as advised.')}</p></div></div>
+    </section>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -224,23 +289,11 @@ export function buildPrescriptionDocumentHtml(pdfData, documentTitle = 'Prescrip
     </section>
     <div class="divider-line thin"></div>
     <main class="pdf-medical-content">
-      <section class="pdf-section">
-        <div class="section-header"><div class="section-symbol">Rx</div><h3>Clinical History &amp; Diagnosis</h3></div>
-        <div class="section-body">${diagnosisBlock}</div>
-      </section>
-      <section class="pdf-section">
-        <div class="section-header"><div class="section-symbol">Rx</div><h3>Medication Order</h3></div>
-        <div class="section-body">${medsBlock}${imgTag(clinicalData.medicineCanvas, 'Handwritten Medications')}</div>
-      </section>
-      <section class="pdf-section">
-        <div class="section-header"><div class="section-symbol">Lab</div><h3>Investigation Advice</h3></div>
-        <div class="section-body">${buildInvestigationList(investigations)}${imgTag(clinicalData.investigationCanvas, 'Handwritten Investigations')}</div>
-      </section>
+      ${diagnosisSection}
+      ${medicationSection}
+      ${investigationSection}
       ${adviceBlock}
-      <section class="pdf-section">
-        <div class="section-header"><div class="section-symbol">FU</div><h3>Follow-up Advice</h3></div>
-        <div class="section-body"><div class="advice-box"><p>${escapeHtml(followUp || 'Review as advised.')}</p></div></div>
-      </section>
+      ${followUpBlock}
     </main>
     <footer class="pdf-footer">
       <div class="footer-left">
@@ -370,12 +423,12 @@ export async function downloadPrescriptionPdf(pdfData, documentTitle = 'Prescrip
     const html2pdf = (await import('html2pdf.js')).default;
     await html2pdf()
       .set({
-        margin: [8, 8, 8, 8],
+        margin: [5, 5, 5, 5],
         filename,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg', quality: 0.96 },
         html2canvas: { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+        pagebreak: { mode: ['css', 'legacy'] },
       })
       .from(root)
       .save();

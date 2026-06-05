@@ -1,21 +1,26 @@
 import React, { forwardRef } from 'react';
-import { Shield, CheckCircle, Activity, Heart, Thermometer, Droplets } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
+import { Activity, Heart, Thermometer, Droplets } from 'lucide-react';
 
-const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications, investigations, followUp, generalAdvice, blockchainHash }, ref) => {
+const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications, investigations, followUp, generalAdvice }, ref) => {
   const today = new Date().toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'long',
     year: 'numeric'
   });
 
+  const hasDiagnosis = Boolean(clinicalData?.diagnosisText || clinicalData?.diagnosisCanvas);
+  const hasMedications = medications?.length > 0;
+  const hasMedicineCanvas = Boolean(clinicalData?.medicineCanvas);
+  const hasInvestigations = investigations?.length > 0;
+  const hasInvestigationCanvas = Boolean(clinicalData?.investigationCanvas);
+  const hasAdvice = Boolean(generalAdvice || clinicalData?.notesText);
+
   return (
     <div ref={ref} className="prescription-pdf-container">
-      {/* HEADER SECTION */}
       <header className="pdf-header">
         <div className="hospital-branding">
           <div className="logo-placeholder">
-             <Activity size={40} color="#3b82f6" />
+             <Activity size={28} color="#3b82f6" />
           </div>
           <div className="hospital-names">
             <h1>BHARAT HEALTH BRIDGE</h1>
@@ -69,96 +74,89 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
 
       <div className="divider-line thin"></div>
 
-      {/* MEDICAL CONTENT SECTION */}
       <main className="pdf-medical-content">
-        
-        {/* 1. CLINICAL HISTORY & DIAGNOSIS */}
-        <section className="pdf-section">
-          <div className="section-header">
-            <div className="section-symbol">Rx</div>
-            <h3>Clinical History & Diagnosis</h3>
-          </div>
-          <div className="section-body">
-            {clinicalData?.diagnosisText && (
-              <div className="typed-content mb-4">{clinicalData.diagnosisText}</div>
-            )}
-            {clinicalData?.diagnosisCanvas && (
-              <div className="canvas-content">
-                <img src={clinicalData.diagnosisCanvas} alt="Handwritten Diagnosis" className="handwriting-img" />
-              </div>
-            )}
-            {!clinicalData?.diagnosisText && !clinicalData?.diagnosisCanvas && (
-               <p className="empty-val">No specific history recorded.</p>
-            )}
-          </div>
-        </section>
-
-        {/* 2. MEDICATION ORDER */}
-        <section className="pdf-section">
-          <div className="section-header">
-            <div className="section-symbol">💊</div>
-            <h3>Medication Order</h3>
-          </div>
-          <div className="section-body">
-            {medications && medications.length > 0 ? (
-              <table className="med-table">
-                <thead>
-                  <tr>
-                    <th>Medication Name</th>
-                    <th>Dosage</th>
-                    <th>Frequency</th>
-                    <th>Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {medications.map((med, i) => (
-                    <tr key={i}>
-                      <td className="font-bold">{med.name}</td>
-                      <td>{med.dosage || med.dose || '—'}</td>
-                      <td>{med.freq || '1-0-1'}</td>
-                      <td>{med.days || med.duration ? `${med.days || med.duration} Days` : '—'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : !clinicalData?.medicineCanvas ? (
-              <p className="empty-val">No medications prescribed.</p>
-            ) : null}
-            {clinicalData?.medicineCanvas && (
-               <div className="canvas-content mt-4">
-                 <img src={clinicalData.medicineCanvas} alt="Handwritten Medications" className="handwriting-img" />
-               </div>
-            )}
-          </div>
-        </section>
-
-        {/* 3. INVESTIGATION ADVICE */}
-        <section className="pdf-section">
-          <div className="section-header">
-            <div className="section-symbol">🔬</div>
-            <h3>Investigation Advice</h3>
-          </div>
-          <div className="section-body">
-            {investigations && investigations.length > 0 ? (
-               <ul className="investigation-list">
-                 {investigations.map((inv, i) => <li key={i}>{inv}</li>)}
-               </ul>
-            ) : (
-               <p className="empty-val">No clinical investigations advised.</p>
-            )}
-            {clinicalData?.investigationCanvas && (
-               <div className="canvas-content mt-4">
-                 <img src={clinicalData.investigationCanvas} alt="Handwritten Investigations" className="handwriting-img" />
-               </div>
-            )}
-          </div>
-        </section>
-
-        {/* 4. GENERAL ADVICE */}
-        {(generalAdvice || clinicalData?.notesText) && (
+        {hasDiagnosis && (
           <section className="pdf-section">
             <div className="section-header">
-              <div className="section-symbol">📝</div>
+              <div className="section-symbol">Rx</div>
+              <h3>Clinical History & Diagnosis</h3>
+            </div>
+            <div className="section-body">
+              {clinicalData?.diagnosisText && (
+                <div className="typed-content">{clinicalData.diagnosisText}</div>
+              )}
+              {clinicalData?.diagnosisCanvas && (
+                <div className="canvas-content">
+                  <img src={clinicalData.diagnosisCanvas} alt="Handwritten Diagnosis" className="handwriting-img" />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {(hasMedications || hasMedicineCanvas) && (
+          <section className="pdf-section">
+            <div className="section-header">
+              <div className="section-symbol">Rx</div>
+              <h3>Medication Order</h3>
+            </div>
+            <div className="section-body">
+              {hasMedications && (
+                <table className="med-table">
+                  <thead>
+                    <tr>
+                      <th>Medication Name</th>
+                      <th>Dosage</th>
+                      <th>Frequency</th>
+                      <th>Duration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {medications.map((med, i) => (
+                      <tr key={i}>
+                        <td className="font-bold">{med.name}</td>
+                        <td>{med.dosage || med.dose || '—'}</td>
+                        <td>{med.freq || '1-0-1'}</td>
+                        <td>{med.days || med.duration ? `${med.days || med.duration} Days` : '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              {clinicalData?.medicineCanvas && (
+                <div className="canvas-content">
+                  <img src={clinicalData.medicineCanvas} alt="Handwritten Medications" className="handwriting-img" />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {(hasInvestigations || hasInvestigationCanvas) && (
+          <section className="pdf-section">
+            <div className="section-header">
+              <div className="section-symbol">Lab</div>
+              <h3>Investigation Advice</h3>
+            </div>
+            <div className="section-body">
+              {hasInvestigations && (
+                <ul className="investigation-list">
+                  {investigations.map((inv, i) => <li key={i}>{inv}</li>)}
+                </ul>
+              )}
+              {clinicalData?.investigationCanvas && (
+                <div className="canvas-content">
+                  <img src={clinicalData.investigationCanvas} alt="Handwritten Investigations" className="handwriting-img" />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {hasAdvice && (
+          <section className="pdf-section">
+            <div className="section-header">
+              <div className="section-symbol">Adv</div>
               <h3>General Advice</h3>
             </div>
             <div className="section-body">
@@ -169,10 +167,9 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
           </section>
         )}
 
-        {/* 5. FOLLOW-UP ADVICE */}
         <section className="pdf-section">
           <div className="section-header">
-            <div className="section-symbol">📅</div>
+            <div className="section-symbol">FU</div>
             <h3>Follow-up Advice</h3>
           </div>
           <div className="section-body">
@@ -200,116 +197,127 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
 
       <style dangerouslySetInnerHTML={{ __html: `
         .prescription-pdf-container {
-          width: 210mm;
-          min-height: 297mm;
-          padding: 20mm;
+          width: 100%;
+          max-width: 196mm;
+          min-height: auto;
+          padding: 0;
           background: white;
           color: #1e293b;
           font-family: 'Inter', 'Segoe UI', sans-serif;
           margin: 0 auto;
           box-sizing: border-box;
-          display: flex;
-          flex-direction: column;
+          display: block;
         }
 
         .pdf-header {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          margin-bottom: 5mm;
+          gap: 4mm;
+          margin-bottom: 2.5mm;
         }
 
         .hospital-branding {
           display: flex;
-          gap: 5mm;
+          gap: 3mm;
           align-items: center;
+        }
+
+        .logo-placeholder {
+          width: 34px;
+          height: 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
         }
 
         .hospital-names h1 {
           margin: 0;
-          font-size: 24px;
+          font-size: 17px;
           font-weight: 900;
           color: #2563eb;
-          letter-spacing: -0.5px;
+          line-height: 1.15;
         }
 
         .sub-branding {
           margin: 0;
-          font-size: 10px;
+          font-size: 7.5px;
           font-weight: 800;
           color: #64748b;
           text-transform: uppercase;
-          letter-spacing: 2px;
+          letter-spacing: 1px;
         }
 
         .hospital-address {
-          margin: 2px 0 0 0;
-          font-size: 10px;
+          margin: 1px 0 0;
+          font-size: 9px;
           color: #94a3b8;
           font-weight: 600;
         }
 
         .doctor-info-box {
           text-align: right;
+          flex-shrink: 0;
         }
 
         .doctor-name {
           margin: 0;
-          font-size: 16px;
+          font-size: 13px;
           font-weight: 800;
-          color: #1e293b;
+          line-height: 1.2;
         }
 
         .doctor-dept {
-          margin: 2px 0;
-          font-size: 11px;
+          margin: 1px 0;
+          font-size: 10px;
           font-weight: 700;
           color: #3b82f6;
         }
 
         .doctor-reg {
           margin: 0;
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 600;
           color: #64748b;
         }
 
         .divider-line {
-          height: 3px;
+          height: 2px;
           width: 100%;
-          margin: 5mm 0;
+          margin: 2mm 0;
         }
 
         .divider-line.primary { background: #2563eb; }
-        .divider-line.thin { height: 1px; background: #e2e8f0; }
+        .divider-line.thin { height: 1px; background: #e2e8f0; margin: 2.5mm 0; }
 
         .patient-info-panel {
           background: #f8fafc;
-          padding: 5mm;
-          border-radius: 4mm;
-          margin-bottom: 5mm;
+          padding: 3mm 3.5mm;
+          border-radius: 3mm;
+          margin-bottom: 2.5mm;
           border: 1px solid #f1f5f9;
         }
 
         .info-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 10mm;
-          margin-bottom: 4mm;
+          gap: 4mm;
+          margin-bottom: 2mm;
         }
 
         .info-col p {
-          margin: 1.5mm 0;
-          font-size: 11px;
-          line-height: 1.4;
+          margin: 0.8mm 0;
+          font-size: 10px;
+          line-height: 1.35;
         }
 
         .label {
           font-weight: 800;
           color: #64748b;
           text-transform: uppercase;
-          font-size: 9px;
-          margin-right: 2mm;
+          font-size: 8px;
+          margin-right: 1.5mm;
         }
 
         .val {
@@ -320,8 +328,10 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
         .pdf-vitals-strip {
           display: flex;
           justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 2mm;
           background: white;
-          padding: 3mm;
+          padding: 2mm 2.5mm;
           border-radius: 2mm;
           border: 1px solid #e2e8f0;
         }
@@ -329,9 +339,10 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
         .vital-item {
           display: flex;
           align-items: center;
-          gap: 2mm;
-          font-size: 10px;
+          gap: 1.5mm;
+          font-size: 9px;
           font-weight: 800;
+          white-space: nowrap;
         }
 
         .icon-red { color: #ef4444; }
@@ -339,57 +350,66 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
         .icon-teal { color: #14b8a6; }
         .icon-orange { color: #f59e0b; }
 
-        .pdf-medical-content {
-          flex: 1;
+        .pdf-section {
+          margin-bottom: 3mm;
         }
 
-        .pdf-section {
-          margin-bottom: 8mm;
+        .pdf-section:last-child {
+          margin-bottom: 0;
         }
 
         .section-header {
           display: flex;
           align-items: center;
-          gap: 3mm;
-          margin-bottom: 4mm;
+          gap: 2mm;
+          margin-bottom: 1.5mm;
           border-bottom: 1px solid #f1f5f9;
-          padding-bottom: 2mm;
+          padding-bottom: 1mm;
         }
 
         .section-symbol {
-          width: 8mm;
-          height: 8mm;
+          width: 6mm;
+          height: 6mm;
           background: #3b82f6;
           color: white;
-          border-radius: 2mm;
+          border-radius: 1.5mm;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 14px;
+          font-size: 9px;
           font-weight: 900;
+          flex-shrink: 0;
         }
 
         .section-header h3 {
           margin: 0;
-          font-size: 13px;
+          font-size: 10px;
           font-weight: 900;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.3px;
           color: #1e293b;
         }
 
         .section-body {
-          padding-left: 11mm;
-          font-size: 11px;
+          padding-left: 0;
+          font-size: 10px;
           color: #334155;
-          line-height: 1.6;
+          line-height: 1.45;
+        }
+
+        .canvas-content {
+          margin-top: 1.5mm;
         }
 
         .handwriting-img {
           max-width: 100%;
+          max-height: 42mm;
+          width: auto;
           height: auto;
-          border: 1px solid #f1f5f9;
-          border-radius: 2mm;
+          object-fit: contain;
+          border: 1px solid #e2e8f0;
+          border-radius: 1.5mm;
+          display: block;
         }
 
         .med-table {
@@ -400,54 +420,61 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
         .med-table th {
           text-align: left;
           background: #f1f5f9;
-          padding: 2.5mm;
-          font-size: 9px;
+          padding: 1.5mm 2mm;
+          font-size: 8px;
           font-weight: 800;
           text-transform: uppercase;
           color: #64748b;
         }
 
         .med-table td {
-          padding: 2.5mm;
+          padding: 1.5mm 2mm;
           border-bottom: 1px solid #f1f5f9;
+          font-size: 10px;
         }
 
         .investigation-list {
-          padding-left: 5mm;
+          padding-left: 4mm;
           margin: 0;
         }
 
         .investigation-list li {
-          margin-bottom: 1mm;
+          margin-bottom: 0.5mm;
           font-weight: 700;
         }
 
         .advice-box {
           font-style: italic;
           background: #f8fafc;
-          padding: 3mm;
-          border-left: 3px solid #3b82f6;
+          padding: 2mm 2.5mm;
+          border-left: 2px solid #3b82f6;
+        }
+
+        .advice-box p {
+          margin: 0;
         }
 
         .pdf-footer {
-          margin-top: auto;
+          margin-top: 4mm;
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
-          padding-top: 10mm;
+          gap: 4mm;
+          padding-top: 3mm;
           border-top: 1px solid #e2e8f0;
         }
 
         .footer-disclaimer {
-          font-size: 10px;
+          font-size: 8.5px;
           color: #64748b;
-          margin: 0 0 2px 0;
+          margin: 0 0 1px;
           font-weight: 500;
-          max-width: 120mm;
+          max-width: 115mm;
+          line-height: 1.35;
         }
 
         .footer-date {
-          font-size: 10px;
+          font-size: 8.5px;
           color: #94a3b8;
           margin: 0;
           font-weight: 600;
@@ -455,38 +482,32 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
 
         .signature-area {
           text-align: center;
-          min-width: 50mm;
+          min-width: 42mm;
+          flex-shrink: 0;
         }
 
         .signature-line {
           height: 1px;
           background: #1e293b;
-          margin-bottom: 2mm;
+          margin-bottom: 1mm;
         }
 
         .sig-label {
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 800;
           color: #64748b;
           margin: 0;
         }
 
         .sig-name {
-          font-size: 12px;
+          font-size: 10px;
           font-weight: 900;
-          margin: 1mm 0 0 0;
+          margin: 0.5mm 0 0;
         }
 
-        .empty-val {
-          color: #cbd5e1;
-          font-style: italic;
-        }
-
-        @media print {
-          .prescription-pdf-container {
-            margin: 0;
-            padding: 15mm;
-          }
+        .typed-content {
+          white-space: pre-line;
+          margin: 0;
         }
       `}} />
     </div>
