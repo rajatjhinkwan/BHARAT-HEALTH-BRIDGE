@@ -103,6 +103,43 @@ export default function EmrWorkspaceCanvas({
                 </button>
               </div>
 
+              {/* Pen / eraser size */}
+              <div className="emr-ws-size-picker">
+                {drawingTool === 'pen' ? (
+                  penSizes.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`emr-ws-size-btn${strokeWidth === value ? ' active' : ''}`}
+                      onClick={() => setStrokeWidth(value)}
+                      title={`${label} pen`}
+                    >
+                      <span
+                        className="emr-ws-size-dot"
+                        style={{ width: `${Math.max(4, value * 2)}px`, height: `${Math.max(4, value * 2)}px` }}
+                      />
+                      {label}
+                    </button>
+                  ))
+                ) : (
+                  eraserSizes.map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`emr-ws-size-btn${eraserWidth === value ? ' active' : ''}`}
+                      onClick={() => setEraserWidth(value)}
+                      title={`${label} eraser`}
+                    >
+                      <span
+                        className="emr-ws-size-dot emr-ws-size-dot-eraser"
+                        style={{ width: `${Math.max(6, value * 0.45)}px`, height: `${Math.max(6, value * 0.45)}px` }}
+                      />
+                      {label}
+                    </button>
+                  ))
+                )}
+              </div>
+
               {/* Zoom Actions */}
               <div className="emr-ws-zoom-box">
                 <button
