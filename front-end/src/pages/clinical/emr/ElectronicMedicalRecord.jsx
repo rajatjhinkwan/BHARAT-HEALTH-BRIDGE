@@ -25,6 +25,7 @@ import EmrRightPanel from './components/EmrRightPanel';
 import EmrClinicalMovement from './components/EmrClinicalMovement';
 import EmrDischargeModal from './components/EmrDischargeModal';
 import EmrWorkspaceModal from './workspace/EmrWorkspaceModal';
+import EmrPrescriptionPreviewModal from './workspace/EmrPrescriptionPreviewModal';
 
 export default function ElectronicMedicalRecord() {
   const navigate = useNavigate();
@@ -301,11 +302,16 @@ export default function ElectronicMedicalRecord() {
         )}
       </AnimatePresence>
 
-      <div style={{ display: 'none' }}>
-        <div ref={prescriptionRef}>
-          <PrescriptionPDF {...getPDFData()} />
-        </div>
+      <div className="emr-print-source" aria-hidden="true">
+        <PrescriptionPDF ref={prescriptionRef} {...getPDFData()} />
       </div>
+
+      <EmrPrescriptionPreviewModal
+        open={workspace.showPrintPreview}
+        onClose={workspace.closePrintPreview}
+        onPrint={workspace.confirmPrint}
+        pdfData={getPDFData()}
+      />
 
       <ServiceOrderModal
         open={!!clinical.serviceModal}

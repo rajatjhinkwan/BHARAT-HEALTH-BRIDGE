@@ -33,6 +33,18 @@
   display: none !important;
 }
 
+/* Off-screen but rendered — required for react-to-print to clone content */
+.emr-print-source {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 210mm;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+}
+
 @media print {
   .emr-print-hidden {
     display: block !important;

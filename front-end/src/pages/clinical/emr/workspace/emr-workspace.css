@@ -424,6 +424,137 @@
   animation: liftoff 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* Prescription console (structured meds) */
+.emr-rx-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.emr-rx-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+}
+
+.emr-rx-panel-title {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.emr-rx-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 0.25rem 0.35rem;
+  border-radius: 6px;
+}
+
+.emr-rx-add-btn:hover {
+  background: #eff6ff;
+}
+
+.emr-rx-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.emr-rx-row {
+  padding: 0.85rem !important;
+  border-radius: 12px !important;
+}
+
+.emr-rx-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.emr-rx-row-label {
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.emr-rx-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 6px;
+}
+
+.emr-rx-remove-btn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.emr-rx-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.emr-rx-input {
+  font-size: 0.78rem !important;
+  padding: 0.55rem 0.75rem !important;
+}
+
+.emr-rx-input-sm {
+  font-size: 0.72rem !important;
+  padding: 0.45rem 0.65rem !important;
+}
+
+.emr-rx-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr 0.55fr;
+  gap: 0.4rem;
+}
+
+.emr-rx-select {
+  cursor: pointer;
+}
+
+.emr-rx-hint {
+  margin: 0;
+  padding: 0 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .emr-rx-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .emr-rx-grid .emr-rx-input-sm:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @keyframes liftoff {
   0% {
     opacity: 0;

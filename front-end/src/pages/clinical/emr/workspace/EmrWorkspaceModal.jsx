@@ -46,7 +46,7 @@ export default function EmrWorkspaceModal({
     toggleWorkspaceFullscreen,
     closeWorkspace,
     handleSaveSession,
-    handlePrint,
+    openPrintPreview,
   } = workspace;
 
   const isReferral = activeActionTab === 'Referral';
@@ -71,7 +71,7 @@ export default function EmrWorkspaceModal({
             setCurrentPageIdx(0);
           }}
           onSave={handleSaveSession}
-          onPrint={handlePrint}
+          onPrint={openPrintPreview}
           onClose={closeWorkspace}
           onToggleFullscreen={toggleWorkspaceFullscreen}
           isFullscreen={isWorkspaceFullscreen}

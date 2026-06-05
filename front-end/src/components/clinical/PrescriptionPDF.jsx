@@ -100,7 +100,7 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
             <h3>Medication Order</h3>
           </div>
           <div className="section-body">
-            {medications && medications.length > 0 && (
+            {medications && medications.length > 0 ? (
               <table className="med-table">
                 <thead>
                   <tr>
@@ -114,14 +114,16 @@ const PrescriptionPDF = forwardRef(({ patient, doctor, clinicalData, medications
                   {medications.map((med, i) => (
                     <tr key={i}>
                       <td className="font-bold">{med.name}</td>
-                      <td>{med.dosage || med.dose}</td>
+                      <td>{med.dosage || med.dose || '—'}</td>
                       <td>{med.freq || '1-0-1'}</td>
-                      <td>{med.days || med.duration} Days</td>
+                      <td>{med.days || med.duration ? `${med.days || med.duration} Days` : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
+            ) : !clinicalData?.medicineCanvas ? (
+              <p className="empty-val">No medications prescribed.</p>
+            ) : null}
             {clinicalData?.medicineCanvas && (
                <div className="canvas-content mt-4">
                  <img src={clinicalData.medicineCanvas} alt="Handwritten Medications" className="handwriting-img" />

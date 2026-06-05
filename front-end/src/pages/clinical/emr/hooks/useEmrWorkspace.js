@@ -31,6 +31,7 @@ export function useEmrWorkspace({
   const [gridSpacing, setGridSpacing] = useState(25);
   const [a4Zoom, setA4Zoom] = useState(1);
   const [structuredMedsState, setStructuredMeds] = useState(structuredMeds || [{ name: '', dose: '', freq: 'TID', days: '' }]);
+  const [showPrintPreview, setShowPrintPreview] = useState(false);
 
   const workspaceModalRef = useRef(null);
   const workspaceContentRef = useRef(null);
@@ -120,7 +121,38 @@ export function useEmrWorkspace({
   const handlePrint = useReactToPrint({
     contentRef: prescriptionRef,
     documentTitle: `EMR_Prescription_${patient?.name || 'Patient'}`,
+    onPrintError: (_location, error) => {
+      showToast(error?.message || 'Unable to open print dialog. Try again.', 'error');
+    },
   });
+
+  const openPrintPreview = useCallback(() => {
+    const pdfData = getPDFData();
+    const hasMeds = pdfData.medications?.length > 0;
+    const hasDiagnosis = Boolean(pdfData.clinicalData?.diagnosisText?.trim());
+    const hasCanvas = Boolean(pdfData.clinicalData?.medicineCanvas);
+    const hasInvestigations = pdfData.investigations?.length > 0;
+    const hasNotes = Boolean(pdfData.generalAdvice?.trim() || pdfData.clinicalData?.notesText?.trim());
+
+    if (!hasMeds && !hasDiagnosis && !hasCanvas && !hasInvestigations && !hasNotes) {
+      showToast('Add diagnosis, medicines, or notes before printing.', 'error');
+      return;
+    }
+
+    setShowPrintPreview(true);
+  }, [getPDFData, showToast]);
+
+  const closePrintPreview = useCallback(() => {
+    setShowPrintPreview(false);
+  }, []);
+
+  const confirmPrint = useCallback(() => {
+    if (!prescriptionRef.current) {
+      showToast('Print content is not ready yet. Close and reopen the workspace.', 'error');
+      return;
+    }
+    handlePrint();
+  }, [handlePrint, showToast]);
 
   const updatePageData = useCallback(
     (canvasData, croppedCanvasData, strokesJson) => {
@@ -277,6 +309,10 @@ export function useEmrWorkspace({
     openWorkspace,
     handleSaveSession,
     handlePrint,
+    openPrintPreview,
+    closePrintPreview,
+    confirmPrint,
+    showPrintPreview,
     getPDFData,
     updatePageData,
     updatePageTyped,
