@@ -138,10 +138,11 @@ export default function MedicineWriterPad({
           ref={canvasApiRef}
           initialData={canvasData}
           onSave={handleCanvasSave}
-          gridVisible={40}
+          gridVisible={0}
           gridSpacing={20}
           variant="pad"
           drawingTool={drawingTool}
+          gridStyle="none"
           showToolbar={false}
         />
         <span className="writer-stylus-hint">Stylus ready</span>

@@ -146,6 +146,7 @@ export default function EmrWorkspaceModal({
                   activeTab={activeActionTab}
                   currentPageIdx={currentPageIdx}
                   pageContent={currentPage?.content}
+                  pageStrokes={currentPage?.strokes}
                   onSave={updatePageData}
                   gridVisible={gridVisible}
                   setGridVisible={setGridVisible}

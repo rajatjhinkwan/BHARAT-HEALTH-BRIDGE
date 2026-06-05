@@ -15,6 +15,7 @@ export default function EmrWorkspaceCanvas({
   activeTab,
   currentPageIdx,
   pageContent,
+  pageStrokes,
   onSave,
   gridVisible,
   setGridVisible,
@@ -30,7 +31,6 @@ export default function EmrWorkspaceCanvas({
   const [strokeColor] = useState('#0f172a'); // Defaulting to clean clinical dark slate/charcoal black
   const [strokeWidth, setStrokeWidth] = useState(2);
   const [eraserWidth, setEraserWidth] = useState(24);
-  const [gridStyle, setGridStyle] = useState('grid'); // 'grid' | 'ruled' | 'dots' | 'none'
   const [confirmClear, setConfirmClear] = useState(false);
 
   // Pen sizes
@@ -221,15 +221,16 @@ export default function EmrWorkspaceCanvas({
             ref={canvasApiRef}
             key={`${activeTab}-${currentPageIdx}`}
             initialData={pageContent}
+            initialStrokes={pageStrokes}
             onSave={onSave}
-            gridVisible={gridVisible}
+            gridVisible={0}
             gridSpacing={gridSpacing}
             variant="a4"
             drawingTool={drawingTool}
             strokeColor={strokeColor}
             strokeWidth={strokeWidth}
             eraserWidth={eraserWidth}
-            gridStyle={gridStyle}
+            gridStyle="none"
             showToolbar={false}
           />
         </div>
