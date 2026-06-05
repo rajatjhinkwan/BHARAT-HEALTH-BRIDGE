@@ -156,28 +156,89 @@ export default function DispenseSection() {
     );
   }
 
+  const [dispenseError, setDispenseError] = useState(null);
+
   const toggleItem = (idx) => {
-    setDispensedItems((prev) => ({ ...prev, [idx]: prev[idx] === false ? true : false }));
+    const m = (rx?.medications || [])[idx];
+    if (!m) return;
+    const isOut = m.availability === 'out_of_stock';
+    const isSwapped = !!medNameOverrides[idx];
+    if (isOut && !isSwapped) return; // Prevent checking out-of-stock items if they are not swapped
+    
+    // Toggle state: default is checked (undefined => true), so toggling sets explicitly to false or back to true
+    setDispensedItems((prev) => {
+      const current = prev[idx] !== false;
+      return { ...prev, [idx]: !current };
+    });
+  };
+
+  // Select all eligible (in-stock or swapped) items
+  const handleSelectAll = () => {
+    const newDispensed = {};
+    (rx?.medications || []).forEach((m, idx) => {
+      const isOut = m.availability === 'out_of_stock';
+      const isSwapped = !!medNameOverrides[idx];
+      if (!isOut || isSwapped) {
+        newDispensed[idx] = true;
+      } else {
+        newDispensed[idx] = false;
+      }
+    });
+    setDispensedItems(newDispensed);
+  };
+
+  // Deselect all items
+  const handleDeselectAll = () => {
+    const newDispensed = {};
+    (rx?.medications || []).forEach((_, idx) => {
+      newDispensed[idx] = false;
+    });
+    setDispensedItems(newDispensed);
   };
 
   // Swap out-of-stock items for their generic alternatives
   const handleGenericSwap = (idx, alternativeName) => {
     if (!alternativeName) return;
-    setMedNameOverrides(prev => ({
-      ...prev,
-      [idx]: prev[idx] ? null : alternativeName
-    }));
+    setMedNameOverrides(prev => {
+      const wasSwapped = !!prev[idx];
+      // If we are swapping from out_of_stock to alternative, auto-enable checkout for this item
+      if (!wasSwapped) {
+        setDispensedItems(d => ({ ...d, [idx]: true }));
+      } else {
+        setDispensedItems(d => ({ ...d, [idx]: false }));
+      }
+      return {
+        ...prev,
+        [idx]: wasSwapped ? null : alternativeName
+      };
+    });
     pushActivity(`Swapped item ${idx + 1} for generic alternative: ${alternativeName}`);
   };
+
+  // Live bill calculations
+  const medicationsList = rx?.medications || [];
+
+  // Helper to determine if an item is selected for dispensing
+  const isItemSelected = (idx) => {
+    const m = medicationsList[idx];
+    if (!m) return false;
+    const isOut = m.availability === 'out_of_stock';
+    const isSwapped = !!medNameOverrides[idx];
+    if (isOut && !isSwapped) return false;
+    return dispensedItems[idx] !== false;
+  };
+
+  const selectedMedicationsCount = medicationsList.filter((_, idx) => isItemSelected(idx)).length;
 
   const handleDispense = async (partial = false) => {
     if (!rx) return;
     setIsDispensing(true);
+    setDispenseError(null);
     try {
       const items = (rx.medications || []).map((m, i) => ({
         ...m,
         name: medNameOverrides[i] || m.name, // Use active swapped medication name
-        dispensed: dispensedItems[i] !== false,
+        dispensed: isItemSelected(i),
         quantity: m.quantity || 1,
       }));
       
@@ -205,19 +266,15 @@ export default function DispenseSection() {
       setMedNameOverrides({});
     } catch (err) {
       console.error('Failed to dispense prescription:', err);
+      setDispenseError(err.message || 'Dispensing failed. Please try again.');
     } finally {
       setIsDispensing(false);
     }
   };
-
-  // Live bill calculations
-  const medicationsList = rx?.medications || [];
-  const selectedMedicationsCount = Object.values(dispensedItems).filter(v => v !== false).length;
   
   let liveSubtotal = 0;
   medicationsList.forEach((m, idx) => {
-    const isSelected = dispensedItems[idx] !== false;
-    if (isSelected && m.availability !== 'out_of_stock') {
+    if (isItemSelected(idx)) {
       const activeName = medNameOverrides[idx] || m.name;
       const unitPrice = getMedUnitPrice(activeName);
       liveSubtotal += (m.quantity || 1) * unitPrice;
@@ -421,6 +478,16 @@ export default function DispenseSection() {
                     >
                       Dr. {p.doctorName.split(' ')[0]} · <span style={{ fontWeight: 800 }}>{p.department}</span>
                     </span>
+                    <div 
+                      style={{ 
+                        fontSize: '0.68rem', 
+                        color: isCurrent ? 'rgba(255,255,255,0.7)' : 'var(--ph-muted)', 
+                        marginTop: '3px', 
+                        fontWeight: 650 
+                      }}
+                    >
+                      Rx #{p.rxIndex + 1} • {p.prescriptionDate ? new Date(p.prescriptionDate).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Today'} at {p.prescriptionDate ? new Date(p.prescriptionDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                    </div>
                   </div>
                 </div>
               );
@@ -494,7 +561,7 @@ export default function DispenseSection() {
 
           {/* Prescribed Medications Visual Checklist */}
           <div className="ph-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1.25rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: 'var(--ph-text)' }}>
                   Interactive Prescription Formulation checklist
@@ -507,10 +574,29 @@ export default function DispenseSection() {
                 {selectedMedicationsCount} of {(rx.medications || []).length} Checked
               </div>
             </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', alignItems: 'center' }}>
+              <button
+                type="button"
+                className="ph-queue-filter-btn"
+                style={{ fontSize: '0.7rem', padding: '0.25rem 0.6rem' }}
+                onClick={handleSelectAll}
+              >
+                ✓ Select All Available
+              </button>
+              <button
+                type="button"
+                className="ph-queue-filter-btn"
+                style={{ fontSize: '0.7rem', padding: '0.25rem 0.6rem' }}
+                onClick={handleDeselectAll}
+              >
+                ✗ Deselect All
+              </button>
+            </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1, overflowY: 'auto' }}>
               {(rx.medications || []).map((m, i) => {
-                const isSelected = dispensedItems[i] !== false;
+                const isSelected = isItemSelected(i);
                 const isAvailable = m.availability === 'available';
                 const isLow = m.availability === 'low';
                 const isOut = m.availability === 'out_of_stock';
@@ -715,6 +801,23 @@ export default function DispenseSection() {
               </div>
             </div>
 
+            {dispenseError && (
+              <div 
+                style={{ 
+                  background: 'rgba(239, 68, 68, 0.1)', 
+                  border: '1px solid var(--ph-danger)', 
+                  color: 'var(--ph-danger)', 
+                  padding: '0.6rem 0.85rem', 
+                  borderRadius: '10px', 
+                  fontSize: '0.75rem', 
+                  fontWeight: 600,
+                  textAlign: 'center',
+                  marginTop: '0.4rem'
+                }}
+              >
+                ⚠ {dispenseError}
+              </div>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.4rem' }}>
               <button 
                 type="button" 

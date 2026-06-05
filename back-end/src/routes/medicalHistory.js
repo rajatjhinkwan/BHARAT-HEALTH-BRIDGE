@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { MedicalHistory, Patient } from '../models/index.js';
 import { clinicalUpload, clinicalFileUrl } from '../lib/uploadClinical.js';
-import { emitPrescriptionUpdate } from '../lib/realtime.js';
+import { emitPrescriptionUpdate, emitVoiceNoteUpdate } from '../lib/realtime.js';
 import { escapeRegExp } from '../lib/regexHelpers.js';
 import { addRecordBlock } from '../lib/blockchain.js';
 
@@ -331,6 +331,8 @@ router.post('/voicenote/upload', clinicalUpload.single('file'), async (req, res)
       },
     });
 
+    emitVoiceNoteUpdate(req.app.get('io'), patientId, saved);
+
     res.status(201).json(saved);
   } catch (error) {
     console.error('Voice note upload error:', error);
@@ -381,6 +383,8 @@ router.post('/voicenote', async (req, res) => {
         }
       }
     });
+
+    emitVoiceNoteUpdate(req.app.get('io'), patientId, saved);
 
     res.status(201).json(saved);
   } catch (error) {

@@ -24,6 +24,27 @@ export function emitPrescriptionUpdate(io, patientId, record) {
   });
 }
 
+export function emitConsultationUpdate(io, patientId, payload = {}) {
+  if (!io || !patientId) return;
+  emitPatientEvent(io, patientId, 'consultationUpdate', {
+    type: 'consultation',
+    ...payload,
+  });
+  emitPatientEvent(io, patientId, 'patientRecordUpdate', {
+    type: 'consultation_status',
+    ...payload,
+  });
+}
+
+export function emitVoiceNoteUpdate(io, patientId, record) {
+  if (!io || !patientId) return;
+  emitPatientEvent(io, patientId, 'voiceNoteUpdate', {
+    type: 'voice_note_added',
+    record,
+  });
+  emitPrescriptionUpdate(io, patientId, record);
+}
+
 export function emitDispensingUpdate(io, patientId, record) {
   if (!io || !patientId) return;
   emitPatientEvent(io, patientId, 'dispensingUpdate', {

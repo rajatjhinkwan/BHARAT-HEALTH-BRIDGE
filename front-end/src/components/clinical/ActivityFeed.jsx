@@ -3,6 +3,17 @@ import { Activity, Clock, User } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
 import './ActivityFeed.css';
 
+function formatActivityTime(timestamp) {
+  if (!timestamp) return '—';
+  const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return '—';
+  try {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  } catch {
+    return '—';
+  }
+}
+
 export default function ActivityFeed() {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +21,10 @@ export default function ActivityFeed() {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/workflow/activity`);
+        const token = localStorage.getItem('hospflow_auth_token');
+        const headers = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+        const res = await fetch(`${API_BASE_URL}/workflow/activity`, { headers });
         if (res.ok) {
           const data = await res.json();
           setActivities(Array.isArray(data) ? data : []);
@@ -41,9 +55,7 @@ export default function ActivityFeed() {
                 <strong>{act.patientName || 'Patient'}</strong>
                 <span className="activity-feed-time">
                   <Clock size={12} />
-                  {act.timestamp
-                    ? new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    : '—'}
+                  {formatActivityTime(act.timestamp)}
                 </span>
               </div>
               <span className="activity-feed-action">{act.action}</span>

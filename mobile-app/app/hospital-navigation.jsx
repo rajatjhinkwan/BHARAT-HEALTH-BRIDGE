@@ -12,6 +12,8 @@ import PressableScale from '@/components/ui/PressableScale';
 import { API_BASE_URL } from '@/constants/api';
 import { LinearGradient } from 'expo-linear-gradient';
 
+const SERVICE_RADIUS_KM = 50;
+
 export default function HospitalNavigation() {
   const { id, name, lat, lng } = useLocalSearchParams();
   const router = useRouter();
@@ -91,6 +93,8 @@ export default function HospitalNavigation() {
       ? getDistanceKm(userLoc.latitude, userLoc.longitude, destLat, destLng)
       : null;
 
+  const isOutOfRadius = distanceKm != null && distanceKm > SERVICE_RADIUS_KM;
+
   const routeCoords =
     userLoc && destLat
       ? [userLoc, { latitude: destLat, longitude: destLng }]
@@ -143,6 +147,18 @@ export default function HospitalNavigation() {
       </View>
 
       <View style={[styles.panel, { backgroundColor: C.cardWhite, borderColor: C.border }]}>
+        {isOutOfRadius && (
+          <View style={styles.outOfRadiusBanner}>
+            <Ionicons name="warning" size={20} color="#B45309" />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.outOfRadiusTitle}>Outside service radius</Text>
+              <Text style={styles.outOfRadiusText}>
+                You are {distanceKm.toFixed(1)} km away. This hospital is only reachable within a {SERVICE_RADIUS_KM} km radius for in-app navigation.
+              </Text>
+            </View>
+          </View>
+        )}
+
         <Text style={[styles.hospitalName, { color: C.textPrimary }]} numberOfLines={2}>
           {displayName}
         </Text>
@@ -152,10 +168,22 @@ export default function HospitalNavigation() {
           {distanceKm != null ? ` · ${distanceKm.toFixed(1)} km away` : ''}
         </Text>
 
-        <PressableScale onPress={openGoogleMaps} style={styles.navBtn}>
-          <LinearGradient colors={[C.primaryBlue, '#2563EB']} style={styles.navGradient}>
-            <Ionicons name="navigate" size={22} color="#fff" />
-            <Text style={styles.navText}>Start Navigation</Text>
+        <PressableScale
+          onPress={() => {
+            if (isOutOfRadius) {
+              Alert.alert(
+                'Outside Service Radius',
+                `You are ${distanceKm?.toFixed(1)} km away. In-app navigation is only available within ${SERVICE_RADIUS_KM} km of this hospital.`
+              );
+              return;
+            }
+            openGoogleMaps();
+          }}
+          style={[styles.navBtn, isOutOfRadius && { opacity: 0.55 }]}
+        >
+          <LinearGradient colors={[isOutOfRadius ? '#9CA3AF' : C.primaryBlue, isOutOfRadius ? '#6B7280' : '#2563EB']} style={styles.navGradient}>
+            <Ionicons name={isOutOfRadius ? 'location-outline' : 'navigate'} size={22} color="#fff" />
+            <Text style={styles.navText}>{isOutOfRadius ? 'Out of Radius' : 'Start Navigation'}</Text>
           </LinearGradient>
         </PressableScale>
 
@@ -235,6 +263,29 @@ const styles = StyleSheet.create({
   indoorBtnText: {
     fontSize: 15,
     fontWeight: '800'
+  },
+  outOfRadiusBanner: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    backgroundColor: '#FFFBEB',
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 14,
+  },
+  outOfRadiusTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#B45309',
+    marginBottom: 4,
+  },
+  outOfRadiusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#92400E',
+    lineHeight: 17,
   },
   secondaryRow: { flexDirection: 'row', gap: 10 },
   secondaryBtn: {

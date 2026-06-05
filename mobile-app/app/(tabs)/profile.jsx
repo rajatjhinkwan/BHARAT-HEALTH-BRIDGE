@@ -1156,7 +1156,7 @@ const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, paddingBottom: 120 },
   
   // 1. DIGITAL HEALTH PASSPORT CARD STYLES
-  digitalCard: { borderRadius: 28, borderWidth: 1, padding: 20, position: 'relative', overflow: 'hidden', marginTop: 15, marginBottom: 15, ...Shadow.md },
+  digitalCard: { borderRadius: 28, borderWidth: 1, padding: 20, position: 'relative', overflow: 'hidden', marginTop: 0, marginBottom: 15, ...Shadow.md },
   tricolorStripeContainer: { position: 'absolute', top: 0, right: 0, width: 90, height: 6, flexDirection: 'row' },
   stripe: { flex: 1, height: '100%' },
   cardBrandingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },

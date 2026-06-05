@@ -88,7 +88,16 @@ export default function PatientHistory() {
       });
       load();
     },
-    onAppointment: load
+    onAppointment: load,
+    onConsultation: () => {
+      toast.success('Consultation status updated live from clinic.');
+      load();
+    },
+    onVoiceNote: () => {
+      toast.success('New doctor voice note synced to your vault.');
+      load();
+    },
+    onPatientRecord: load,
   });
 
   return (

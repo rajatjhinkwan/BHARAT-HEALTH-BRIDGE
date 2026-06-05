@@ -9,12 +9,17 @@ export default function TokenBoard({ department = 'OPD' }) {
 
   const fetchQueue = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/workflow/queue/live?department=${encodeURIComponent(department)}`);
+      const token = localStorage.getItem('hospflow_auth_token');
+      const headers = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`${API_BASE_URL}/workflow/queue/live?department=${encodeURIComponent(department)}`, { headers });
       if (res.ok) {
         const data = await res.json();
-        setServing(data.inConsultation[0] || null);
-        setNext(data.waiting[0] || null);
-        setWaitingCount(data.waiting.length);
+        const inConsultation = Array.isArray(data?.inConsultation) ? data.inConsultation : [];
+        const waiting = Array.isArray(data?.waiting) ? data.waiting : [];
+        setServing(inConsultation[0] || null);
+        setNext(waiting[0] || null);
+        setWaitingCount(waiting.length);
       }
     } catch (err) {
       console.error(err);

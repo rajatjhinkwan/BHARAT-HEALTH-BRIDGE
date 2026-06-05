@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ActivityIndicator, Share, Image, Platform, Dimensions, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, Alert, ActivityIndicator, Share, Image, Platform, Dimensions, Modal, Keyboard } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Polyline } from 'react-native-svg';
@@ -249,6 +250,17 @@ export default function HistoryScreen() {
       Alert.alert('New Prescription', 'Your doctor has issued a new prescription. It is now in your Health Vault.');
     },
     onAppointment: () => fetchHistory(),
+    onConsultation: (payload) => {
+      fetchHistory();
+      if (payload?.status === 'IN_CONSULTATION') {
+        Alert.alert('Consultation Live', `${payload.doctor || 'Your doctor'} has started your consultation.`);
+      }
+    },
+    onVoiceNote: () => {
+      fetchHistory();
+      Alert.alert('Voice Note', 'A new doctor voice note has been added to your vault.');
+    },
+    onPatientRecord: () => fetchHistory(),
   });
 
   // Upload/Verification
@@ -509,7 +521,9 @@ export default function HistoryScreen() {
                           <PressableScale 
                             onPress={() => {
                               if (record.type === 'voice_note_group') {
+                                Keyboard.dismiss();
                                 setVoiceNotesModalData(record.voiceNotes);
+
                               } else {
                                 setExpandedRecordId(isExpanded ? null : record._id);
                               }
@@ -522,9 +536,24 @@ export default function HistoryScreen() {
                               <View style={{ flex: 1, marginLeft: 12 }}>
                                 <Text style={styles.date}>{new Date(record.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</Text>
                                 <Text style={[styles.title, { color: C.textPrimary }]}>{record.title}</Text>
-                                <Text style={[styles.subtitle, { color: C.textSecondary }]}>
-                                  {record.type === 'voice_note_group' ? 'Tap to open doctor voice vault' : `${record.doctor} • ${record.hospital}`}
-                                </Text>
+                                {record.type === 'voice_note_group' ? (
+                                  <View style={styles.voicePreviewCard}>
+                                    <View style={styles.voicePreviewHeader}>
+                                      <Ionicons name="mic-circle" size={18} color="#0EA5E9" />
+                                      <Text style={styles.voicePreviewCount}>{record.voiceNotes?.length || 0} consultation voice notes</Text>
+                                    </View>
+                                    <View style={styles.voiceWaveRow}>
+                                      {[3, 6, 4, 8, 5, 7, 3, 6, 9, 4, 7, 5].map((h, i) => (
+                                        <View key={i} style={[styles.voiceWaveBar, { height: h * 2, backgroundColor: '#0EA5E9' + (i % 2 ? '55' : 'CC') }]} />
+                                      ))}
+                                    </View>
+                                    <Text style={[styles.voicePreviewHint, { color: C.textSecondary }]}>Tap to open your consultation voice vault</Text>
+                                  </View>
+                                ) : (
+                                  <Text style={[styles.subtitle, { color: C.textSecondary }]}>
+                                    {`${record.doctor} • ${record.hospital}`}
+                                  </Text>
+                                )}
                               </View>
                             </View>
                           </PressableScale>
@@ -568,7 +597,8 @@ export default function HistoryScreen() {
                                   {record.fileUrl && (record.fileUrl.startsWith('data:image/') || record.fileUrl.startsWith('http')) && (
                                     <View style={styles.canvasContainer}>
                                       <Text style={[styles.detailHeader, { marginTop: 12 }]}>Visual Prescription Pad</Text>
-                                      <PressableScale onPress={() => setFullScreenImageUri(record.fileUrl)}>
+                                      <PressableScale onPress={() => { Keyboard.dismiss(); setFullScreenImageUri(record.fileUrl); }}>
+
                                         <View style={styles.imageCardFrame}>
                                           <Image
                                             source={{ uri: record.fileUrl }}
@@ -591,7 +621,11 @@ export default function HistoryScreen() {
                                         onPress={() => {
                                           try {
                                             const parsed = JSON.parse(record.fileUrl);
-                                            if (parsed) setFullScreenStrokesData(parsed);
+                                            if (parsed) {
+                                              Keyboard.dismiss();
+                                              setFullScreenStrokesData(parsed);
+                                            }
+
                                           } catch (e) {
                                             console.warn(e);
                                           }
@@ -673,7 +707,7 @@ export default function HistoryScreen() {
             </PressableScale>
           </View>
 
-          <Text style={styles.modalPinchHint}>Pinch with two fingers to zoom in or out</Text>
+          <Text style={styles.modalPinchHint}>Pinch with two fingers to zoom in or out, or double tap to reset</Text>
 
           <View style={styles.modalZoomToolbar}>
             <PressableScale
@@ -698,59 +732,54 @@ export default function HistoryScreen() {
             )}
           </View>
 
-          <ScrollView
-            contentContainerStyle={styles.modalScrollContent}
-            showsVerticalScrollIndicator
-            showsHorizontalScrollIndicator
-            maximumZoomScale={6}
-            minimumZoomScale={1}
-            bouncesZoom
-            centerContent
+          <PinchZoomView
+            style={{ width: SCREEN_WIDTH - 24, height: SCREEN_HEIGHT - 260 }}
+            externalScale={modalZoomScale}
+            onScaleChange={(newScale) => setModalZoomScale(newScale)}
           >
-            <PinchZoomView style={{ width: SCREEN_WIDTH - 24, minHeight: SCREEN_HEIGHT * 0.55 }}>
-              <View
-                style={{
-                  width: (SCREEN_WIDTH - 24) * modalZoomScale,
-                  minHeight: (SCREEN_HEIGHT - 220) * modalZoomScale,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#FFFFFF',
-                  borderRadius: 12,
-                }}
-              >
-                {fullScreenImageUri ? (
-                  <Image
-                    source={{ uri: fullScreenImageUri }}
-                    style={{ width: '100%', height: (SCREEN_HEIGHT - 220) * modalZoomScale }}
-                    resizeMode="contain"
-                  />
-                ) : fullScreenStrokesData ? (
-                  <Svg
-                    viewBox={`0 0 ${fullScreenStrokesData.width || 320} ${fullScreenStrokesData.height || 220}`}
-                    width={(SCREEN_WIDTH - 24) * modalZoomScale}
-                    height={(SCREEN_HEIGHT - 220) * modalZoomScale}
-                  >
-                    {fullScreenStrokesData.strokes.map((stroke, index) => {
-                      if (!stroke.points || stroke.points.length === 0) return null;
-                      return (
-                        <Polyline
-                          key={index}
-                          points={stroke.points.map((p) => `${p.x},${p.y}`).join(' ')}
-                          fill="none"
-                          stroke="#000000"
-                          strokeWidth={stroke.width || 2.5}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      );
-                    })}
-                  </Svg>
-                ) : null}
-              </View>
-            </PinchZoomView>
-          </ScrollView>
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#FFFFFF',
+                borderRadius: 12,
+              }}
+            >
+              {fullScreenImageUri ? (
+                <Image
+                  source={{ uri: fullScreenImageUri }}
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode="contain"
+                />
+              ) : fullScreenStrokesData ? (
+                <Svg
+                  viewBox={`0 0 ${fullScreenStrokesData.width || 320} ${fullScreenStrokesData.height || 220}`}
+                  width="100%"
+                  height="100%"
+                >
+                  {fullScreenStrokesData.strokes.map((stroke, index) => {
+                    if (!stroke.points || stroke.points.length === 0) return null;
+                    return (
+                      <Polyline
+                        key={index}
+                        points={stroke.points.map((p) => `${p.x},${p.y}`).join(' ')}
+                        fill="none"
+                        stroke="#000000"
+                        strokeWidth={stroke.width || 2.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    );
+                  })}
+                </Svg>
+              ) : null}
+            </View>
+          </PinchZoomView>
         </SafeAreaView>
       </Modal>
+
 
       {/* Doctor voice notes — full screen with back */}
       <Modal
@@ -761,8 +790,9 @@ export default function HistoryScreen() {
           await stopAudio();
         }}
       >
-        <SafeAreaView style={[styles.voiceModalRoot, { backgroundColor: scheme === 'dark' ? '#111827' : '#F3F4F6', paddingTop: Platform.OS === 'android' ? 40 : 0 }]} edges={['top', 'bottom']}>
-          <View style={[styles.chatHeader, { borderBottomColor: C.border }]}>
+        <SafeAreaView style={[styles.voiceModalRoot, { backgroundColor: scheme === 'dark' ? '#0B1220' : '#E8F4FD' }]} edges={['top', 'bottom']}>
+
+          <View style={[styles.voiceModalHero, { backgroundColor: scheme === 'dark' ? '#0F172A' : '#0EA5E9' }]}>
             <PressableScale
               onPress={async () => {
                 setVoiceNotesModalData(null);
@@ -771,16 +801,16 @@ export default function HistoryScreen() {
               style={styles.chatBackBtn}
               accessibilityLabel="Go back"
             >
-              <Ionicons name="arrow-back" size={24} color={C.textPrimary} />
-              <Text style={[styles.chatBackLabel, { color: C.textPrimary }]}>Back</Text>
+              <Ionicons name="arrow-back" size={22} color="#fff" />
+              <Text style={[styles.chatBackLabel, { color: '#fff' }]}>Back</Text>
             </PressableScale>
-            <View style={styles.chatHeaderAvatar}>
-              <Ionicons name="mic-circle" size={32} color="#0EA5E9" />
-            </View>
-            <View style={{ flex: 1, marginLeft: 10 }}>
-              <Text style={[styles.chatHeaderTitle, { color: C.textPrimary }]}>Consultation Voice Notes</Text>
-              <Text style={[styles.chatHeaderSubtitle, { color: C.textSecondary }]}>
-                {voiceNotesModalData?.length || 0} voice messages from your doctors
+            <View style={styles.voiceHeroContent}>
+              <View style={styles.voiceHeroIcon}>
+                <Ionicons name="mic" size={28} color="#0EA5E9" />
+              </View>
+              <Text style={styles.voiceHeroTitle}>Consultation Voice Notes</Text>
+              <Text style={styles.voiceHeroSubtitle}>
+                {voiceNotesModalData?.length || 0} secure voice messages from your doctors
               </Text>
             </View>
           </View>
@@ -792,61 +822,88 @@ export default function HistoryScreen() {
           >
             {(voiceNotesModalData || []).map((note) => {
               const isPlaying = playingVoiceId === note._id;
+              const duration = note.voiceNoteDetails?.duration || 30;
               
               return (
                 <View key={note._id} style={styles.chatBubbleContainer}>
-                  {/* Left Aligned Received Message Bubble */}
                   <View style={[
                     styles.chatBubble, 
-                    { backgroundColor: scheme === 'dark' ? '#1F2937' : '#FFFFFF', borderColor: scheme === 'dark' ? '#374151' : '#E5E7EB' }
+                    { backgroundColor: scheme === 'dark' ? '#1F2937' : '#FFFFFF', borderColor: scheme === 'dark' ? '#374151' : '#DBEAFE' }
                   ]}>
-                    
-                    {/* Voice Message Player UI (WhatsApp Style) */}
+                    <View style={styles.voiceNoteDoctorRow}>
+                      <View style={styles.voiceNoteDoctorAvatar}>
+                        <Ionicons name="person" size={16} color="#0EA5E9" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.chatBubbleDoctor}>{note.doctor || 'Attending Physician'}</Text>
+                        <Text style={[styles.voiceNoteHospital, { color: C.textSecondary }]}>{note.hospital || 'Bharat Health Bridge'}</Text>
+                      </View>
+                      <Text style={styles.chatTimeText}>
+                        {new Date(note.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                      </Text>
+                    </View>
+
                     <View style={styles.chatPlayerRow}>
                       {loadingAudioId === note._id ? (
-                        <View style={{ width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={styles.voicePlayBtn}>
                           <ActivityIndicator size="small" color="#0EA5E9" />
                         </View>
                       ) : (
-                        <PressableScale onPress={() => toggleVoiceNote(note)}>
+                        <PressableScale onPress={() => toggleVoiceNote(note)} style={styles.voicePlayBtn}>
                           <Ionicons 
                             name={isPlaying ? "pause-circle" : "play-circle"} 
-                            size={40} 
+                            size={44} 
                             color="#0EA5E9" 
                           />
                         </PressableScale>
                       )}
                       
-                      {/* Audio wave simulation or progress bar */}
-                      <View style={[styles.chatProgressContainer, { height: 20, justifyContent: 'center', marginHorizontal: 10 }]}>
-                        {/* Thin progress track */}
+                      <View style={styles.chatProgressContainer}>
+                        <View style={styles.waveformContainer}>
+                          {[4, 7, 5, 9, 6, 8, 4, 10, 5, 7, 6, 9, 4, 8].map((h, i) => (
+                            <View
+                              key={i}
+                              style={[
+                                styles.waveformBar,
+                                {
+                                  height: h * (isPlaying ? 1.2 : 1),
+                                  backgroundColor: isPlaying && i / 14 < playbackProgress ? '#10B981' : '#93C5FD',
+                                },
+                              ]}
+                            />
+                          ))}
+                        </View>
                         <View style={styles.chatProgressTrack}>
                           <View style={[
                             styles.chatProgressFilled,
-                            { 
-                              width: isPlaying ? `${playbackProgress * 100}%` : '0%',
-                              backgroundColor: '#10B981'
-                            }
+                            { width: isPlaying ? `${playbackProgress * 100}%` : '0%' }
                           ]} />
                         </View>
                       </View>
                       
-                      <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                      <View style={styles.voiceDurationCol}>
                         <PressableScale onPress={cyclePlaybackRate} style={styles.playbackRateBtn}>
                           <Text style={styles.playbackRateText}>{playbackRate}x</Text>
                         </PressableScale>
-                        <Text style={[styles.chatDuration, { color: C.textSecondary, marginTop: 4 }]}>
+                        <Text style={[styles.chatDuration, { color: C.textSecondary }]}>
                           {isPlaying 
-                            ? `${Math.round(playbackProgress * (note.voiceNoteDetails?.duration || 30))}s`
-                            : `${note.voiceNoteDetails?.duration || 30}s`
+                            ? `${Math.round(playbackProgress * duration)}s`
+                            : `${duration}s`
                           }
                         </Text>
                       </View>
                     </View>
 
-                    {/* Message Timestamp */}
-                    <Text style={styles.chatTimeText}>
-                      {new Date(note.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} at {new Date(note.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                    {note.voiceNoteDetails?.transcript ? (
+                      <View style={[styles.chatTranscriptBox, { backgroundColor: scheme === 'dark' ? '#111827' : '#F0F9FF' }]}>
+                        <Text style={[styles.chatTranscriptText, { color: C.textSecondary }]} numberOfLines={4}>
+                          "{note.voiceNoteDetails.transcript}"
+                        </Text>
+                      </View>
+                    ) : null}
+
+                    <Text style={[styles.chatDateFooter, { color: C.textSecondary }]}>
+                      {new Date(note.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </Text>
                   </View>
                 </View>
@@ -984,7 +1041,7 @@ function PrescriptionStrokeRenderer({ fileUrl, C, isStaticPreview = false }) {
 
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 20, flex: 1 },
-  header: { marginBottom: 12, marginTop: 10 },
+  header: { marginBottom: 12, marginTop: 0 },
   h1: { fontSize: 24, fontWeight: '900', letterSpacing: -0.5 },
   
   searchRow: { flexDirection: 'row', gap: 12, marginTop: 12, alignItems: 'center' },
@@ -1166,6 +1223,115 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: '800',
   },
+  voicePreviewCard: {
+    marginTop: 10,
+    padding: 12,
+    borderRadius: 14,
+    backgroundColor: '#F0F9FF',
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+  },
+  voicePreviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8,
+  },
+  voicePreviewCount: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#0369A1',
+  },
+  voiceWaveRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 3,
+    height: 20,
+    marginBottom: 8,
+  },
+  voiceWaveBar: {
+    width: 3,
+    borderRadius: 2,
+  },
+  voicePreviewHint: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  voiceModalHero: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  voiceHeroContent: {
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  voiceHeroIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    ...Shadow.md,
+  },
+  voiceHeroTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.3,
+  },
+  voiceHeroSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  voiceNoteDoctorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+  },
+  voiceNoteDoctorAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E0F2FE',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voiceNoteHospital: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 1,
+  },
+  voicePlayBtn: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voiceDurationCol: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    minWidth: 44,
+  },
+  waveformBar: {
+    width: 3,
+    borderRadius: 2,
+    marginHorizontal: 1,
+  },
+  chatDateFooter: {
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 8,
+    textAlign: 'right',
+  },
   // WhatsApp Style Voice Note Chat Styles
   chatHeader: {
     flexDirection: 'row',
@@ -1175,6 +1341,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     marginBottom: 10,
+    paddingHorizontal: 20,
   },
   chatBackBtn: {
     flexDirection: 'row',
@@ -1201,9 +1368,9 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   chatListContent: {
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    gap: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    gap: 18,
   },
   chatBubbleContainer: {
     width: '100%',
@@ -1211,16 +1378,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   chatBubble: {
-    maxWidth: '85%',
-    borderRadius: 20,
-    borderTopLeftRadius: 4,
-    padding: 12,
+    width: '100%',
+    borderRadius: 22,
+    padding: 16,
     borderWidth: 1,
-    elevation: 1,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
+    elevation: 2,
+    shadowColor: '#0EA5E9',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   chatBubbleDoctor: {
     fontSize: 10,
@@ -1232,8 +1398,9 @@ const styles = StyleSheet.create({
   chatPlayerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 8,
+    gap: 8,
+    marginBottom: 10,
+    minHeight: 52,
   },
   chatProgressContainer: {
     flex: 1,
@@ -1279,10 +1446,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   playbackRateBtn: {
-    backgroundColor: '#E5E7EB',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
+    backgroundColor: '#DBEAFE',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

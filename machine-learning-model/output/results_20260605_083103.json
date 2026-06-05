@@ -1,0 +1,92 @@
+{
+  "regions": [
+    {
+      "text": "a man",
+      "confidence": 0.8,
+      "bbox": [
+        236,
+        0,
+        410,
+        204
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        312,
+        40,
+        398,
+        99
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        233,
+        117,
+        396,
+        156
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        315,
+        180,
+        400,
+        219
+      ],
+      "corrected": false
+    },
+    {
+      "text": "tensor",
+      "confidence": 0.317,
+      "bbox": [
+        266,
+        225,
+        339,
+        273
+      ],
+      "corrected": false
+    },
+    {
+      "text": "going duty",
+      "confidence": 0.9,
+      "bbox": [
+        179,
+        245,
+        445,
+        330
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        299,
+        298,
+        395,
+        355
+      ],
+      "corrected": false
+    },
+    {
+      "text": "print export",
+      "confidence": 0.94,
+      "bbox": [
+        292,
+        366,
+        439,
+        418
+      ],
+      "corrected": false
+    }
+  ]
+}

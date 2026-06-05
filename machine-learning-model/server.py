@@ -65,6 +65,49 @@ async def process_prescription(file: UploadFile = File(...)):
         if p is None:
             raise HTTPException(status_code=503, detail="OCR pipeline is still loading. Try again shortly.")
 
+        if file_extension.lower() == ".pdf":
+            print(f"Processing PDF file with pypdf: {file_path}")
+            try:
+                import pypdf
+                reader = pypdf.PdfReader(file_path)
+                extracted_text = ""
+                for page in reader.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        extracted_text += page_text + "\n"
+                
+                if not extracted_text.strip():
+                    raise HTTPException(
+                        status_code=422,
+                        detail="No text could be extracted from this PDF. Please ensure it is a digital text PDF or upload a scanned image instead."
+                    )
+                
+                # Split text into lines, filter out empty lines
+                raw_lines = [line.strip() for line in extracted_text.split("\n") if line.strip()]
+                
+                # Format each line into region/text format: {"text": line, "confidence": 1.0, "corrected": False}
+                fused = [{"text": line, "confidence": 1.0, "corrected": False} for line in raw_lines]
+                
+                if p.corrector:
+                    print("Applying database correction to PDF text...")
+                    final_results = p.corrector.apply_correction(fused)
+                else:
+                    final_results = fused
+                
+                from prescription_formatter import format_for_prescription_api
+                result = format_for_prescription_api(final_results)
+                
+                return {
+                    "status": "success",
+                    "engine": "pypdf-extractor",
+                    "data": result,
+                }
+            except ImportError:
+                raise HTTPException(
+                    status_code=500,
+                    detail="PDF support is not fully initialized on the server (pypdf is missing). Please upload an image prescription."
+                )
+
         print(f"Processing image with Genocr: {file_path}")
         result = p.process(file_path)
 

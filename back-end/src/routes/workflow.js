@@ -14,7 +14,7 @@ import {
   isDoctorRole,
 } from '../lib/queueHelpers.js';
 import { normalizeClinicalPriority } from '../lib/priority.js';
-import { emitPatientEvent } from '../lib/realtime.js';
+import { emitPatientEvent, emitConsultationUpdate } from '../lib/realtime.js';
 
 const router = Router();
 
@@ -81,12 +81,21 @@ async function startConsultation(doctor, queueNode, req) {
   });
 
   emitQueueUpdated(req, doctorDept);
-  emitPatientEvent(req.app.get('io'), queueNode.patientId, 'patientRecordUpdate', {
+  const io = req.app.get('io');
+  emitPatientEvent(io, queueNode.patientId, 'patientRecordUpdate', {
     type: 'queue_status',
     status: queueNode.status,
     department: doctorDept,
     tokenNumber: queueNode.tokenNumber,
     queueId: queueNode.queueId,
+  });
+  emitConsultationUpdate(io, queueNode.patientId, {
+    status: 'IN_CONSULTATION',
+    doctor: doctor.name,
+    department: doctorDept,
+    tokenNumber: queueNode.tokenNumber,
+    queueId: queueNode.queueId,
+    startedAt: queueNode.consultationStartTime,
   });
   return queueNode;
 }
@@ -406,12 +415,21 @@ router.patch('/queue/complete/:queueId', authenticate, validatePermission('canVi
         });
 
         emitQueueUpdated(req, queueNode.department);
-        emitPatientEvent(req.app.get('io'), queueNode.patientId, 'patientRecordUpdate', {
+        const io = req.app.get('io');
+        emitPatientEvent(io, queueNode.patientId, 'patientRecordUpdate', {
           type: 'queue_status',
           status: queueNode.status,
           department: queueNode.department,
           tokenNumber: queueNode.tokenNumber,
           queueId: queueNode.queueId,
+        });
+        emitConsultationUpdate(io, queueNode.patientId, {
+          status: 'COMPLETED',
+          doctor: queueNode.doctor,
+          department: queueNode.department,
+          tokenNumber: queueNode.tokenNumber,
+          queueId: queueNode.queueId,
+          endedAt: queueNode.consultationEndTime,
         });
         logAuditAction(`User: ${doctor.name} (${doctor.role})`, 'Consultation Completed', `Completed consultation for patient ${queueNode.patientName} (Token: ${queueNode.tokenNumber})`);
         res.json(queueNode);
@@ -549,10 +567,14 @@ router.get('/metrics', authenticate, async (req, res) => {
             availableBeds: await Bed.countDocuments({ occupied: false }),
             occupiedBeds: await Bed.countDocuments({ occupied: true }),
             pendingLabs: await Patient.countDocuments({ currentStatus: 'LAB PENDING' }),
-            dischargedToday: await Patient.countDocuments({ 
-                currentStatus: 'DISCHARGED',
-                updatedAt: { $gte: new Date().setHours(0,0,0,0) }
-            })
+            dischargedToday: await (() => {
+                const startOfDay = new Date();
+                startOfDay.setHours(0, 0, 0, 0);
+                return Patient.countDocuments({
+                    currentStatus: 'DISCHARGED',
+                    updatedAt: { $gte: startOfDay }
+                });
+            })()
         };
         res.json(stats);
     } catch (err) {

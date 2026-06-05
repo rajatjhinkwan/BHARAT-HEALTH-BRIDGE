@@ -73,7 +73,7 @@ export const HOME_MOCK_DATA = {
             id: 'scan',
             title: 'Scan Prescription',
             subtitle: 'Generic medicine lookup',
-            badge: 'Save up to 80%',
+            badge: 'Save up to 50%',
             colors: ['#3B82F6', '#2563EB'],
             icon: 'scan',
             route: '/scan'

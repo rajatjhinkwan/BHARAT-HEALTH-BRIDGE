@@ -341,7 +341,7 @@ function EmergencyAction({ icon, title, color, onPress, C }) {
 
 const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 20, paddingBottom: 100 },
-  hero: { padding: 20, borderRadius: 24, alignItems: 'center', marginTop: 10 },
+  hero: { padding: 20, borderRadius: 24, alignItems: 'center', marginTop: 0 },
   heroText: { alignItems: 'center', marginBottom: 16 },
   heroTitle: { color: '#fff', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
   heroSub: { color: 'rgba(255,255,255,0.7)', fontSize: 13, marginTop: 4, textAlign: 'center', fontWeight: '600' },

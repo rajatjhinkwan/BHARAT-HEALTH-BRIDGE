@@ -9,7 +9,10 @@ export default function HospitalMetrics() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/workflow/metrics`);
+        const token = localStorage.getItem('hospflow_auth_token');
+        const headers = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+        const res = await fetch(`${API_BASE_URL}/workflow/metrics`, { headers });
         if (res.ok) {
           const data = await res.json();
           setMetrics(data);
@@ -27,13 +30,22 @@ export default function HospitalMetrics() {
 
   if (loading) return <div className="p-8 text-center animate-pulse font-black text-slate-400 uppercase tracking-widest text-[10px]">Syncing Hospital Metrics...</div>;
 
+  const m = metrics || {
+    totalPatients: 0,
+    waitingQueue: 0,
+    activeICU: 0,
+    ventilator: 0,
+    availableBeds: 0,
+    dischargedToday: 0
+  };
+
   const cards = [
-    { label: 'Total Patients', value: metrics.totalPatients, icon: <Users size={24} />, color: 'var(--primary)' },
-    { label: 'Waiting Queue', value: metrics.waitingQueue, icon: <Clock size={24} />, color: 'var(--warning)' },
-    { label: 'Active ICU', value: metrics.activeICU, icon: <AlertTriangle size={24} />, color: 'var(--danger)' },
-    { label: 'Ventilator Patients', value: metrics.ventilator, icon: <Activity size={24} />, color: '#991b1b' },
-    { label: 'Available Beds', value: metrics.availableBeds, icon: <Bed size={24} />, color: 'var(--success)' },
-    { label: 'Discharged Today', value: metrics.dischargedToday, icon: <CheckCircle size={24} />, color: 'var(--secondary)' },
+    { label: 'Total Patients', value: m.totalPatients ?? 0, icon: <Users size={24} />, color: 'var(--primary)' },
+    { label: 'Waiting Queue', value: m.waitingQueue ?? 0, icon: <Clock size={24} />, color: 'var(--warning)' },
+    { label: 'Active ICU', value: m.activeICU ?? 0, icon: <AlertTriangle size={24} />, color: 'var(--danger)' },
+    { label: 'Ventilator Patients', value: m.ventilator ?? 0, icon: <Activity size={24} />, color: '#991b1b' },
+    { label: 'Available Beds', value: m.availableBeds ?? 0, icon: <Bed size={24} />, color: 'var(--success)' },
+    { label: 'Discharged Today', value: m.dischargedToday ?? 0, icon: <CheckCircle size={24} />, color: 'var(--secondary)' },
   ];
 
   return (

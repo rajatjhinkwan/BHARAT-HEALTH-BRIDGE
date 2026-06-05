@@ -34,7 +34,7 @@ export function useEmrWorkspace({
 
   const workspaceModalRef = useRef(null);
   const workspaceContentRef = useRef(null);
-  const prescriptionRef = useRef();
+  const prescriptionRef = useRef(null);
 
   const exitWorkspaceFullscreen = async () => {
     try {

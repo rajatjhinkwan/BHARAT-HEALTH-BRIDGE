@@ -67,6 +67,15 @@ export default function PatientPortal() {
     onQueueUpdate: () => {
       load();
     },
+    onConsultation: (payload) => {
+      const status = payload?.status === 'IN_CONSULTATION' ? 'started' : 'updated';
+      setToast(`Consultation ${status} — synced live from clinic.`);
+      load();
+    },
+    onVoiceNote: () => {
+      setToast('New doctor voice note — available in your vault.');
+      load();
+    },
   });
 
   const appointments = useMemo(() => {

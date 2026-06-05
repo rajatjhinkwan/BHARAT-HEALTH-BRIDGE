@@ -17,7 +17,10 @@ export default function GlobalSearch({ onClose }) {
       }
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/workflow/search?query=${query}`);
+        const token = localStorage.getItem('hospflow_auth_token');
+        const headers = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+        const res = await fetch(`${API_BASE_URL}/workflow/search?query=${query}`, { headers });
         if (res.ok) {
           const data = await res.json();
           setResults(data);

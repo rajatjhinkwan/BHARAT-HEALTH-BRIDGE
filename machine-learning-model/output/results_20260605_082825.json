@@ -1,0 +1,246 @@
+{
+  "regions": [
+    {
+      "text": "propopol",
+      "confidence": 0.86,
+      "bbox": [
+        74,
+        173,
+        601,
+        431
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        100,
+        196,
+        162,
+        327
+      ],
+      "corrected": false
+    },
+    {
+      "text": "Propofol",
+      "confidence": 0.78,
+      "bbox": [
+        368,
+        208,
+        636,
+        452
+      ],
+      "corrected": false
+    },
+    {
+      "text": "tops",
+      "confidence": 0.78,
+      "bbox": [
+        157,
+        254,
+        366,
+        398
+      ],
+      "corrected": false
+    },
+    {
+      "text": "Etomidate",
+      "confidence": 0.94,
+      "bbox": [
+        120,
+        545,
+        765,
+        693
+      ],
+      "corrected": false
+    },
+    {
+      "text": "e tooni",
+      "confidence": 0.84,
+      "bbox": [
+        125,
+        571,
+        509,
+        669
+      ],
+      "corrected": false
+    },
+    {
+      "text": "lamy eotide",
+      "confidence": 0.92,
+      "bbox": [
+        176,
+        855,
+        907,
+        1060
+      ],
+      "corrected": false
+    },
+    {
+      "text": "Ketamine",
+      "confidence": 0.88,
+      "bbox": [
+        203,
+        1155,
+        882,
+        1399
+      ],
+      "corrected": true
+    },
+    {
+      "text": "radioxifene",
+      "confidence": 0.92,
+      "bbox": [
+        226,
+        1485,
+        829,
+        1645
+      ],
+      "corrected": false
+    },
+    {
+      "text": "fene",
+      "confidence": 0.78,
+      "bbox": [
+        552,
+        1498,
+        818,
+        1603
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        487,
+        1525,
+        546,
+        1547
+      ],
+      "corrected": false
+    },
+    {
+      "text": "calcitonin",
+      "confidence": 0.9,
+      "bbox": [
+        235,
+        1795,
+        816,
+        1955
+      ],
+      "corrected": false
+    },
+    {
+      "text": "tensor",
+      "confidence": 0.282,
+      "bbox": [
+        654,
+        1818,
+        736,
+        1849
+      ],
+      "corrected": false
+    },
+    {
+      "text": "[UNCERTAIN",
+      "confidence": 0.0,
+      "bbox": [
+        427,
+        1835,
+        487,
+        1859
+      ],
+      "corrected": false
+    },
+    {
+      "text": "extinct team",
+      "confidence": 0.94,
+      "bbox": [
+        266,
+        2065,
+        951,
+        2235
+      ],
+      "corrected": false
+    },
+    {
+      "text": "tixis",
+      "confidence": 0.8,
+      "bbox": [
+        264,
+        2102,
+        491,
+        2215
+      ],
+      "corrected": false
+    },
+    {
+      "text": "jylo",
+      "confidence": 0.78,
+      "bbox": [
+        435,
+        2143,
+        607,
+        2205
+      ],
+      "corrected": false
+    },
+    {
+      "text": "commercial medicine",
+      "confidence": 0.95,
+      "bbox": [
+        311,
+        2338,
+        1055,
+        2582
+      ],
+      "corrected": false
+    },
+    {
+      "text": "tempozzolamide",
+      "confidence": 0.95,
+      "bbox": [
+        318,
+        2636,
+        1175,
+        2812
+      ],
+      "corrected": false
+    },
+    {
+      "text": "references",
+      "confidence": 0.9,
+      "bbox": [
+        314,
+        2692,
+        436,
+        2796
+      ],
+      "corrected": false
+    },
+    {
+      "text": "longali domide",
+      "confidence": 0.95,
+      "bbox": [
+        392,
+        2899,
+        1155,
+        3073
+      ],
+      "corrected": false
+    },
+    {
+      "text": "domi de",
+      "confidence": 0.84,
+      "bbox": [
+        691,
+        2925,
+        1143,
+        3052
+      ],
+      "corrected": false
+    }
+  ]
+}

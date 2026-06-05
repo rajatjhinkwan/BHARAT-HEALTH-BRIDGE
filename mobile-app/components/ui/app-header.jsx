@@ -13,6 +13,7 @@ export default function AppHeader({ title, showBell = false, bellBadge = 0, show
   const [menuOpen, setMenuOpen] = useState(false);
   const slide = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
+  const topInset = insets.top;
 
   useEffect(() => {
     if (menuOpen) {
@@ -23,7 +24,7 @@ export default function AppHeader({ title, showBell = false, bellBadge = 0, show
   }, [menuOpen]);
 
   return (
-    <View style={[styles.header, { paddingTop: insets.top, height: 64 + insets.top, borderBottomColor: 'rgba(0,0,0,0.05)', backgroundColor: 'transparent' }]}>
+    <View style={[styles.header, { paddingTop: topInset, height: 56 + topInset, borderBottomColor: 'rgba(0,0,0,0.05)', backgroundColor: 'transparent' }]}>
       {showBack ? (
         <PressableScale
           accessibilityLabel="Go back"

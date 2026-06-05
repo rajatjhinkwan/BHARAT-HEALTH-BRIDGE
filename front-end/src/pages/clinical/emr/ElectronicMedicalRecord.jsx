@@ -301,8 +301,10 @@ export default function ElectronicMedicalRecord() {
         )}
       </AnimatePresence>
 
-      <div className="emr-print-hidden">
-        <PrescriptionPDF ref={prescriptionRef} {...getPDFData()} />
+      <div style={{ display: 'none' }}>
+        <div ref={prescriptionRef}>
+          <PrescriptionPDF {...getPDFData()} />
+        </div>
       </div>
 
       <ServiceOrderModal

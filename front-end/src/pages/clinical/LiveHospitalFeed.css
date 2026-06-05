@@ -55,6 +55,16 @@
   box-shadow: var(--shadow-sm);
 }
 
+.live-feed-section-fallback {
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
 @media (max-width: 1024px) {
   .live-feed-body {
     grid-template-columns: 1fr;

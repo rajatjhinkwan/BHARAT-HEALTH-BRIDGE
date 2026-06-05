@@ -251,7 +251,96 @@ async function handleBypassFetch(path, options = {}) {
     return { success: true, message: 'SOS broadcasted successfully offline!' };
   }
 
+  if (path.startsWith('/patient/medicines/lookup')) {
+    let name = '';
+    const queryIdx = path.indexOf('?');
+    if (queryIdx !== -1) {
+      const qs = path.substring(queryIdx + 1);
+      const parts = qs.split('&');
+      for (const p of parts) {
+        const [k, v] = p.split('=');
+        if (k === 'name') name = decodeURIComponent(v || '');
+      }
+    }
+    name = name.trim();
+
+    if (!name) {
+      return {
+        found: false,
+        branded: { name: 'Prescribed Medicine', price: '₹---', company: 'Unknown' },
+        generic: { name: 'Searching generic equivalent...', price: '₹---' },
+        savings: 'Calculating...',
+        details: 'No medicine name provided.'
+      };
+    }
+
+    const lower = name.toLowerCase();
+    let matchedName = name;
+    let genericName = 'Amoxicillin & Potassium Clavulanate';
+    let sellingPrice = 223.50;
+    let genericPrice = 45.00;
+    let supplier = 'Detected Local Pharm';
+    let category = 'Tablet';
+
+    if (lower.includes('augmentin') || lower.includes('clavam') || lower.includes('amoxicillin')) {
+      matchedName = 'Augmentin 625 Duo';
+      genericName = 'Amoxicillin & Potassium Clavulanate';
+      sellingPrice = 223.50;
+      genericPrice = 45.00;
+      supplier = 'GSK India';
+    } else if (lower.includes('lipitor') || lower.includes('atorva') || lower.includes('cholesterol')) {
+      matchedName = 'Lipitor 10mg';
+      genericName = 'Atorvastatin';
+      sellingPrice = 180.00;
+      genericPrice = 35.00;
+      supplier = 'Pfizer India';
+    } else if (lower.includes('glycomet') || lower.includes('metformin')) {
+      matchedName = 'Glycomet GP2';
+      genericName = 'Metformin & Glimepiride';
+      sellingPrice = 110.00;
+      genericPrice = 22.00;
+      supplier = 'USV Pharma';
+    } else if (lower.includes('pan-d') || lower.includes('pantoprazole') || lower.includes('pantocid')) {
+      matchedName = 'Pan-D';
+      genericName = 'Pantoprazole & Domperidone';
+      sellingPrice = 155.00;
+      genericPrice = 38.00;
+      supplier = 'Alkem Labs';
+      category = 'Capsule';
+    } else if (lower.includes('crocin') || lower.includes('dolo') || lower.includes('paracetamol')) {
+      matchedName = 'Crocin Advance';
+      genericName = 'Paracetamol 650mg';
+      sellingPrice = 30.00;
+      genericPrice = 10.00;
+      supplier = 'Haleon India';
+    } else {
+      matchedName = name;
+      genericName = `Generic ${name}`;
+      sellingPrice = 90.00;
+      genericPrice = 22.50;
+      supplier = 'Govt Generic';
+    }
+
+    const savingsAmt = sellingPrice - genericPrice;
+
+    return {
+      found: true,
+      branded: {
+        name: matchedName,
+        price: `₹${sellingPrice.toFixed(2)}`,
+        company: supplier
+      },
+      generic: {
+        name: genericName,
+        price: `₹${genericPrice.toFixed(2)}`
+      },
+      savings: `₹${savingsAmt.toFixed(2)}`,
+      details: `Prescribed Dosage Category: ${category}. Generic equivalent provides identical therapeutic effect with ${Math.round((savingsAmt / sellingPrice) * 100)}% cost savings under Jan Aushadhi guidelines.`
+    };
+  }
+
   return {};
+
 }
 
 export async function apiFetch(path, options = {}) {
@@ -703,4 +792,38 @@ export async function getLiveQueue(department) {
 export async function broadcastDonorSOS(body) {
   return apiFetch('/donors/sos', { method: 'POST', body: JSON.stringify(body) });
 }
+
+export async function lookupMedicine(name) {
+  return apiFetch(`/patient/medicines/lookup?name=${encodeURIComponent(name)}`);
+}
+
+export async function saveScannedPrescription(patientId, medicines, imageUri) {
+  if (!patientId || !Array.isArray(medicines) || medicines.length === 0) return null;
+  const ocrText = medicines
+    .map((m) => `${m.branded?.name || m.name} → ${m.generic?.name || 'Generic'}`)
+    .join('; ');
+  return apiFetch('/history/prescription', {
+    method: 'POST',
+    body: JSON.stringify({
+      patientId,
+      title: `Scanned Prescription — ${new Date().toLocaleDateString('en-IN')}`,
+      hospital: 'Bharat Health Bridge Pharmacy',
+      doctor: 'AI Prescription Scanner',
+      ocrText,
+      prescriptionDetails: {
+        diagnosis: 'Medicines identified via OCR scan',
+        medicines: medicines.map((m) => ({
+          name: m.branded?.name || 'Unknown',
+          generic: m.generic?.name || '',
+          dosage: m.dosage || 'As prescribed',
+          frequency: m.frequency || 'As directed',
+          duration: m.duration || 'As directed',
+          savings: m.savings || '',
+        })),
+        notes: imageUri ? 'Captured from mobile prescription scan.' : '',
+      },
+    }),
+  });
+}
+
 

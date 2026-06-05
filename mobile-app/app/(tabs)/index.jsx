@@ -59,6 +59,16 @@ export default function HomeScreen() {
       refreshDashboard();
       Alert.alert('Appointment Update', 'Your appointment status was updated.');
     },
+    onConsultation: (payload) => {
+      refreshDashboard();
+      if (payload?.status === 'IN_CONSULTATION') {
+        Alert.alert('Consultation Started', `${payload.doctor || 'Your doctor'} is now consulting with you.`);
+      }
+    },
+    onVoiceNote: () => {
+      refreshDashboard();
+      Alert.alert('Voice Note', 'A new consultation voice note is available in History.');
+    },
   });
 
   const headerY = useRef(new Animated.Value(-50)).current;
