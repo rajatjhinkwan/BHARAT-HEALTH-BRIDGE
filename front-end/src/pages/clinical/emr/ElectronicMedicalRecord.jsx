@@ -5,7 +5,6 @@ import { API_BASE_URL, getDoctorHeaders } from '../../../utils/api';
 import { useAuth } from '../../../context/AuthContext';
 import { normalizeDepartment } from '../../../utils/departments';
 import { useLiveQueue } from '../../../hooks/useLiveQueue';
-import PrescriptionPDF from '../../../components/clinical/PrescriptionPDF';
 import EmrVitalsModal from '../../../components/clinical/EmrVitalsModal';
 import EmrReferralModal from '../../../components/clinical/EmrReferralModal';
 import { ServiceOrderModal, EmrToast } from '../../../components/clinical/EmrModals';
@@ -163,7 +162,7 @@ export default function ElectronicMedicalRecord() {
 
   const { patient, emergencyCase } = patientApi;
 
-  const { prescriptionRef, getPDFData } = workspace;
+  const { getPDFData } = workspace;
 
   return (
     <div className={`emr-container ${workspace.isZoomed ? 'zoom-active' : ''}`}>
@@ -302,14 +301,12 @@ export default function ElectronicMedicalRecord() {
         )}
       </AnimatePresence>
 
-      <div className="emr-print-source" aria-hidden="true">
-        <PrescriptionPDF ref={prescriptionRef} {...getPDFData()} />
-      </div>
-
       <EmrPrescriptionPreviewModal
         open={workspace.showPrintPreview}
         onClose={workspace.closePrintPreview}
         onPrint={workspace.confirmPrint}
+        onDownload={workspace.downloadPrescription}
+        isBusy={workspace.isPrintBusy}
         pdfData={getPDFData()}
       />
 

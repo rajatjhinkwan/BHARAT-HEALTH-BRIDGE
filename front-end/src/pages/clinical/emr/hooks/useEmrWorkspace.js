@@ -1,8 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useReactToPrint } from 'react-to-print';
 import { apiJson, getDoctorHeaders } from '../../../../utils/api';
 import { API_BASE_URL } from '../../../../config';
 import { normalizeDepartment } from '../../../../utils/departments';
+import {
+  printPrescriptionDocument,
+  downloadPrescriptionPdf,
+  getPrescriptionDocumentTitle,
+} from '../../../../utils/prescriptionDocument';
 
 const INITIAL_PAGES = {
   Medicine: [{ content: null, typed: '' }],
@@ -32,10 +36,10 @@ export function useEmrWorkspace({
   const [a4Zoom, setA4Zoom] = useState(1);
   const [structuredMedsState, setStructuredMeds] = useState(structuredMeds || [{ name: '', dose: '', freq: 'TID', days: '' }]);
   const [showPrintPreview, setShowPrintPreview] = useState(false);
+  const [isPrintBusy, setIsPrintBusy] = useState(false);
 
   const workspaceModalRef = useRef(null);
   const workspaceContentRef = useRef(null);
-  const prescriptionRef = useRef(null);
 
   const exitWorkspaceFullscreen = async () => {
     try {
@@ -118,13 +122,38 @@ export function useEmrWorkspace({
     [patient, user, pages, structuredMedsState]
   );
 
-  const handlePrint = useReactToPrint({
-    contentRef: prescriptionRef,
-    documentTitle: `EMR_Prescription_${patient?.name || 'Patient'}`,
-    onPrintError: (_location, error) => {
-      showToast(error?.message || 'Unable to open print dialog. Try again.', 'error');
-    },
-  });
+  const getDocumentTitle = useCallback(
+    () => getPrescriptionDocumentTitle(patient?.name),
+    [patient?.name]
+  );
+
+  const confirmPrint = useCallback(async () => {
+    const pdfData = getPDFData();
+    const title = getDocumentTitle();
+    setIsPrintBusy(true);
+    try {
+      await printPrescriptionDocument(pdfData, title);
+      showToast('Print dialog opened. Choose your printer or "Save as PDF".', 'success');
+    } catch (err) {
+      showToast(err.message || 'Unable to open print dialog. Allow pop-ups and try again.', 'error');
+    } finally {
+      setIsPrintBusy(false);
+    }
+  }, [getPDFData, getDocumentTitle, showToast]);
+
+  const downloadPrescription = useCallback(async () => {
+    const pdfData = getPDFData();
+    const title = getDocumentTitle();
+    setIsPrintBusy(true);
+    try {
+      const { filename } = await downloadPrescriptionPdf(pdfData, title);
+      showToast(`Downloaded ${filename}`, 'success');
+    } catch (err) {
+      showToast(err.message || 'PDF download failed. Try Print and choose Save as PDF.', 'error');
+    } finally {
+      setIsPrintBusy(false);
+    }
+  }, [getPDFData, getDocumentTitle, showToast]);
 
   const openPrintPreview = useCallback(() => {
     const pdfData = getPDFData();
@@ -145,14 +174,6 @@ export function useEmrWorkspace({
   const closePrintPreview = useCallback(() => {
     setShowPrintPreview(false);
   }, []);
-
-  const confirmPrint = useCallback(() => {
-    if (!prescriptionRef.current) {
-      showToast('Print content is not ready yet. Close and reopen the workspace.', 'error');
-      return;
-    }
-    handlePrint();
-  }, [handlePrint, showToast]);
 
   const updatePageData = useCallback(
     (canvasData, croppedCanvasData, strokesJson) => {
@@ -289,7 +310,6 @@ export function useEmrWorkspace({
     isWorkspaceFullscreen,
     workspaceModalRef,
     workspaceContentRef,
-    prescriptionRef,
     activeActionTab,
     setActiveActionTab,
     pages,
@@ -308,11 +328,12 @@ export function useEmrWorkspace({
     toggleWorkspaceFullscreen,
     openWorkspace,
     handleSaveSession,
-    handlePrint,
     openPrintPreview,
     closePrintPreview,
     confirmPrint,
+    downloadPrescription,
     showPrintPreview,
+    isPrintBusy,
     getPDFData,
     updatePageData,
     updatePageTyped,
